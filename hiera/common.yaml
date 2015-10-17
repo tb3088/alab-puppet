@@ -1,0 +1,3 @@
+---
+# Insert the current filename (aids in verifying Hiera heirarchy):
+hiera_file: 'hiera/common.yaml'
