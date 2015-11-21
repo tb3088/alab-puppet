@@ -39,7 +39,7 @@ Vagrant.configure(2) do |config|
     puppet.module_path = "modules"
     puppet.environment_path = "vagrant-puppet-env"
     puppet.environment = "dev"
-    puppet.hiera_config_path = "hiera.yaml"
+    puppet.hiera_config_path = "vagrant-puppet-env/hiera.yaml"
   end
 end
 
