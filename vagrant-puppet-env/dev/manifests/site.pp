@@ -20,3 +20,6 @@ include hiera_test
 # This does the same thing as include but lets you change parameters if you need to:
 class { 'builds_test':
 }
+
+include gsajboss::user
+include localdev

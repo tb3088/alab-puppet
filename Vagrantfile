@@ -1,15 +1,19 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+VAGRANT_COMMAND = ARGV[0]
+
 Vagrant.configure(2) do |config|
-  ## Most TechFlow machines use CentOS 5. If you are using CentOS 6 for
-  ## some reason, find the correct box in Atlas:
-  config.vm.box = "puppetlabs/centos-5.11-64-puppet"
+  # For JBoss machines, ssh to the JBoss user but provision with vagrant user:
+  if VAGRANT_COMMAND == "ssh"
+      config.ssh.username = 'jboss'
+  end
+
+  config.vm.box = "puppetlabs/centos-6.6-64-puppet"
   config.vm.box_check_update = false
 
-  ## Open ports for access to the server from your local machine:
-  ## In this case, port 8888 on your main operating system will take you to
-  ## port 80 on the virtual machine.
+  ## Set 'guest' to your instance's https port
+  ## then point nginx for your app to https://vb_proxy/app_path
   config.vm.network "forwarded_port", guest: 80, host: 8888
 
   ## If you are using a bastion host or X Windows you may need one of these:
@@ -21,13 +25,13 @@ Vagrant.configure(2) do |config|
 
   config.vm.provider "virtualbox" do |vb|
     ## Display the VirtualBox GUI when booting the machine
-    #vb.gui = true
+    vb.gui = true
 
     ## Customize the amount of memory on the VM:
     #vb.memory = "6144"
   end
   
-  ## Do a quick yum update before running Puppet:
+  
   config.vm.provision "shell", inline: <<-SHELL
     sudo yum -y update
   SHELL
