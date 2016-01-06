@@ -1,3 +1,27 @@
 ---
-# Insert the current filename (aids in verifying Hiera heirarchy):
-hiera_file: 'hiera/common.yaml'
+# Set this to a comma-separated list of the applications you will be
+# running locally. See the list below.
+
+use_local: [ 'MyLocalApp', ]
+
+## Examples:
+##
+## To run Liferay and ITSS locally you would do
+# use_local: [ 'ROOT', 'rba_modernization', ]
+#
+## To run only CPRM (formerly GWAC) locally you would do:
+# use_local: [ 'gwac-pam-web', ]
+#
+
+## Valid locations for using local:
+## (NOTE: ROOT means the '/' location which is Liferay.)
+##
+# FPDSIntegrationService, FedsimTimesheet,
+# IIMAInvoiceImageRetrieverWeb, IIMAInvoiceXMLUpdateWeb,
+# ITSSArchiveFundWeb, ITSSFundWeb, ITSSPerfProjWeb,
+# ITSSSupportToolsWeb, ITSSValidateCCRProjWeb, ITSSValidateWeb, ROOT,
+# SupportTools, XMLUpdate, accrual-web, agreement-web, assist-web,
+# billing-web, birt, catalog, cpet, gsapaygov, gwac-pam-web,
+# itoms-struts, omis, opensso, rba-attach-web, rba-servicedesk-web,
+# rba_modernization, services, static, tos, waa
+

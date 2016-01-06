@@ -23,17 +23,21 @@ have any other file name, Puppet will fail.
 	
 ## Instructions
 
-1. Download the project.
+1. Download the project. Make sure to initialize the submodules.
 2. Run `vagrant up` in the project directory. If you have not already
    downloaded the box, it will do that. Then it will create the
    machine and run Puppet.
+3. `vagrant reload` to restart the machine so all of the changes kick in.
 3. Run `vagrant ssh` if you wish to log in to the machine and inspect the results.
 4. Run `vagrant destroy -f` when you are all finished and no longer
    want the machine taking up your diskspace.
 
 ## Tidbits
 
-* The `jboss` password is the same as in labs. 
-* The `jboss` account has full `sudo` access.
+* The `jboss` password is the same as in labs. The first time you log
+  in you may need to choose 'Other' at the login prompt and enter the
+  username manually.
+* The `jboss` account has full `sudo` access. If you want to become
+  root you can just do `sudo su -`.
 * If your screen is too small, try using Seamless mode. If you are
   unable to select it, try re-installing the guest additions.

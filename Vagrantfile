@@ -14,7 +14,7 @@ Vagrant.configure(2) do |config|
 
   ## Set 'guest' to your instance's https port
   ## then point nginx for your app to https://vb_proxy/app_path
-  config.vm.network "forwarded_port", guest: 80, host: 8888
+  config.vm.network "forwarded_port", guest: 443, host: 8888
 
   ## If you are using a bastion host or X Windows you may need one of these:
   #config.ssh.forward_agent=true
