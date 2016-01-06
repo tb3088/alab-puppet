@@ -8,9 +8,10 @@ class localdev{
 
   package {
     [
-      'git', 'subversion', # For local dev
-      'xfwm4','xfdesktop','gdm','xfce4-session','xfce-utils','xfce4-settings','Terminal', # For xfce
-	  'webkitgtk', # For jbds
+      'git', 'subversion',   # For local dev
+      'xfwm4','xfdesktop','gdm','xfce4-session','xfce-utils','xfce4-settings','Terminal',  # For xfce
+	  'webkitgtk',           # For jbds
+	  'firefox',             # for local testing
     ]:
     ensure => present,
   }
