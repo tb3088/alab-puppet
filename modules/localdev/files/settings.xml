@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/settings-1.1.0.xsd" xmlns="http://maven.apache.org/SETTINGS/1.1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <mirrors>
+    <mirror>
+      <mirrorOf>*,!snapshots</mirrorOf>
+      <name>libs-release</name>
+      <url>https://maven.techflow.com/artifactory/libs-release</url>
+      <id>libs-release</id>
+    </mirror>
+    <mirror>
+      <mirrorOf>snapshots</mirrorOf>
+      <name>libs-snapshot</name>
+      <url>https://maven.techflow.com/artifactory/libs-snapshot</url>
+      <id>libs-snapshot</id>
+    </mirror>
+  </mirrors>
+  <profiles>
+    <profile>
+      <properties>
+        <sonar.host.url>
+          https://mm-sonarcube.techflow.com/sonar
+        </sonar.host.url>
+      </properties>
+      <repositories>
+        <repository>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+          <id>central</id>
+          <name>libs-release</name>
+          <url>https://maven.techflow.com/artifactory/libs-release</url>
+        </repository>
+        <repository>
+          <snapshots />
+          <id>snapshots</id>
+          <name>libs-snapshot</name>
+          <url>https://maven.techflow.com/artifactory/libs-snapshot</url>
+        </repository>
+      </repositories>
+      <pluginRepositories>
+        <pluginRepository>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+          <id>central</id>
+          <name>plugins-release</name>
+          <url>https://maven.techflow.com/artifactory/plugins-release</url>
+        </pluginRepository>
+        <pluginRepository>
+          <snapshots />
+          <id>snapshots</id>
+          <name>plugins-snapshot</name>
+          <url>https://maven.techflow.com/artifactory/plugins-snapshot</url>
+        </pluginRepository>
+      </pluginRepositories>
+      <id>artifactory</id>
+    </profile>
+  </profiles>
+  <activeProfiles>
+    <activeProfile>artifactory</activeProfile>
+  </activeProfiles>
+</settings>
