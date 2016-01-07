@@ -113,11 +113,27 @@ class devproxy ($jboss_port = hiera(jboss::port,'8080')) {
     },
   }
 
+  # To permit easy addition of the CA cert:
   nginx::resource::location { '/devsetup':
     location_alias => '/var/www/nowhere.techflow.com/',
     vhost          => '*.gsarba.com',
     ssl            => true,
     ssl_only       => true,
+  }
+
+  # For debugging truststores and such things:
+  nginx::resource::location { '/server-debug':
+    proxy            => 'http://local_proxy/server-debug',
+    vhost            => '*.gsarba.com',
+    ssl              => true,
+    ssl_only         => true,
+    proxy_set_header => [
+      'X-Real-IP $remote_addr',
+      'X-Forwarded-For $proxy_add_x_forwarded_for',
+      'Host $http_host',
+      'X-Forwarded-Proto $scheme'
+    ],
+    proxy_redirect   => 'http://127.0.0.1:8080 /',
   }
 
 
