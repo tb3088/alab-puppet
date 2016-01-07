@@ -2,9 +2,23 @@
 class localdev::jboss {
   require ::localdev
 
+  include stdlib
+
+  # The system-properties seems to need to be in a particular location, so make sure it is where it belongs:
+  file_line {'system-properties':
+    ensure => present,
+    path   => '/opt/sw/jboss/jbdevstudio/runtimes/jboss-eap/standalone/configuration/standalone.xml',
+    line   => '    <system-properties></system-properties>',
+    after  => '    </extensions>',
+    match  => '.*<system-properties>.*',
+    replace => false,
+  }
+
+
   Augeas {
     incl    => '/opt/sw/jboss/jbdevstudio/runtimes/jboss-eap/standalone/configuration/standalone.xml',
     lens    => 'Xml.lns',
+    require => File_line['system-properties'],
   }
 
   augeas { 'standalone truststore config':
