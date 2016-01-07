@@ -1,21 +1,10 @@
 # Module to install set up for local development
 
 class localdev{
-  require epel
   require stdlib
+  include localdev::packages
+  include localdev::jbds
   include localdev::jboss
-
-  # include localdev::eclipse
-
-  package {
-    [
-      'git', 'subversion',   # For local dev
-      'xfwm4','xfdesktop','gdm','xfce4-session','xfce-utils','xfce4-settings','Terminal',  # For xfce
-	  'webkitgtk',           # For jbds
-	  'firefox',             # for local testing
-    ]:
-    ensure => present,
-  }
 
   file_line {'startx':
     ensure => present,
@@ -30,19 +19,6 @@ class localdev{
     owner   => 'root',
     group   => 'root',
     mode    => '0440',
-  }
-
-  exec { 'install-java':
-    command => 'rpm -Uvh /vagrant/jdk-8u65-linux-x64.rpm',
-    path    => ['/bin','/usr/bin',],
-    creates => '/usr/java/jdk1.8.0_65',
-  }->
-  exec { 'install-jbds-and-jboss':
-    command => 'java -jar /vagrant/jboss-devstudio-9.0.0.GA-CVE-2015-7501-installer-eap.jar /vagrant/InstallConfigRecord.xml',
-    path    => ['/bin','/usr/bin',],
-    user    => 'jboss',
-    group   => 'jboss',
-    creates => '/opt/sw/jboss/jbdevstudio',
   }
 
   file { '/opt/sw/jboss/.m2':

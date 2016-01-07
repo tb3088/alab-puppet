@@ -1,6 +1,6 @@
 # Set up JBoss
 class localdev::jboss {
-  require ::localdev
+  require ::localdev::jbds
 
   include stdlib
 
