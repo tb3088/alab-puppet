@@ -66,5 +66,8 @@ class localdev{
     source => 'puppet:///modules/localdev/dev-20150609-02.truststore',
   }
 
+  class { 'timezone':
+    timezone => 'America/New_York',
+  }
 
 }

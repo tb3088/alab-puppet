@@ -10,3 +10,6 @@
 [submodule "modules/nginx"]
 	path = modules/nginx
 	url = https://github.com/jfryman/puppet-nginx
+[submodule "modules/timezone"]
+	path = modules/timezone
+	url = https://github.com/saz/puppet-timezone
