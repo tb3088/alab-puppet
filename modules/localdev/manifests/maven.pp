@@ -2,9 +2,9 @@
 
 class localdev::maven {
   Exec {
-    user => 'root',
+    user  => 'root',
     group => 'root',
-    path => ['/bin','/usr/bin',],
+    path  => ['/bin','/usr/bin',],
   }
 
   # Local settings for Maven:
@@ -22,24 +22,14 @@ class localdev::maven {
     source => 'puppet:///modules/localdev/settings.xml',
   }
 
-
-  file { '/opt/sw/jboss/installers':
-    ensure => directory,
-    owner  => 'jboss',
-    group  => 'jboss',
-    mode   => '0770',
-  }->
   exec {'get-maven':
     command     => 'wget http://apache.osuosl.org/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz',
-    cwd         => '/opt/sw/jboss/installers',
-    user        => 'jboss',
-    group       => 'jboss',
-    creates     => '/opt/sw/jboss/installers/apache-maven-3.3.9-bin.tar.gz',
-    refreshonly => false,
+    cwd         => '/vagrant/installers',
+    creates     => '/vagrant/installers/apache-maven-3.3.9-bin.tar.gz',
   }->
   exec {'untar-maven':
     command => 'tar xzf apache-maven-3.3.9-bin.tar.gz -C /usr/local',
-    cwd     => '/opt/sw/jboss/installers',
+    cwd     => '/vagrant/installers',
     creates => '/usr/local/apache-maven-3.3.9',
   }->
   exec {'link-maven':

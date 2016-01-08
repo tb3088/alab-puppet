@@ -14,8 +14,14 @@ class localdev::packages{
     ensure => present,
   }
 
+  exec {'get-java':
+    command     => 'wget http://download.oracle.com/otn-pub/java/jdk/8u65-b17/jdk-8u65-linux-x64.rpm',
+    cwd         => '/vagrant/installers',
+    creates     => '/vagrant/installers/jdk-8u65-linux-x64.rpm',
+    path        => ['/bin','/usr/bin',],
+  }->
   exec { 'install-java':
-    command => 'rpm -Uvh /vagrant/jdk-8u65-linux-x64.rpm',
+    command => 'rpm -Uvh /vagrant/installers/jdk-8u65-linux-x64.rpm',
     path    => ['/bin','/usr/bin',],
     creates => '/usr/java/jdk1.8.0_65',
   }
