@@ -4,7 +4,7 @@ class localdev::maven
 (
   $maven_version = $localdev::params::maven_version,
   $maven_filename = $localdev::params::maven_filename,
-  $maven_dl_url = $localdev::params::maven_dl_url,	
+  $maven_dl_url = $localdev::params::maven_dl_url,
 ) inherits localdev::params
 {
   Exec {
@@ -29,9 +29,9 @@ class localdev::maven
   }
 
   exec {'get-maven':
-    command     => "wget ${maven_dl_url}",
-    cwd         => '/vagrant/installers',
-    creates     => "/vagrant/installers/${maven_filename}",
+    command => "wget ${maven_dl_url}",
+    cwd     => '/vagrant/installers',
+    creates => "/vagrant/installers/${maven_filename}",
   }->
   exec {'untar-maven':
     command => "tar xzf ${maven_filename} -C /usr/local",

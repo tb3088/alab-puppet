@@ -37,16 +37,16 @@ class devproxy ($jboss_port = hiera(jboss::port,'8080')) {
 
   # Hijack the default start page:
   file { '/usr/share/doc/HTML/index.html':
-    source  => 'puppet:///modules/devproxy/redirect.html',
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0644',
+    source => 'puppet:///modules/devproxy/redirect.html',
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0644',
   }
 
   nginx::resource::vhost { 'nowhere.techflow.com':
-    www_root      => '/var/www/nowhere.techflow.com/',
-    ssl           => false,
-    listen_port   => '80',
+    www_root    => '/var/www/nowhere.techflow.com/',
+    ssl         => false,
+    listen_port => '80',
   }
 
   nginx::resource::upstream { 'rba_proxy':
@@ -107,9 +107,9 @@ class devproxy ($jboss_port = hiera(jboss::port,'8080')) {
     ssl_protocols => 'TLSv1 TLSv1.1 TLSv1.2',
     ssl_ciphers   => 'EECDH+AESGCM:EDH+AESGCM:ECDHE-RSA-AES128-GCM-SHA256:AES256+EECDH:DHE-RSA-AES128-GCM-SHA256:AES256+EDH:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4',
     add_header    => {
-      'X-Frame-Options'           => 'DENY',
-      'X-Content-Type-Options'    => 'nosniff',
-      'X-XSS-Protection'          => '"1; mode=block"',
+      'X-Frame-Options'        => 'DENY',
+      'X-Content-Type-Options' => 'nosniff',
+      'X-XSS-Protection'       => '"1; mode=block"',
     },
   }
 

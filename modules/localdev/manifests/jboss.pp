@@ -24,11 +24,11 @@ class localdev::jboss
 
   # The system-properties seems to need to be in a particular location, so make sure it is where it belongs:
   file_line {'system-properties':
-    ensure => present,
-    path   => '/opt/sw/jboss/jbdevstudio/runtimes/jboss-eap/standalone/configuration/standalone.xml',
-    line   => '    <system-properties></system-properties>',
-    after  => '    </extensions>',
-    match  => '.*<system-properties>.*',
+    ensure  => present,
+    path    => '/opt/sw/jboss/jbdevstudio/runtimes/jboss-eap/standalone/configuration/standalone.xml',
+    line    => '    <system-properties></system-properties>',
+    after   => '    </extensions>',
+    match   => '.*<system-properties>.*',
     replace => false,
   }
 
@@ -57,14 +57,14 @@ class localdev::jboss
   }
 
   augeas { 'standalone timeout config':
-    changes => [     
+    changes => [
       "set server/system-properties/property[#attribute/name='jboss.as.management.blocking.timeout']/#attribute/name jboss.as.management.blocking.timeout",
       "set server/system-properties/property[#attribute/name='jboss.as.management.blocking.timeout']/#attribute/value 900",
     ],
   }
 
   augeas { 'standalone proxy config':
-    changes => [     
+    changes => [
       "set server//connector[#attribute/name='http']/#attribute/proxy-name ${proxy_name}",
       "set server//connector[#attribute/name='http']/#attribute/proxy-port 443",
       "set server//connector[#attribute/name='http']/#attribute/scheme https",

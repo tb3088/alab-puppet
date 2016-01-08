@@ -23,13 +23,13 @@ class localdev::packages
   }
 
   exec {'get-java':
-    command     => "wget '${java_dl_url}'",
-    cwd         => '/vagrant/installers',
-    creates     => "/vagrant/installers/${java_filename}",
-    path        => ['/bin','/usr/bin',],
+    command => "wget '${java_dl_url}'",
+    cwd     => '/vagrant/installers',
+    creates => "/vagrant/installers/${java_filename}",
+    path    => ['/bin','/usr/bin',],
   }->
   exec { 'install-java':
-    command => 'rpm -Uvh /vagrant/installers/${java_filename}',
+    command => "rpm -Uvh /vagrant/installers/${java_filename}",
     path    => ['/bin','/usr/bin',],
     creates => "/usr/java/jdk${java_full_version}",
   }
