@@ -23,7 +23,7 @@ class localdev::packages
   }
 
   exec {'get-java':
-    command => "wget '${java_dl_url}'",
+    command => "wget  --no-check-certificate --no-cookies --header 'Cookie: oraclelicense=accept-securebackup-cookie' '${java_dl_url}'",
     cwd     => '/vagrant/installers',
     creates => "/vagrant/installers/${java_filename}",
     path    => ['/bin','/usr/bin',],
