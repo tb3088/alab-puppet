@@ -12,23 +12,23 @@ installing Java, JBoss, and all of the scripts used by the GSA to manage JBoss i
 * VirtualBox
 * Vagrant
 * Connection to Techflow network
-* jdk 8u65 RPM file
+* Connection to the internet
 * JBoss Developer Studio 9
 
-Note that for the last two, the files must be in this directory and be
-named `jdk-8u65-linux-x64.rpm` and
-`jboss-devstudio-9.0.0.GA-CVE-2015-7501-installer-eap.jar`.  If they
-have any other file name, Puppet will fail.
+Note that for the last one, the files must be in the `installers`
+directory and be named
+`jboss-devstudio-9.0.0.GA-CVE-2015-7501-installer-eap.jar`. If the
+filename is different, please edit `hiera/common.yaml` to have the
+correct file name.
 	
 	
 ## Instructions
 
-1. Download the project. Make sure to initialize the submodules.
+1. Download the project. Make sure to update the submodules.
 2. Run `vagrant up` in the project directory. If you have not already
    downloaded the box, it will do that. Then it will create the
    machine and run Puppet.
 3. `vagrant reload` to restart the machine so all of the changes kick in.
-3. Run `vagrant ssh` if you wish to log in to the machine and inspect the results.
 4. Run `vagrant destroy -f` when you are all finished and no longer
    want the machine taking up your diskspace.
 
@@ -41,3 +41,6 @@ have any other file name, Puppet will fail.
   root you can just do `sudo su -`.
 * If your screen is too small, try using Seamless mode. If you are
   unable to select it, try re-installing the guest additions.
+
+More information is available from
+the [JBoss EAP 6 Local Development](https://confluence.techflow.com/confluence/display/SD/JBoss+EAP+6+Local+Development) page in Confluence.
