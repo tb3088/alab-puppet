@@ -18,7 +18,7 @@ class localdev::jboss
     owner  => 'jboss',
     group  => 'jboss',
     mode   => '0640',
-    source => 'puppet:///modules/localdev/dev-20150609-02.truststore',
+    source => 'puppet:///modules/localdev/dev-20150609-03.truststore',
   }
 
 
