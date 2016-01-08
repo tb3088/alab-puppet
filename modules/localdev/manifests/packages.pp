@@ -1,6 +1,14 @@
 # Module to install set up for local development
 
-class localdev::packages{
+class localdev::packages
+(
+  $extra_packages    = $localdev::params::extra_packages,
+  $java_version      = $localdev::params::java_version,
+  $java_full_version = $localdev::params::java_full_version,
+  $java_filename     = $localdev::params::java_filename,
+  $java_dl_url       = $localdev::params::java_dl_url,
+) inherits localdev::params
+{
   require epel
 
   package {
@@ -15,18 +23,17 @@ class localdev::packages{
   }
 
   exec {'get-java':
-    command     => 'wget http://download.oracle.com/otn-pub/java/jdk/8u65-b17/jdk-8u65-linux-x64.rpm',
+    command     => "wget '${java_dl_url}'",
     cwd         => '/vagrant/installers',
-    creates     => '/vagrant/installers/jdk-8u65-linux-x64.rpm',
+    creates     => "/vagrant/installers/${java_filename}",
     path        => ['/bin','/usr/bin',],
   }->
   exec { 'install-java':
-    command => 'rpm -Uvh /vagrant/installers/jdk-8u65-linux-x64.rpm',
+    command => 'rpm -Uvh /vagrant/installers/${java_filename}',
     path    => ['/bin','/usr/bin',],
-    creates => '/usr/java/jdk1.8.0_65',
+    creates => "/usr/java/jdk${java_full_version}",
   }
 
-  $extra_packages = hiera_array('yum::packages')
   package { $extra_packages:
     ensure => present,
   }

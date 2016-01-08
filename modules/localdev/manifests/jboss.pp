@@ -1,8 +1,8 @@
 # Set up JBoss
 class localdev::jboss
 (
-  $proxy_name = hiera('jboss::proxy_name', 'lab5-portal.fas.gsarba.com')
-)
+  $proxy_name = $localdev::params::proxy_name,
+) inherits localdev::params
 {
   require ::localdev::jbds
 

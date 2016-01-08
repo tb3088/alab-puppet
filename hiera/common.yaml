@@ -13,6 +13,26 @@ yum::packages:
   - emacs
   - tree
 
+
+# END OF MAIN SETTINGS
+
+# The following settings need to be uncommented and changed if and
+# only if you are using a different version or download site for Java,
+# Maven, or different version of JBoss Developer Studio. Provided
+# values are defaults to give you an idea of the expected values.
+# If you wish to permanently set a new default, update localdev::params.
+
+# downloads::java::version: 8u65
+# downloads::java::full_version: 1.8.0_65
+# downloads::java::filename: jdk-8u65-linux-x64.rpm
+# downloads::java::url: http://download.oracle.com/otn-pub/java/jdk/8u65-b17/jdk-8u65-linux-x64.rpm
+#
+# downloads::maven::version: 3.3.9
+# downloads::maven::filename: apache-maven-3.3.9-bin.tar.gz
+# downloads::maven::url: http://apache.osuosl.org/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
+# 
+# downloads::jbds::filename: jboss-devstudio-9.0.0.GA-CVE-2015-7501-installer-eap.jar
+
 ##################################################
 # END OF SETTINGS                                #
 ##################################################

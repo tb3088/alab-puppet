@@ -1,6 +1,12 @@
 # Module to install set up for local development
 
-class localdev::maven {
+class localdev::maven
+(
+  $maven_version = $localdev::params::maven_version,
+  $maven_filename = $localdev::params::maven_filename,
+  $maven_dl_url = $localdev::params::maven_dl_url,	
+) inherits localdev::params
+{
   Exec {
     user  => 'root',
     group => 'root',
@@ -23,17 +29,17 @@ class localdev::maven {
   }
 
   exec {'get-maven':
-    command     => 'wget http://apache.osuosl.org/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz',
+    command     => "wget ${maven_dl_url}",
     cwd         => '/vagrant/installers',
-    creates     => '/vagrant/installers/apache-maven-3.3.9-bin.tar.gz',
+    creates     => "/vagrant/installers/${maven_filename}",
   }->
   exec {'untar-maven':
-    command => 'tar xzf apache-maven-3.3.9-bin.tar.gz -C /usr/local',
+    command => "tar xzf ${maven_filename} -C /usr/local",
     cwd     => '/vagrant/installers',
-    creates => '/usr/local/apache-maven-3.3.9',
+    creates => "/usr/local/apache-maven-${maven_version}",
   }->
   exec {'link-maven':
-    command => 'ln -s apache-maven-3.3.9 maven',
+    command => "ln -s apache-maven-${maven_version} maven",
     cwd     => '/usr/local',
     creates => '/usr/local/maven',
   }

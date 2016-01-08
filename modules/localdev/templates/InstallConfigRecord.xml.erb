@@ -18,11 +18,10 @@
 <com.izforge.izpack.panels.SummaryPanel id="summary"/>
 <com.izforge.izpack.panels.InstallPanel id="install"/>
 <com.jboss.devstudio.core.installer.CreateLinkPanel id="createlink">
-<jrelocation>/usr/java/jdk1.8.0_65/bin/java</jrelocation>
+<jrelocation>/usr/java/jdk<%= @java_full_version %>/bin/java</jrelocation>
 </com.jboss.devstudio.core.installer.CreateLinkPanel>
 <com.izforge.izpack.panels.ShortcutPanel id="shortcut">
 <programGroup name=""/>
-<shortcut KdeSubstUID="false" categories="Applications;Development;" commandLine="" createForAll="true" description="Runs the Red Hat JBoss Developer Studio 9.0.0.GA" encoding="UTF-8" group="false" icon="/opt/sw/jboss/jbdevstudio/studio/48-jbds_icon.png" iconIndex="0" initialState="1" mimetype="" name="Red Hat JBoss Developer Studio 9.0.0.GA" target="/opt/sw/jboss/jbdevstudio/studio/jbdevstudio" terminal="false" terminalOptions="" tryexec="" type="Application" url="" usertype="0" workingDirectory="/opt/sw/jboss/jbdevstudio/studio"/>
 <shortcut KdeSubstUID="false" categories="Applications;Development;" commandLine="" createForAll="true" description="Runs the Red Hat JBoss Developer Studio 9.0.0.GA" encoding="UTF-8" group="true" icon="/opt/sw/jboss/jbdevstudio/studio/48-jbds_icon.png" iconIndex="0" initialState="1" mimetype="" name="Red Hat JBoss Developer Studio 9.0.0.GA" target="/opt/sw/jboss/jbdevstudio/studio/jbdevstudio" terminal="false" terminalOptions="" tryexec="" type="Application" url="" usertype="0" workingDirectory="/opt/sw/jboss/jbdevstudio/studio"/>
 <shortcut KdeSubstUID="false" categories="Applications;Development;" commandLine="-jar &quot;/opt/sw/jboss/jbdevstudio/Uninstaller/uninstaller.jar&quot;" createForAll="true" description="Uninstall Red Hat JBoss Developer Studio 9.0.0.GA" encoding="UTF-8" group="true" icon="/opt/sw/jboss/jbdevstudio/studio/48-jbds_uninstall_icon.png" iconIndex="0" initialState="1" mimetype="" name="Uninstall Red Hat JBoss Developer Studio 9.0.0.GA" target="java" terminal="false" terminalOptions="" tryexec="" type="Application" url="" usertype="0" workingDirectory="/opt/sw/jboss/jbdevstudio/Uninstaller"/>
 </com.izforge.izpack.panels.ShortcutPanel>
