@@ -1,21 +1,59 @@
 ---
-# Set this to a comma-separated list of the applications you will be
-# running locally. See the list below.
+############################################################
+# This file contains settings used for configuring your
+# machine. Please see below for help with each option.
+############################################################
 
-use_local: [ 'MyLocalApp', ]
+use_local:
+  - MyLocalApp
 
-## Examples:
-##
-## To run Liferay and ITSS locally you would do
-# use_local: [ 'ROOT', 'rba_modernization', ]
+jboss::proxy_name: lab5-portal.fas.gsarba.com
+
+yum::packages:
+  - emacs
+  - tree
+
+##################################################
+# END OF SETTINGS                                #
+##################################################
+
+# Overview of each setting:
 #
-## To run only CPRM (formerly GWAC) locally you would do:
-# use_local: [ 'gwac-pam-web', ]
+# use_local:
+#   This is a list of each URL path you would like to have directed to
+#   your local server. If, for example you are running ITSS locally
+#   you would want to put 'rba_modernization' in this list. See below
+#   for examples and a full list of possible values.
 #
+# jboss::proxy_name:
+#   This is the URL/FQDN the application(s) you are running locally
+#   will be at. For example if you are running ITSS you'd want this to
+#   be 'lab5-was.itss.gsarba.com. If you are running TOS you'd want to
+#   use 'lab5-tos.fas.gsarba.com', and so on.
+#
+# yum::packages:
+#   Use this to list any additional yum packages you would like to have
+#   installed. Just make sure they don't clash with any that Puppet is
+#   already installing or you will get an error message.
+
+
+## More info on use_local:
+#
+# Examples:
+#
+# To run Liferay and ITSS locally you would do:
+# use_local:
+#   - ROOT
+#   - rba_modernization
+#
+# To run only CPRM (formerly GWAC) locally you would do:
+# use_local:
+#   - gwac-pam-web
+
 
 ## Valid locations for using local:
-## (NOTE: ROOT means the '/' location which is Liferay.)
-##
+# (NOTE: ROOT means the '/' location which is Liferay.)
+#
 # FPDSIntegrationService, FedsimTimesheet,
 # IIMAInvoiceImageRetrieverWeb, IIMAInvoiceXMLUpdateWeb,
 # ITSSArchiveFundWeb, ITSSFundWeb, ITSSPerfProjWeb,

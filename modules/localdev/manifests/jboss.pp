@@ -1,8 +1,26 @@
 # Set up JBoss
-class localdev::jboss {
+class localdev::jboss
+(
+  $proxy_name = hiera('jboss::proxy_name', 'lab5-portal.fas.gsarba.com')
+)
+{
   require ::localdev::jbds
 
   include stdlib
+  file { '/opt/sw/jboss/dev-files':
+    ensure => directory,
+    owner  => 'jboss',
+    group  => 'jboss',
+    mode   => '0770',
+  }
+  file { '/opt/sw/jboss/dev-files/dev.truststore':
+    ensure => present,
+    owner  => 'jboss',
+    group  => 'jboss',
+    mode   => '0640',
+    source => 'puppet:///modules/localdev/dev-20150609-02.truststore',
+  }
+
 
   # The system-properties seems to need to be in a particular location, so make sure it is where it belongs:
   file_line {'system-properties':
@@ -24,7 +42,7 @@ class localdev::jboss {
   augeas { 'standalone truststore config':
     changes => [
       "set server/system-properties/property[#attribute/name='javax.net.ssl.trustStore']/#attribute/name javax.net.ssl.trustStore",
-      "set server/system-properties/property[#attribute/name='javax.net.ssl.trustStore']/#attribute/value /opt/sw/jboss/dev.truststore",
+      "set server/system-properties/property[#attribute/name='javax.net.ssl.trustStore']/#attribute/value /opt/sw/jboss/dev-files/dev.truststore",
       
       "set server/system-properties/property[#attribute/name='javax.net.ssl.trustStorePassword']/#attribute/name javax.net.ssl.trustStorePassword",
       "set server/system-properties/property[#attribute/name='javax.net.ssl.trustStorePassword']/#attribute/value changeit",
@@ -45,5 +63,13 @@ class localdev::jboss {
     ],
   }
 
+  augeas { 'standalone proxy config':
+    changes => [     
+      "set server//connector[#attribute/name='http']/#attribute/proxy-name ${proxy_name}",
+      "set server//connector[#attribute/name='http']/#attribute/proxy-port 443",
+      "set server//connector[#attribute/name='http']/#attribute/scheme https",
+      "set server//connector[#attribute/name='http']/#attribute/secure true",
+    ],
+  }
 
 }
