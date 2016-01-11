@@ -20,6 +20,10 @@ class devproxy ($jboss_port = hiera(jboss::port,'8080')) {
     host_aliases => ['nowhere.techflow.com','www.nowhere.techflow.com'],
   }
 
+  host { 'svnedge.techflow.com':
+    ip => '127.0.0.1',
+  }
+
   class { 'nginx': }
 
   file { '/var/www':
@@ -78,6 +82,11 @@ class devproxy ($jboss_port = hiera(jboss::port,'8080')) {
   # This is your locally running JBoss server. If you use a different port for JBoss, you will need to update here.
   nginx::resource::upstream { 'local_proxy':
     members => [ '127.0.0.1:8080', ],
+  }
+
+  # Command line SVN doesn't like SVN Edge, so proxy it:
+  nginx::resource::upstream { 'svnedge':
+    members => [ '10.10.1.105:443', ],
   }
 
 
@@ -776,6 +785,18 @@ class devproxy ($jboss_port = hiera(jboss::port,'8080')) {
       'X-Forwarded-Proto $scheme'
     ],
     proxy_redirect   => 'http://127.0.0.1:8080 /',
+  }
+
+
+  nginx::resource::vhost { 'svnedge.techflow.com':
+    proxy         => 'https://svnedge',
+    ssl           => true,
+    listen_port   => '443',
+    ssl_port      => '443',
+    ssl_key       => '/etc/nginx/ssl/nginx-private.key.insecure',
+    ssl_cert      => '/etc/nginx/ssl/gsarba.com.crt',
+    ssl_protocols => 'TLSv1 TLSv1.1 TLSv1.2',
+    ssl_ciphers   => 'EECDH+AESGCM:EDH+AESGCM:ECDHE-RSA-AES128-GCM-SHA256:AES256+EECDH:DHE-RSA-AES128-GCM-SHA256:AES256+EDH:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4',
   }
 
 
