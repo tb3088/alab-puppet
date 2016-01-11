@@ -14,6 +14,25 @@ class localdev{
     match  => '^id:[0-6]:initdefault:$',
   }
 
+  file { '/opt/sw/jboss/.bash_profile':
+    ensure  => present,
+    source  => '/etc/skel/.bash_profile',
+    replace => false,
+    owner   => 'jboss',
+    group   => 'jboss',
+    mode    => '0750',
+  }
+
+  file { '/opt/sw/jboss/.bashrc':
+    ensure  => present,
+    source  => '/etc/skel/.bashrc',
+    replace => false,
+    owner   => 'jboss',
+    group   => 'jboss',
+    mode    => '0750',
+  }
+
+
   file { '/etc/sudoers.d/11_jboss':
     ensure  => present,
     content => '%jboss ALL=(ALL) NOPASSWD: ALL',
