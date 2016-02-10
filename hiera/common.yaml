@@ -37,7 +37,7 @@ dataSourceSets:
 # downloads::maven::filename: apache-maven-3.3.9-bin.tar.gz
 # downloads::maven::url: http://apache.osuosl.org/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
 # 
-# downloads::jbds::filename: jboss-devstudio-9.0.0.GA-CVE-2015-7501-installer-eap.jar
+downloads::jbds::filename: jboss-devstudio-9.0.0.GA-installer-standalone.jar
 
 ##################################################
 ############      Data Sources      ##############
