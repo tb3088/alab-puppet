@@ -13,3 +13,7 @@ if versioncmp($::puppetversion,'3.6.1') >= 0 {
 include gsajboss::user
 include localdev
 include devproxy
+
+
+$dataSourceSets = hiera_array('dataSourceSets')
+datasource_file::hiera { $dataSourceSets: }
