@@ -1,4 +1,5 @@
 # Set up JBoss
+
 class localdev::jboss
 (
   $proxy_name = $localdev::params::proxy_name,
@@ -71,5 +72,15 @@ class localdev::jboss
       "set server//connector[#attribute/name='http']/#attribute/secure true",
     ],
   }
+  
+  # Configure the server to use the "conf" module, in to which property files may be placed:
+  augeas { 'property-file-config':
+    changes => [
+      "set server//subsystem[#attribute/xmlns='urn:jboss:domain:ee:1.2']/global-modules/module/#attribute/name conf",
+      "set server//subsystem[#attribute/xmlns='urn:jboss:domain:ee:1.2']/global-modules/module/#attribute/slot main",
+    ],
+  }
+
+
 
 }
