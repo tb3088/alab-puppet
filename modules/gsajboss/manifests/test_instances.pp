@@ -8,6 +8,7 @@ class gsajboss::test_instances {
   }
 
   gsajboss::instance { 'test2':
-    base_port => '52000',
+    base_port     => '52000',
+    jboss_version => '6.4'
   }
 }

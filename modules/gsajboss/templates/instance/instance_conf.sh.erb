@@ -1,0 +1,38 @@
+#!/bin/bash
+#Note /bin/bash is consistent on both Solaris and Linux
+
+#
+# Values in this script may be used to configure command line short cuts.  Be careful
+# calling other scripts to set values.  For example, cloned instances should call
+# the base config carefully.
+#
+
+#
+# The other scripts primarily use FULL_HOSTNAME, but HOSTNAME and FULL_HOSTNAME are
+# used for sending email in sudo script.  HOSTNAME should probably not be overwritten
+#
+# If instance is using something other than standard hostname to start, override here.
+FULL_HOSTNAME=localhost
+
+JBOSS_TOP="/opt/sw/jboss"
+INSTANCE="<%= @name %>"
+JBOSS_HOME="/opt/sw/jboss/jboss/jboss-eap-6.4"
+JAVA_HOME="/opt/sw/jboss/java/jre1.8.0_71"
+JBOSS_INSTANCE_LOGDIR="/logs/jboss/<%= @name %>"
+#APP_CONFIG_DIR="/appconfig/jboss/<%= @name %>"
+#COMMON_STANDARDCONFIG_DIR="/opt/sw/jboss/gsaconfig/standardconfig/latest"
+
+#START_LOOP_TIMEOUT="10"
+#START_LOOP_TRYS="18"
+#
+# Clean out and copy deployments and lib directory on startup. Default is no.
+#
+REBUILD_ON_STARTUP="Y"
+
+
+# 
+# Values used for initial install
+#
+GSA_BASE_SERVER_CONFIG_FILE="<%= @base_instance %>"
+#PROXY=
+
