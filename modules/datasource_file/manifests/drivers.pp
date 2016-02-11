@@ -1,13 +1,10 @@
 # Add OJDBC modules as datasource driver entries
 
-class datasource_file::drivers {
+define datasource_file::drivers($file) {
 
-  $jboss_base = hiera('jboss::basedir','/opt/sw/jboss/jbdevstudio/runtimes/jboss-eap')
-  $standalone_xml = "${jboss_base}/standalone/configuration/standalone.xml"
-
-  augeas { "oracle-drivers":
+  augeas { "${name}-oracle-drivers":
     lens    => 'Xml.lns',
-    incl    => $standalone_xml,
+    incl    => $file,
     changes => [
 
       "set server//subsystem/datasources/drivers/driver[#attribute/name='ojdbc14']/#attribute/name ojdbc14",

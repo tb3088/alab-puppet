@@ -1,11 +1,8 @@
 # Create a Java datasource entry
 
-define datasource_file::datasource ($jndi_name = $title, $database, $account, $ojdbc='ojdbc7') {
+define datasource_file::datasource ($jndi_name = $title, $database, $account, $ojdbc='ojdbc7', $instance) {
 
-  include datasource_file::drivers
-
-  $jboss_base = hiera('jboss::basedir','/opt/sw/jboss/jbdevstudio/runtimes/jboss-eap')
-  $standalone_xml = "${jboss_base}/standalone/configuration/standalone.xml"
+  $standalone_xml = "/opt/sw/jboss/gsaconfig/instances/${instance}/server/instanceconfig/configuration/${instance}.xml"
 
   $dataSources = hiera_hash('dataSources')
   $db          = $dataSources[$database]
