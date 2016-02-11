@@ -8,12 +8,8 @@ if versioncmp($::puppetversion,'3.6.1') >= 0 {
   }
 }
 
-
-
-include gsajboss::user
+include gsajboss
 include localdev
 include devproxy
+include gsajboss::instance::hiera
 
-
-$dataSourceSets = hiera_array('dataSourceSets')
-datasource_file::hiera { $dataSourceSets: }
