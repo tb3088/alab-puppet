@@ -1,8 +1,8 @@
 # Module to configure nginx for local development.
 
-class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
+class devproxy::app_proxy () {
 
-  $use_local = hiera_array('use_local')
+  $use_local = hiera_hash('use_local')
 
   File {
     owner  => root,
@@ -14,6 +14,8 @@ class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
     ip           => '127.0.0.1',
     host_aliases => ['lab5-portal.fas.gsarba.com','lab5-was.itss.gsarba.com', 'tos.fas.gsarba.com'],
   }
+
+
 
   nginx::resource::upstream { 'rba_proxy':
     members => [ '172.22.12.5:443', ],
@@ -30,6 +32,12 @@ class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
   }
 
 
+  # fake proxy; do not use.
+  nginx::resource::upstream { 'no_proxy':
+    members => [ '120.0.0.1:443', ],
+  }
+
+
   # This is for VirtualBox with host port 8888 mapped to the appropriate guest jboss port. HTTPS is assumed.
   nginx::resource::upstream { 'vb_proxy':
     members => [ '127.0.0.1:8888', ],
@@ -38,12 +46,6 @@ class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
 
   nginx::resource::upstream { 'portal_proxy':
     members => [ '172.22.12.4:443', ],
-  }
-
-
-  # This is your locally running JBoss server. If you use a different port for JBoss, you will need to update here.
-  nginx::resource::upstream { 'local_proxy':
-    members => [ '127.0.0.1:8080', ],
   }
 
 
@@ -57,8 +59,9 @@ class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
     source => 'puppet:///modules/devproxy/ssl/gsarba.com.crt',
   }
 
-  if 'ROOT' in $use_local {
-    $liferay_proxy = 'http://local_proxy'
+  if has_key($use_local,'ROOT') {
+    $liferay_inst = $use_local['ROOT']
+    $liferay_proxy = "http://${liferay_inst}_instance_proxy"
   } else {
     $liferay_proxy = 'https://portal_proxy'
   }
@@ -72,31 +75,19 @@ class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
     ssl_cert      => '/etc/nginx/ssl/gsarba.com.crt',
     ssl_protocols => 'TLSv1 TLSv1.1 TLSv1.2',
     ssl_ciphers   => 'EECDH+AESGCM:EDH+AESGCM:ECDHE-RSA-AES128-GCM-SHA256:AES256+EECDH:DHE-RSA-AES128-GCM-SHA256:AES256+EDH:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES128-SHA256:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:HIGH:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4',
-#    add_header    => {
-#      'X-Frame-Options'        => 'DENY',
-#      'X-Content-Type-Options' => 'nosniff',
-#      'X-XSS-Protection'       => '"1; mode=block"',
-#    },
-  }
-
-  # For debugging truststores and such things:
-  nginx::resource::location { '/server-debug':
-    proxy            => 'http://local_proxy/server-debug',
-    vhost            => '*.gsarba.com',
-    ssl              => true,
-    ssl_only         => true,
-    proxy_set_header => [
-      'X-Real-IP $remote_addr',
-      'X-Forwarded-For $proxy_add_x_forwarded_for',
-      'Host $http_host',
-      'X-Forwarded-Proto $scheme'
-    ],
-    proxy_redirect   => 'http://127.0.0.1:8080 /',
+    ## The following breaks some apps:
+    # add_header    => {
+    #   'X-Frame-Options'           => 'DENY',
+    #   'X-Content-Type-Options'    => 'nosniff',
+    #   'X-XSS-Protection'          => '"1; mode=block"',
+    # },
   }
 
 
-  if 'itoms-struts' in $use_local {
-    $itoms_struts_proxy = 'http://local_proxy/itoms-struts'
+
+  if has_key($use_local,'itoms-struts') {
+    $itoms_struts_inst = $use_local['itoms-struts']
+    $itoms_struts_proxy = "http://${itoms_struts_inst}_instance_proxy/itoms-struts"
   } else {
     $itoms_struts_proxy = 'https://rba_proxy/itoms-struts'
   }
@@ -111,12 +102,13 @@ class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
       'Host $http_host',
       'X-Forwarded-Proto $scheme'
     ],
-    proxy_redirect   => 'http://127.0.0.1:8080 /',
+    # proxy_redirect   => 'http://127.0.0.1:8080 /',
   }
 
 
-  if 'ITSSValidateCCRProjWeb' in $use_local {
-    $itssvalidateccrprojweb_proxy = 'http://local_proxy/ITSSValidateCCRProjWeb'
+  if has_key($use_local,'ITSSValidateCCRProjWeb') {
+    $itssvalidateccrprojweb_inst = $use_local['ITSSValidateCCRProjWeb']
+    $itssvalidateccrprojweb_proxy = "http://${itssvalidateccrprojweb_inst}_instance_proxy/ITSSValidateCCRProjWeb"
   } else {
     $itssvalidateccrprojweb_proxy = 'https://rba_proxy/ITSSValidateCCRProjWeb'
   }
@@ -131,12 +123,13 @@ class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
       'Host $http_host',
       'X-Forwarded-Proto $scheme'
     ],
-    proxy_redirect   => 'http://127.0.0.1:8080 /',
+    # proxy_redirect   => 'http://127.0.0.1:8080 /',
   }
 
 
-  if 'omis' in $use_local {
-    $omis_proxy = 'http://local_proxy/omis'
+  if has_key($use_local,'omis') {
+    $omis_inst = $use_local['omis']
+    $omis_proxy = "http://${omis_inst}_instance_proxy/omis"
   } else {
     $omis_proxy = 'https://portal_proxy/omis'
   }
@@ -151,13 +144,14 @@ class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
       'Host $http_host',
       'X-Forwarded-Proto $scheme'
     ],
-    proxy_redirect   => 'http://127.0.0.1:8080 /',
+    # proxy_redirect   => 'http://127.0.0.1:8080 /',
   }
 
 
   # If you are developing static you may want to point this location directly at your filesystem.
-  if 'static' in $use_local {
-    $static_proxy = 'http://local_proxy/static'
+  if has_key($use_local,'static') {
+    $static_inst = $use_local['static']
+    $static_proxy = "http://${static_inst}_instance_proxy/static"
   } else {
     $static_proxy = 'https://portal_proxy/static'
   }
@@ -172,12 +166,13 @@ class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
       'Host $http_host',
       'X-Forwarded-Proto $scheme'
     ],
-    proxy_redirect   => 'http://127.0.0.1:8080 /',
+    # proxy_redirect   => 'http://127.0.0.1:8080 /',
   }
 
 
-  if 'ITSSValidateWeb' in $use_local {
-    $itssvalidateweb_proxy = 'http://local_proxy/ITSSValidateWeb'
+  if has_key($use_local,'ITSSValidateWeb') {
+    $itssvalidateweb_inst = $use_local['ITSSValidateWeb']
+    $itssvalidateweb_proxy = "http://${itssvalidateweb_inst}_instance_proxy/ITSSValidateWeb"
   } else {
     $itssvalidateweb_proxy = 'https://rba_proxy/ITSSValidateWeb'
   }
@@ -192,12 +187,13 @@ class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
       'Host $http_host',
       'X-Forwarded-Proto $scheme'
     ],
-    proxy_redirect   => 'http://127.0.0.1:8080 /',
+    # proxy_redirect   => 'http://127.0.0.1:8080 /',
   }
 
 
-  if 'FPDSIntegrationService' in $use_local {
-    $fpdsintegrationservice_proxy = 'http://local_proxy/FPDSIntegrationService'
+  if has_key($use_local,'FPDSIntegrationService') {
+    $fpdsintegrationservice_inst = $use_local['FPDSIntegrationService']
+    $fpdsintegrationservice_proxy = "http://${fpdsintegrationservice_inst}_instance_proxy/FPDSIntegrationService"
   } else {
     $fpdsintegrationservice_proxy = 'https://portal_proxy/FPDSIntegrationService'
   }
@@ -212,12 +208,13 @@ class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
       'Host $http_host',
       'X-Forwarded-Proto $scheme'
     ],
-    proxy_redirect   => 'http://127.0.0.1:8080 /',
+    # proxy_redirect   => 'http://127.0.0.1:8080 /',
   }
 
 
-  if 'gsapaygov' in $use_local {
-    $gsapaygov_proxy = 'http://local_proxy/gsapaygov'
+  if has_key($use_local,'gsapaygov') {
+    $gsapaygov_inst = $use_local['gsapaygov']
+    $gsapaygov_proxy = "http://${gsapaygov_inst}_instance_proxy/gsapaygov"
   } else {
     $gsapaygov_proxy = 'https://rba_proxy/gsapaygov'
   }
@@ -232,12 +229,13 @@ class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
       'Host $http_host',
       'X-Forwarded-Proto $scheme'
     ],
-    proxy_redirect   => 'http://127.0.0.1:8080 /',
+    # proxy_redirect   => 'http://127.0.0.1:8080 /',
   }
 
 
-  if 'agreement-web' in $use_local {
-    $agreement_web_proxy = 'http://local_proxy/agreement-web'
+  if has_key($use_local,'agreement-web') {
+    $agreement_web_inst = $use_local['agreement-web']
+    $agreement_web_proxy = "http://${agreement_web_inst}_instance_proxy/agreement-web"
   } else {
     $agreement_web_proxy = 'https://portal_proxy/agreement-web'
   }
@@ -252,12 +250,13 @@ class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
       'Host $http_host',
       'X-Forwarded-Proto $scheme'
     ],
-    proxy_redirect   => 'http://127.0.0.1:8080 /',
+    # proxy_redirect   => 'http://127.0.0.1:8080 /',
   }
 
 
-  if 'tos' in $use_local {
-    $tos_proxy = 'http://local_proxy/tos'
+  if has_key($use_local,'tos') {
+    $tos_inst = $use_local['tos']
+    $tos_proxy = "http://${tos_inst}_instance_proxy/tos"
   } else {
     $tos_proxy = 'https://tos_proxy/tos'
   }
@@ -272,12 +271,35 @@ class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
       'Host $http_host',
       'X-Forwarded-Proto $scheme'
     ],
-    proxy_redirect   => 'http://127.0.0.1:8080 /',
+    # proxy_redirect   => 'http://127.0.0.1:8080 /',
   }
 
 
-  if 'birt' in $use_local {
-    $birt_proxy = 'http://local_proxy/birt'
+  # Does not exist on server. Local only.
+  if has_key($use_local,'server-debug') {
+    $server_debug_inst = $use_local['server-debug']
+    $server_debug_proxy = "http://${server_debug_inst}_instance_proxy/server-debug"
+  } else {
+    $server_debug_proxy = 'https://no_proxy/server-debug'
+  }
+  nginx::resource::location { '/server-debug':
+    proxy            => $server_debug_proxy,
+    vhost            => '*.gsarba.com',
+    ssl              => true,
+    ssl_only         => true,
+    proxy_set_header => [
+      'X-Real-IP $remote_addr',
+      'X-Forwarded-For $proxy_add_x_forwarded_for',
+      'Host $http_host',
+      'X-Forwarded-Proto $scheme'
+    ],
+    # proxy_redirect   => 'http://127.0.0.1:8080 /',
+  }
+
+
+  if has_key($use_local,'birt') {
+    $birt_inst = $use_local['birt']
+    $birt_proxy = "http://${birt_inst}_instance_proxy/birt"
   } else {
     $birt_proxy = 'https://portal_proxy/birt'
   }
@@ -292,12 +314,13 @@ class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
       'Host $http_host',
       'X-Forwarded-Proto $scheme'
     ],
-    proxy_redirect   => 'http://127.0.0.1:8080 /',
+    # proxy_redirect   => 'http://127.0.0.1:8080 /',
   }
 
 
-  if 'waa' in $use_local {
-    $waa_proxy = 'http://local_proxy/waa'
+  if has_key($use_local,'waa') {
+    $waa_inst = $use_local['waa']
+    $waa_proxy = "http://${waa_inst}_instance_proxy/waa"
   } else {
     $waa_proxy = 'https://tos_proxy/waa'
   }
@@ -312,12 +335,13 @@ class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
       'Host $http_host',
       'X-Forwarded-Proto $scheme'
     ],
-    proxy_redirect   => 'http://127.0.0.1:8080 /',
+    # proxy_redirect   => 'http://127.0.0.1:8080 /',
   }
 
 
-  if 'assist-web' in $use_local {
-    $assist_web_proxy = 'http://local_proxy/assist-web'
+  if has_key($use_local,'assist-web') {
+    $assist_web_inst = $use_local['assist-web']
+    $assist_web_proxy = "http://${assist_web_inst}_instance_proxy/assist-web"
   } else {
     $assist_web_proxy = 'https://portal_proxy/assist-web'
   }
@@ -332,12 +356,13 @@ class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
       'Host $http_host',
       'X-Forwarded-Proto $scheme'
     ],
-    proxy_redirect   => 'http://127.0.0.1:8080 /',
+    # proxy_redirect   => 'http://127.0.0.1:8080 /',
   }
 
 
-  if 'IIMAInvoiceImageRetrieverWeb' in $use_local {
-    $iimainvoiceimageretrieverweb_proxy = 'http://local_proxy/IIMAInvoiceImageRetrieverWeb'
+  if has_key($use_local,'IIMAInvoiceImageRetrieverWeb') {
+    $iimainvoiceimageretrieverweb_inst = $use_local['IIMAInvoiceImageRetrieverWeb']
+    $iimainvoiceimageretrieverweb_proxy = "http://${iimainvoiceimageretrieverweb_inst}_instance_proxy/IIMAInvoiceImageRetrieverWeb"
   } else {
     $iimainvoiceimageretrieverweb_proxy = 'https://rba_proxy/IIMAInvoiceImageRetrieverWeb'
   }
@@ -352,12 +377,13 @@ class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
       'Host $http_host',
       'X-Forwarded-Proto $scheme'
     ],
-    proxy_redirect   => 'http://127.0.0.1:8080 /',
+    # proxy_redirect   => 'http://127.0.0.1:8080 /',
   }
 
 
-  if 'cpet' in $use_local {
-    $cpet_proxy = 'http://local_proxy/cpet'
+  if has_key($use_local,'cpet') {
+    $cpet_inst = $use_local['cpet']
+    $cpet_proxy = "http://${cpet_inst}_instance_proxy/cpet"
   } else {
     $cpet_proxy = 'https://portal_proxy/cpet'
   }
@@ -372,13 +398,14 @@ class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
       'Host $http_host',
       'X-Forwarded-Proto $scheme'
     ],
-    proxy_redirect   => 'http://127.0.0.1:8080 /',
+    # proxy_redirect   => 'http://127.0.0.1:8080 /',
   }
 
 
   # Liferay
-  if 'ROOT' in $use_local {
-    $root_proxy = 'http://local_proxy/ROOT'
+  if has_key($use_local,'ROOT') {
+    $root_inst = $use_local['ROOT']
+    $root_proxy = "http://${root_inst}_instance_proxy/ROOT"
   } else {
     $root_proxy = 'https://portal_proxy/ROOT'
   }
@@ -393,12 +420,13 @@ class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
       'Host $http_host',
       'X-Forwarded-Proto $scheme'
     ],
-    proxy_redirect   => 'http://127.0.0.1:8080 /',
+    # proxy_redirect   => 'http://127.0.0.1:8080 /',
   }
 
 
-  if 'IIMAInvoiceXMLUpdateWeb' in $use_local {
-    $iimainvoicexmlupdateweb_proxy = 'http://local_proxy/IIMAInvoiceXMLUpdateWeb'
+  if has_key($use_local,'IIMAInvoiceXMLUpdateWeb') {
+    $iimainvoicexmlupdateweb_inst = $use_local['IIMAInvoiceXMLUpdateWeb']
+    $iimainvoicexmlupdateweb_proxy = "http://${iimainvoicexmlupdateweb_inst}_instance_proxy/IIMAInvoiceXMLUpdateWeb"
   } else {
     $iimainvoicexmlupdateweb_proxy = 'https://rba_proxy/IIMAInvoiceXMLUpdateWeb'
   }
@@ -413,12 +441,13 @@ class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
       'Host $http_host',
       'X-Forwarded-Proto $scheme'
     ],
-    proxy_redirect   => 'http://127.0.0.1:8080 /',
+    # proxy_redirect   => 'http://127.0.0.1:8080 /',
   }
 
 
-  if 'FedsimTimesheet' in $use_local {
-    $fedsimtimesheet_proxy = 'http://local_proxy/FedsimTimesheet'
+  if has_key($use_local,'FedsimTimesheet') {
+    $fedsimtimesheet_inst = $use_local['FedsimTimesheet']
+    $fedsimtimesheet_proxy = "http://${fedsimtimesheet_inst}_instance_proxy/FedsimTimesheet"
   } else {
     $fedsimtimesheet_proxy = 'https://portal_proxy/FedsimTimesheet'
   }
@@ -433,12 +462,13 @@ class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
       'Host $http_host',
       'X-Forwarded-Proto $scheme'
     ],
-    proxy_redirect   => 'http://127.0.0.1:8080 /',
+    # proxy_redirect   => 'http://127.0.0.1:8080 /',
   }
 
 
-  if 'gwac-pam-web' in $use_local {
-    $gwac_pam_web_proxy = 'http://local_proxy/gwac-pam-web'
+  if has_key($use_local,'gwac-pam-web') {
+    $gwac_pam_web_inst = $use_local['gwac-pam-web']
+    $gwac_pam_web_proxy = "http://${gwac_pam_web_inst}_instance_proxy/gwac-pam-web"
   } else {
     $gwac_pam_web_proxy = 'https://rba_proxy/gwac-pam-web'
   }
@@ -453,12 +483,13 @@ class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
       'Host $http_host',
       'X-Forwarded-Proto $scheme'
     ],
-    proxy_redirect   => 'http://127.0.0.1:8080 /',
+    # proxy_redirect   => 'http://127.0.0.1:8080 /',
   }
 
 
-  if 'catalog' in $use_local {
-    $catalog_proxy = 'http://local_proxy/catalog'
+  if has_key($use_local,'catalog') {
+    $catalog_inst = $use_local['catalog']
+    $catalog_proxy = "http://${catalog_inst}_instance_proxy/catalog"
   } else {
     $catalog_proxy = 'https://portal_proxy/catalog'
   }
@@ -473,12 +504,13 @@ class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
       'Host $http_host',
       'X-Forwarded-Proto $scheme'
     ],
-    proxy_redirect   => 'http://127.0.0.1:8080 /',
+    # proxy_redirect   => 'http://127.0.0.1:8080 /',
   }
 
 
-  if 'rba-attach-web' in $use_local {
-    $rba_attach_web_proxy = 'http://local_proxy/rba-attach-web'
+  if has_key($use_local,'rba-attach-web') {
+    $rba_attach_web_inst = $use_local['rba-attach-web']
+    $rba_attach_web_proxy = "http://${rba_attach_web_inst}_instance_proxy/rba-attach-web"
   } else {
     $rba_attach_web_proxy = 'https://rba_proxy/rba-attach-web'
   }
@@ -493,12 +525,13 @@ class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
       'Host $http_host',
       'X-Forwarded-Proto $scheme'
     ],
-    proxy_redirect   => 'http://127.0.0.1:8080 /',
+    # proxy_redirect   => 'http://127.0.0.1:8080 /',
   }
 
 
-  if 'services' in $use_local {
-    $services_proxy = 'http://local_proxy/services'
+  if has_key($use_local,'services') {
+    $services_inst = $use_local['services']
+    $services_proxy = "http://${services_inst}_instance_proxy/services"
   } else {
     $services_proxy = 'https://portal_proxy/services'
   }
@@ -513,12 +546,13 @@ class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
       'Host $http_host',
       'X-Forwarded-Proto $scheme'
     ],
-    proxy_redirect   => 'http://127.0.0.1:8080 /',
+    # proxy_redirect   => 'http://127.0.0.1:8080 /',
   }
 
 
-  if 'ITSSPerfProjWeb' in $use_local {
-    $itssperfprojweb_proxy = 'http://local_proxy/ITSSPerfProjWeb'
+  if has_key($use_local,'ITSSPerfProjWeb') {
+    $itssperfprojweb_inst = $use_local['ITSSPerfProjWeb']
+    $itssperfprojweb_proxy = "http://${itssperfprojweb_inst}_instance_proxy/ITSSPerfProjWeb"
   } else {
     $itssperfprojweb_proxy = 'https://rba_proxy/ITSSPerfProjWeb'
   }
@@ -533,12 +567,13 @@ class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
       'Host $http_host',
       'X-Forwarded-Proto $scheme'
     ],
-    proxy_redirect   => 'http://127.0.0.1:8080 /',
+    # proxy_redirect   => 'http://127.0.0.1:8080 /',
   }
 
 
-  if 'SupportTools' in $use_local {
-    $supporttools_proxy = 'http://local_proxy/SupportTools'
+  if has_key($use_local,'SupportTools') {
+    $supporttools_inst = $use_local['SupportTools']
+    $supporttools_proxy = "http://${supporttools_inst}_instance_proxy/SupportTools"
   } else {
     $supporttools_proxy = 'https://rba_proxy/SupportTools'
   }
@@ -553,12 +588,13 @@ class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
       'Host $http_host',
       'X-Forwarded-Proto $scheme'
     ],
-    proxy_redirect   => 'http://127.0.0.1:8080 /',
+    # proxy_redirect   => 'http://127.0.0.1:8080 /',
   }
 
 
-  if 'rba_modernization' in $use_local {
-    $rba_modernization_proxy = 'http://local_proxy/rba_modernization'
+  if has_key($use_local,'rba_modernization') {
+    $rba_modernization_inst = $use_local['rba_modernization']
+    $rba_modernization_proxy = "http://${rba_modernization_inst}_instance_proxy/rba_modernization"
   } else {
     $rba_modernization_proxy = 'https://rba_proxy/rba_modernization'
   }
@@ -573,12 +609,13 @@ class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
       'Host $http_host',
       'X-Forwarded-Proto $scheme'
     ],
-    proxy_redirect   => 'http://127.0.0.1:8080 /',
+    # proxy_redirect   => 'http://127.0.0.1:8080 /',
   }
 
 
-  if 'ITSSSupportToolsWeb' in $use_local {
-    $itsssupporttoolsweb_proxy = 'http://local_proxy/ITSSSupportToolsWeb'
+  if has_key($use_local,'ITSSSupportToolsWeb') {
+    $itsssupporttoolsweb_inst = $use_local['ITSSSupportToolsWeb']
+    $itsssupporttoolsweb_proxy = "http://${itsssupporttoolsweb_inst}_instance_proxy/ITSSSupportToolsWeb"
   } else {
     $itsssupporttoolsweb_proxy = 'https://rba_proxy/ITSSSupportToolsWeb'
   }
@@ -593,12 +630,13 @@ class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
       'Host $http_host',
       'X-Forwarded-Proto $scheme'
     ],
-    proxy_redirect   => 'http://127.0.0.1:8080 /',
+    # proxy_redirect   => 'http://127.0.0.1:8080 /',
   }
 
 
-  if 'ITSSFundWeb' in $use_local {
-    $itssfundweb_proxy = 'http://local_proxy/ITSSFundWeb'
+  if has_key($use_local,'ITSSFundWeb') {
+    $itssfundweb_inst = $use_local['ITSSFundWeb']
+    $itssfundweb_proxy = "http://${itssfundweb_inst}_instance_proxy/ITSSFundWeb"
   } else {
     $itssfundweb_proxy = 'https://rba_proxy/ITSSFundWeb'
   }
@@ -613,12 +651,13 @@ class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
       'Host $http_host',
       'X-Forwarded-Proto $scheme'
     ],
-    proxy_redirect   => 'http://127.0.0.1:8080 /',
+    # proxy_redirect   => 'http://127.0.0.1:8080 /',
   }
 
 
-  if 'opensso' in $use_local {
-    $opensso_proxy = 'http://local_proxy/opensso'
+  if has_key($use_local,'opensso') {
+    $opensso_inst = $use_local['opensso']
+    $opensso_proxy = "http://${opensso_inst}_instance_proxy/opensso"
   } else {
     $opensso_proxy = 'https://portal_proxy_int/opensso'
   }
@@ -633,12 +672,13 @@ class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
       'Host $http_host',
       'X-Forwarded-Proto $scheme'
     ],
-    proxy_redirect   => 'http://127.0.0.1:8080 /',
+    # proxy_redirect   => 'http://127.0.0.1:8080 /',
   }
 
 
-  if 'XMLUpdate' in $use_local {
-    $xmlupdate_proxy = 'http://local_proxy/XMLUpdate'
+  if has_key($use_local,'XMLUpdate') {
+    $xmlupdate_inst = $use_local['XMLUpdate']
+    $xmlupdate_proxy = "http://${xmlupdate_inst}_instance_proxy/XMLUpdate"
   } else {
     $xmlupdate_proxy = 'https://rba_proxy/XMLUpdate'
   }
@@ -653,12 +693,13 @@ class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
       'Host $http_host',
       'X-Forwarded-Proto $scheme'
     ],
-    proxy_redirect   => 'http://127.0.0.1:8080 /',
+    # proxy_redirect   => 'http://127.0.0.1:8080 /',
   }
 
 
-  if 'rba-servicedesk-web' in $use_local {
-    $rba_servicedesk_web_proxy = 'http://local_proxy/rba-servicedesk-web'
+  if has_key($use_local,'rba-servicedesk-web') {
+    $rba_servicedesk_web_inst = $use_local['rba-servicedesk-web']
+    $rba_servicedesk_web_proxy = "http://${rba_servicedesk_web_inst}_instance_proxy/rba-servicedesk-web"
   } else {
     $rba_servicedesk_web_proxy = 'https://rba_proxy/rba-servicedesk-web'
   }
@@ -673,12 +714,13 @@ class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
       'Host $http_host',
       'X-Forwarded-Proto $scheme'
     ],
-    proxy_redirect   => 'http://127.0.0.1:8080 /',
+    # proxy_redirect   => 'http://127.0.0.1:8080 /',
   }
 
 
-  if 'ITSSArchiveFundWeb' in $use_local {
-    $itssarchivefundweb_proxy = 'http://local_proxy/ITSSArchiveFundWeb'
+  if has_key($use_local,'ITSSArchiveFundWeb') {
+    $itssarchivefundweb_inst = $use_local['ITSSArchiveFundWeb']
+    $itssarchivefundweb_proxy = "http://${itssarchivefundweb_inst}_instance_proxy/ITSSArchiveFundWeb"
   } else {
     $itssarchivefundweb_proxy = 'https://rba_proxy/ITSSArchiveFundWeb'
   }
@@ -693,12 +735,13 @@ class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
       'Host $http_host',
       'X-Forwarded-Proto $scheme'
     ],
-    proxy_redirect   => 'http://127.0.0.1:8080 /',
+    # proxy_redirect   => 'http://127.0.0.1:8080 /',
   }
 
 
-  if 'accrual-web' in $use_local {
-    $accrual_web_proxy = 'http://local_proxy/accrual-web'
+  if has_key($use_local,'accrual-web') {
+    $accrual_web_inst = $use_local['accrual-web']
+    $accrual_web_proxy = "http://${accrual_web_inst}_instance_proxy/accrual-web"
   } else {
     $accrual_web_proxy = 'https://portal_proxy/accrual-web'
   }
@@ -713,12 +756,13 @@ class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
       'Host $http_host',
       'X-Forwarded-Proto $scheme'
     ],
-    proxy_redirect   => 'http://127.0.0.1:8080 /',
+    # proxy_redirect   => 'http://127.0.0.1:8080 /',
   }
 
 
-  if 'billing-web' in $use_local {
-    $billing_web_proxy = 'http://local_proxy/billing-web'
+  if has_key($use_local,'billing-web') {
+    $billing_web_inst = $use_local['billing-web']
+    $billing_web_proxy = "http://${billing_web_inst}_instance_proxy/billing-web"
   } else {
     $billing_web_proxy = 'https://portal_proxy/billing-web'
   }
@@ -733,7 +777,7 @@ class devproxy::app_proxy ($jboss_port = hiera(jboss::port,'8080')) {
       'Host $http_host',
       'X-Forwarded-Proto $scheme'
     ],
-    proxy_redirect   => 'http://127.0.0.1:8080 /',
+    # proxy_redirect   => 'http://127.0.0.1:8080 /',
   }
 
 
