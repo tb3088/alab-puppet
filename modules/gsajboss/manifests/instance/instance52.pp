@@ -1,6 +1,6 @@
 # Create JBoss instance
 
-define gsajboss::instance($base_port,$base_instance='default',$jboss_version='5.2')
+define gsajboss::instance::instance52($base_port,$base_instance='default')
 {
   require gsajboss::packages
   include stdlib
