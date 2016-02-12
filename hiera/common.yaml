@@ -1,24 +1,40 @@
 ---
 ############################################################
-# This file contains settings used for configuring your
-# machine. Please see below for help with each option.
+# This file contains settings used for configuring your    #
+# machine. Please see below for help with each option.     #
+#                                                          #
+# NOTE: Formatting/whitespace is very important!           #
+#                                                          #
 ############################################################
 
-# Applications to redirect to the local server:
-use_local:
-  - gwac-pam-web
+# Instances to create:
+#
+# For each instance, select a base port, state the URL they are at,
+# and what datasources to use.  Base ports must be unique, separated
+# by at least 100, and between 27000 and 65435.
 
-# URL the main server will be using:
-jboss::proxy_name: lab5-portal.fas.gsarba.com
+instances:
+  fpds1:
+    base_port: 50000
+    datasource_set: fpds
+    conf_slot: fpds
+  cprm1:
+    base_port: 51000
+    datasource_set: cprm
+    set_proxy_name: true
+    proxy_name: lab5-was.itss.fas.gsarba.com
+    conf_slot: cprm
+
+# Applications to redirect to the local server; state the instance they are on:
+# Everything else will be forwarded to the lab.
+
+use_local:
+  FPDSIntegrationService: fpds1
+  gwac-pam-web: cprm1
+
 
 # Extra programs to install:
-yum::packages:
-  - emacs
-  - tree
-
-# Datasources to add to the server:
-dataSourceSets:
-  - cprm
+yum::packages: [emacs, tree, rabbitvcs-thunar, rabbitvcs-gedit, rabbitvcs-cli, openssh-askpass]
 
 # END OF MAIN SETTINGS
 
@@ -28,10 +44,10 @@ dataSourceSets:
 # values are defaults to give you an idea of the expected values.
 # If you wish to permanently set a new default, update localdev::params.
 
-# downloads::java::version: 8u65
-# downloads::java::full_version: 1.8.0_65
-# downloads::java::filename: jdk-8u65-linux-x64.rpm
-# downloads::java::url: http://download.oracle.com/otn-pub/java/jdk/8u65-b17/jdk-8u65-linux-x64.rpm
+downloads::java::version: 8u73
+downloads::java::full_version: 1.8.0_73
+downloads::java::filename: jdk-8u73-linux-x64.rpm
+downloads::java::url: http://download.oracle.com/otn-pub/java/jdk/8u73-b02/jdk-8u73-linux-x64.rpm
 #
 # downloads::maven::version: 3.3.9
 # downloads::maven::filename: apache-maven-3.3.9-bin.tar.gz
@@ -144,22 +160,16 @@ dsFiles:
 #   you would want to put 'rba_modernization' in this list. See below
 #   for examples and a full list of possible values.
 #
-# jboss::proxy_name:
-#   This is the URL/FQDN the application(s) you are running locally
-#   will be at. For example if you are running ITSS you'd want this to
-#   be 'lab5-was.itss.gsarba.com. If you are running TOS you'd want to
-#   use 'lab5-tos.fas.gsarba.com', and so on.
+# instances:
+#   Use this to configure which instances you want created and
+#   to specify basic info about them, including data sources and
+#   locations of configuration files.
 #
 # yum::packages:
 #   Use this to list any additional yum packages you would like to have
 #   installed. Just make sure they don't clash with any that Puppet is
 #   already installing or you will get an error message.
 #
-# dataSourceSets:
-#   What sets of datasources to add to the server. Be certain that the
-#   sets will not have any conflicting JNDI names or strange things
-#   are probably going to happen. Sets are defined by the dsFiles
-#   list.
 
 ## More info on use_local:
 #
@@ -167,12 +177,12 @@ dsFiles:
 #
 # To run Liferay and ITSS locally you would do:
 # use_local:
-#   - ROOT
-#   - rba_modernization
+#   ROOT: portal1
+#   rba_modernization: itss1
 #
 # To run only CPRM (formerly GWAC) locally you would do:
 # use_local:
-#   - gwac-pam-web
+#   gwac-pam-web: cprm1
 
 
 ## Valid locations for using local:
@@ -187,3 +197,37 @@ dsFiles:
 # itoms-struts, omis, opensso, rba-attach-web, rba-servicedesk-web,
 # rba_modernization, services, static, tos, waa
 
+## More info on instances:
+#
+# Example:
+#
+# This creates two instances: fpds1 and cprm1.
+#
+# REQUIRED: base_port tells what ports the server will use. The first
+# port is base_port+1 which it used for HTTP. There are several others
+# used for server management, AJP, etc.
+#
+# OPTIONAL: set_proxy_name and proxy_name are used if the application
+# requires the server name. If it does require it and it is not
+# present, you will see strange redirects. In that happens, change
+# set_proxy_name to 'true' and put the front-end URL as proxy_name.
+#
+# REQUIRED: datasource_set tells us what set of datasources the server
+# requires. The list is above in the 'dsFiles' variable.
+#
+# OPTIONAL: conf_slot is used if your server requires a property
+# file. The slot name must be a slot in the JBoss conf module in
+# SVN. If it is not, your server will fail to start. Each instance
+# should have its own slot, so if one does not exist for your
+# instance/application, please create a new one.
+#
+# instances:
+#   fpds1:
+#     base_port: 50000
+#     set_proxy_name: true
+#     proxy_name: lab5-portal.fas.gsarba.com
+#     datasource_set: fpds
+#     conf_slot: fpds
+#   cprm1:
+#     base_port: 51000
+#     datasource_set: cprm
