@@ -5,6 +5,7 @@ class localdev::maven
   $maven_version = $localdev::params::maven_version,
   $maven_filename = $localdev::params::maven_filename,
   $maven_dl_url = $localdev::params::maven_dl_url,
+  $java_full_version = $localdev::params::java_full_version,
 ) inherits localdev::params
 {
   Exec {
@@ -48,6 +49,12 @@ class localdev::maven
     ensure  => present,
     mode    => '0755',
     content => "export M2_HOME=/usr/local/maven\nexport PATH=\${M2_HOME}/bin:\${PATH}\n"
+  }
+
+  file { '/usr/local/bin/mvn':
+    ensure  => present,
+    mode    => '0755',
+    content => "#!/bin/bash\n\nM2_HOME=/usr/local/maven\nPATH=\${M2_HOME}/bin:\${PATH}\nJAVA_HOME=/usr/java/jdk${java_full_version}\n/usr/local/maven/bin/mvn \$@\n"
   }
 
 }
