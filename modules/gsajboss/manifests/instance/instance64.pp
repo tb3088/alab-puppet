@@ -74,6 +74,7 @@ define gsajboss::instance::instance64
       "/appconfig/jboss/${name}",
     ]:
     ensure => directory,
+    mode   => '0755',
   }->
   file { "/opt/sw/jboss/gsaconfig/instances/${name}/server/instanceconfig/configuration/${name}.xml":
     source => "/opt/sw/jboss/jboss/jboss-eap-6.4/${name}/configuration/${name}.xml",
@@ -151,5 +152,7 @@ define gsajboss::instance::instance64
     instance => $name,
     require  => File["/opt/sw/jboss/gsaconfig/instances/${name}/server/instanceconfig/configuration/${name}.xml"],
   }
+
+  gsajboss::instance::local_instance64{"$name":}
 
 }
