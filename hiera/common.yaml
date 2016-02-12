@@ -31,7 +31,7 @@ instances:
 use_local:
   FPDSIntegrationService: fpds1
   gwac-pam-web: cprm1
-
+  server-debug: cprm1
 
 # Extra programs to install:
 yum::packages: [emacs, tree, rabbitvcs-thunar, rabbitvcs-gedit, rabbitvcs-cli, openssh-askpass]
