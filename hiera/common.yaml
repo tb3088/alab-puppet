@@ -34,7 +34,7 @@ use_local:
   server-debug: cprm1
 
 # Extra programs to install:
-yum::packages: [emacs, tree, rabbitvcs-thunar, rabbitvcs-gedit, rabbitvcs-cli, openssh-askpass]
+yum::packages: [emacs, tree, rabbitvcs-thunar, rabbitvcs-gedit, rabbitvcs-cli, openssh-askpass, gitk, git-gui]
 
 # END OF MAIN SETTINGS
 
