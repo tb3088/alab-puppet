@@ -104,6 +104,18 @@ dsFiles:
     portal-TOS_CODB: {jndi_name: TOS_CODB, database: codb, account: lportal}
     portal-itss_codb: {jndi_name: itss_codb, database: codb, account: itss}
     portal-TOS_REPORT: {jndi_name: TOS_REPORT, database: omis, account: tos_report}
+  tos:
+    portal-codb: {jndi_name: codb, database: codb, account: lportal}}
+    tos-clin_omis: {jndi_name: CLIN_OMIS, database: omis, account: tos_fm}
+    tos-tos_app: {jndi_name: TOS_APP, database: omis, account: tos_app}
+    tos-fmt: {jndi_name: FMT, database: omis, account: fmt}
+    tos-tos_report: {jndi_name: TOS_REPORT, database: omis, account: tos_report}
+    tos-tos_inv: {jndi_name: TOS_INV, database: omis, account: ftw}
+    tos-tos_codb: {jndi_name: TOS_CODB, database: omis, account: lportal}
+    tos-omis_log: {jndi_name: omis_log, database: omis, account: tos_omis_log}
+    tos-omis_performance: {jndi_name: OMIS_PERFORMANCE, database: omis, account: omis}
+    tos-portfolio_codb: {jndi_name: PORTFOLIO_CODB, database: omis, account: lportal}
+    tos-aasba_codb: {jndi_name: AASBS_CODB, database: codb, account: itss
   brms_assist:
     brms_assist-ds: {jndi_name: Brms_AssistDS, database: codb, account: assist}
     brms_assist-itss: {jndi_name: itssDS, database: codb, account: itss}
