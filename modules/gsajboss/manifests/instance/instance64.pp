@@ -29,7 +29,7 @@ define gsajboss::instance::instance64
     command     => "echo 'y' | /opt/sw/jboss/gsainstall/6.4/bin/install_server.sh /opt/sw/jboss/logs/config/${name}.sh",
     path        => ['/bin','/usr/bin'],
     environment => ['HOME=/opt/sw/jboss'],
-    cwd         => "/opt/sw/jboss/gsainstall/6.4/bin/",
+    cwd         => '/opt/sw/jboss/gsainstall/6.4/bin/',
     creates     => "/opt/sw/jboss/gsaconfig/instances/${name}/",
     user        => jboss,
     group       => jboss,
@@ -47,13 +47,13 @@ define gsajboss::instance::instance64
   file_line { "instance-port-offset-${title}":
     path  => "/opt/sw/jboss/gsaconfig/instances/${name}/runconfig/${name}_server.props",
     line  => "jboss.socket.binding.port-offset=${adjusted_base_port}",
-    match => "^jboss.socket.binding.port-offset=.*$",
+    match => '^jboss.socket.binding.port-offset=.*$',
   }~>
   exec{ "config-instance-${title}":
     command     => "echo | /opt/sw/jboss/gsainstall/6.4/bin/config_server.sh /opt/sw/jboss/logs/config/${name}.sh",
     path        => ['/bin','/usr/bin'],
     environment => ['HOME=/opt/sw/jboss'],
-    cwd         => "/opt/sw/jboss/gsainstall/6.4/bin/",
+    cwd         => '/opt/sw/jboss/gsainstall/6.4/bin/',
     refreshonly => true,
     user        => jboss,
     group       => jboss,
@@ -77,7 +77,7 @@ define gsajboss::instance::instance64
     mode   => '0755',
   }->
   file { "/opt/sw/jboss/gsaconfig/instances/${name}/server/instanceconfig/configuration/${name}.xml":
-    source => "/opt/sw/jboss/jboss/jboss-eap-6.4/${name}/configuration/${name}.xml",
+    source  => "/opt/sw/jboss/jboss/jboss-eap-6.4/${name}/configuration/${name}.xml",
     replace => false,
   }->
   # The system-properties seems to need to be in a particular location, so make sure it is where it belongs:
@@ -153,6 +153,6 @@ define gsajboss::instance::instance64
     require  => File["/opt/sw/jboss/gsaconfig/instances/${name}/server/instanceconfig/configuration/${name}.xml"],
   }
 
-  gsajboss::instance::local_instance64{"$name":}
+  gsajboss::instance::local_instance64{$name:}
 
 }

@@ -1,9 +1,9 @@
 # Use Hiera to create a datasource file for an instance with all required connections.
 
 define datasource_file::hiera (
+  $instance,
   $ensure = 'present',
   $ds_list = $title,
-  $instance,
 )
 {
 

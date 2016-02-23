@@ -19,16 +19,16 @@ define gsajboss::instance::local_instance64()
 
 
   file_line {"truststore-file-location-${name}":
-    ensure  => present,
-    path    => "/opt/sw/jboss/gsaconfig/instances/${name}/runconfig/${name}_shared.props",
-    line    => 'javax.net.ssl.trustStore=/opt/sw/jboss/dev-files/dev.truststore',
-    match   => '^javax.net.ssl.trustStore=.*$',
+    ensure => present,
+    path   => "/opt/sw/jboss/gsaconfig/instances/${name}/runconfig/${name}_shared.props",
+    line   => 'javax.net.ssl.trustStore=/opt/sw/jboss/dev-files/dev.truststore',
+    match  => '^javax.net.ssl.trustStore=.*$',
   }
   file_line {"truststore-password-${name}":
-    ensure  => present,
-    path    => "/opt/sw/jboss/gsaconfig/instances/${name}/runconfig/${name}_shared.props",
-    line    => 'javax.net.ssl.trustStorePassword=changeit',
-    match   => '^javax.net.ssl.trustStorePassword=.*$',
+    ensure => present,
+    path   => "/opt/sw/jboss/gsaconfig/instances/${name}/runconfig/${name}_shared.props",
+    line   => 'javax.net.ssl.trustStorePassword=changeit',
+    match  => '^javax.net.ssl.trustStorePassword=.*$',
   }
 
 

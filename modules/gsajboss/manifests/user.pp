@@ -9,12 +9,12 @@ class gsajboss::user
     gid => 201,
   }->
   user { 'jboss':
+    ensure   => present,
     uid      => 201,
     gid      => 201,
     home     => '/opt/sw/jboss',
     shell    => '/bin/bash',
     comment  => 'JBoss',
-    ensure   => present,
     password => hiera('jboss_pw_hash','$1$Oj1PJXy0$jwSNlDA9wMM7iQuR.vHlB/'),
   }->
   file { ['/opt/sw/jboss','/opt/sw/jboss/.ssh']:

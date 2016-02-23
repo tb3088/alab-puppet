@@ -1,6 +1,13 @@
 # Create a Java datasource entry
 
-define datasource_file::datasource ($jndi_name = $title, $database, $account, $ojdbc='ojdbc7', $instance) {
+define datasource_file::datasource (
+  $instance,
+  $database,
+  $account,
+  $ojdbc='ojdbc7',
+  $jndi_name = $title,
+)
+{
 
   $standalone_xml = "/opt/sw/jboss/gsaconfig/instances/${instance}/server/instanceconfig/configuration/${instance}.xml"
 
@@ -21,8 +28,6 @@ define datasource_file::datasource ($jndi_name = $title, $database, $account, $o
       "set server//subsystem/datasources/datasource[#attribute/jndi-name='java:/${jndi_name}']/connection-url/#text jdbc:oracle:thin:@${host}:1521:${sid}",
       "set server//subsystem/datasources/datasource[#attribute/jndi-name='java:/${jndi_name}']/security/user-name/#text ${account}",
       "set server//subsystem/datasources/datasource[#attribute/jndi-name='java:/${jndi_name}']/security/password/#text ${pw}",
-#      "set server//subsystem/datasources/datasource[#attribute/jndi-name='java:/${jndi_name}']/validation/check-valid-connection-sql/#text SELECT 1 FROM dual",
-#      "set server//subsystem/datasources/datasource[#attribute/jndi-name='java:/${jndi_name}']/metadata/type-mapping/#text Oracle11g",
     ],
   }
 }

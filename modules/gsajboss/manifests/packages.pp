@@ -17,7 +17,7 @@ class gsajboss::packages($jboss_version = '6.4', $jdk_version = '8u71', $is_jre 
 
   package {
     [
-      "${gsainstall}",
+      $gsainstall,
       "gsa-${java_type}-${jdk_version}-64",
       "jboss-eap-${jboss_version}",
     ]:
