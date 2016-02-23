@@ -48,12 +48,14 @@ downloads::java::version: 8u73
 downloads::java::full_version: 1.8.0_73
 downloads::java::filename: jdk-8u73-linux-x64.rpm
 downloads::java::url: http://download.oracle.com/otn-pub/java/jdk/8u73-b02/jdk-8u73-linux-x64.rpm
-#
+
 # downloads::maven::version: 3.3.9
 # downloads::maven::filename: apache-maven-3.3.9-bin.tar.gz
 # downloads::maven::url: http://apache.osuosl.org/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
-# 
+
 downloads::jbds::filename: jboss-devstudio-9.0.0.GA-installer-standalone.jar
+
+gsajboss::repo::repo_url: http://mirror.techflow.com/techflow/centos/%{::operatingsystemmajrelease}/x86_64/
 
 ##################################################
 ############      Data Sources      ##############
