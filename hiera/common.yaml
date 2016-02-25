@@ -7,243 +7,156 @@
 #                                                          #
 ############################################################
 
-# Instances to create:
-#
-# For each instance, select a base port, state the URL they are at,
-# and what datasources to use.  Base ports must be unique, separated
-# by at least 100, and between 27000 and 65435.
+use_local: true
 
+machine_conf::repo::repo_url: http://mirror.techflow.com/techflow/centos/%{::operatingsystemmajrelease}/x86_64/
+
+# Server groups and each instance in them
+# Note: A server group is just a group of servers all having the same set of instances in them.
+# The hosts list is intended to be used for load balancers.
+servers:
+  apps:
+    hosts: [172.22.12.38]
+    instances:
+      - apps
+      - billing
+      - fpds
+      - omisapp
+      - reports
+      - timesheets
+  exranet:
+    host: [172.22.12.8]
+    instances:
+      - nbajboss
+  portal:
+    host: [172.22.12.24]
+    instances:
+      - assist
+      - portal
+      - sso
+  rba:
+    host: [172.22.12.22]
+    instances:
+      - cprm
+      - fund
+      - itoms
+      - itss
+      - sched
+      - services
+
+# Instance info:
 instances:
-  fpds1:
-    base_port: 50000
-    datasource_set: fpds
+  apps:
+    base_port: 50400
+    datasource_sets: [catalog]
+    conf_slot: apps
+    applications:
+      - catalog-war
+      - cpet-war
+  billing:
+    base_port: 50300
+    datasource_sets: [billing]
+    conf_slot: billing
+    applications:
+      - accrual-war.war
+      - agreement-war.war
+      - billing-war.war
+  fpds:
+    base_port: 50200
+    datasource_sets: [fpds]
     conf_slot: fpds
-  cprm1:
-    base_port: 51000
-    datasource_set: cprm
+    applications:
+      - FPDSIntegrationear.ear
+  omisapp:
+    base_port: 50600
+    datasource_sets: [assist]
+    conf_slot: omis
+    applications:
+      - omis-war
+  reports:
+    base_port: 50100
+    datasource_sets: [birt]
+    conf_slot: reports
+    applications:
+      - birt-report-viewer
+  timesheets:
+    base_port: 50500
+    datasource_sets: [timesheets]
+    conf_slot: timesheets
+    applications:
+      - MobileTimesheet
+  nbajboss:
+    base_port: 5xx00
+    datasource_sets: [tos]
+    conf_slot: tos
+    applications:
+      - Portfolio.war
+      - tos.war
+      - WebAuditAdmin
+  assist:
+    base_port: 53200
+    datasource_sets: [assist,brms_assist,brms_task_assist]
+    conf_slot: assist
+    applications:
+      - assist-web-services-war.war
+      - assist-web-war.war
+      - static
+  portal:
+    base_port: 52000
+    datasource_sets: [portal]
+    conf_slot: portal
+    applications:
+      - Liferay
+  sso:
+    base_port: 52200
+    datasource_sets: [sso]
+    conf_slot: sso
+    applications:
+      - opensso.war
+  cprm:
+    base_port: 52400
+    datasource_sets: [cprm]
     set_proxy_name: true
     proxy_name: lab5-was.itss.fas.gsarba.com
     conf_slot: cprm
-
-# Applications to redirect to the local server; state the instance they are on:
-# Everything else will be forwarded to the lab.
-
-use_local:
-  FPDSIntegrationService: fpds1
-  gwac-pam-web: cprm1
-  server-debug: cprm1
-
-# Extra programs to install:
-yum::packages: [emacs, tree, rabbitvcs-thunar, rabbitvcs-gedit, rabbitvcs-cli, openssh-askpass, gitk, git-gui]
-
-# END OF MAIN SETTINGS
-
-# The following settings need to be uncommented and changed if and
-# only if you are using a different version or download site for Java,
-# Maven, or different version of JBoss Developer Studio. Provided
-# values are defaults to give you an idea of the expected values.
-# If you wish to permanently set a new default, update localdev::params.
-
-downloads::java::version: 8u73
-downloads::java::full_version: 1.8.0_73
-downloads::java::filename: jdk-8u73-linux-x64.rpm
-downloads::java::url: http://download.oracle.com/otn-pub/java/jdk/8u73-b02/jdk-8u73-linux-x64.rpm
-
-# downloads::maven::version: 3.3.9
-# downloads::maven::filename: apache-maven-3.3.9-bin.tar.gz
-# downloads::maven::url: http://apache.osuosl.org/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
-
-downloads::jbds::filename: jboss-devstudio-9.0.0.GA-installer-standalone.jar
-
-gsajboss::repo::repo_url: http://mirror.techflow.com/techflow/centos/%{::operatingsystemmajrelease}/x86_64/
-
-##################################################
-############      Data Sources      ##############
-##################################################
-
-# Database accounts:
-dataSources:
-  codb:
-    hostname: 172.22.12.20
-    sid: dte3
-    accounts:
-      assist: {password: 'ass1st_us3r'}
-      birt_reports: {password: 'birt1_user'}
-      codb_support: {password: 'gsa_1234b'}
-      fedcat_user: {password: 'ass1st_us3r'}
-      fpds: {password: 'gsa_1234a'}
-      itoms_mts: {password: 'gsa_1234a'}
-      itss: {password: 'gsa_1234a'}
-      itss_readonly: {password: 'gsa_1234a'}
-      lportal: {password: 'liferay1_pass'}
-      scheduler: {password: 'sch3du7e_1234a'}
-  omis:
-    hostname: 172.22.12.27
-    sid: omis
-    accounts:
-      lportal: {password: 'NBA_12345b'}
-      omis: {password: 'JasonWitten(82)'}
-      omis_report: {password: 'JeremyShockey(88)'}
-      tos_app: {password: 't0$NBA(T0sApp)'}
-      tos_omis_log: {password: 't0$NBA(0misL0g)'}
-      tos_report: {password: 't0$NBA(Rep0rt)'}
-      tos_fm: {password: 'tos_fm'}
-      fmt: {password: 'ToddHeap(86)'}
-      ftw: {password: 'FredDavis(86)'}
-
-# Datasource Sets.
-#
-# List of connections for each datasource file. Format:
-# instance_name: <--- Used for lookups.
-#   title:       <--- Must be unique accross all instances (it becomes the Puppet resource name).
-#     jndi_name: <--- JNDI name used by Java code for this connection.
-#     database:  <--- Must be a database listed in dataSources above.
-#     account:   <--- Must be an account listed in dataSources above.
-#     ojdbc:     <--- (Optional) OJDBC version to use. Defaults to ojdbc7. Other values: ojdbc14 and ojdbc6.
-
-dsFiles:
-  lportal:
-    portal-liferaydb: {jndi_name: liferaydb, database: codb, account: lportal}
-    portal-codb: {jndi_name: codb, database: codb, account: lportal}
-    portal-omis: {jndi_name: omis, database: omis, account: tos_omis_log}
-    portal-TOS_CODB: {jndi_name: TOS_CODB, database: codb, account: lportal}
-    portal-itss_codb: {jndi_name: itss_codb, database: codb, account: itss}
-    portal-TOS_REPORT: {jndi_name: TOS_REPORT, database: omis, account: tos_report}
-  tos:
-    tos-clin_omis: {jndi_name: CLIN_OMIS, database: omis, account: tos_fm}
-    tos-tos_app: {jndi_name: TOS_APP, database: omis, account: tos_app}
-    tos-fmt: {jndi_name: FMT, database: omis, account: fmt}
-    tos-tos_report: {jndi_name: TOS_REPORT, database: omis, account: tos_report}
-    tos-tos_inv: {jndi_name: TOS_INV, database: omis, account: ftw}
-    tos-tos_codb: {jndi_name: TOS_CODB, database: omis, account: lportal}
-    tos-omis_log: {jndi_name: omis_log, database: omis, account: tos_omis_log}
-    tos-omis_performance: {jndi_name: OMIS_PERFORMANCE, database: omis, account: omis}
-    tos-portfolio_codb: {jndi_name: PORTFOLIO_CODB, database: omis, account: lportal}
-    tos-aasba_codb: {jndi_name: AASBS_CODB, database: codb, account: itss}
-  brms_assist:
-    brms_assist-ds: {jndi_name: Brms_AssistDS, database: codb, account: assist}
-    brms_assist-itss: {jndi_name: itssDS, database: codb, account: itss}
-  brms_task_assist:
-    brms_task_assist: {jndi_name: Brms_Task_AssistDS, database: codb, account: assist, ds_type: no-tx}
-  assist:
-    assist-assist: {jndi_name: AssistDS, database: codb, account: assist}
-    assist-omis: {jndi_name: jboss/datasources/OMIS, database: omis, account: omis}
-    assist-tos_app: {jndi_name: TOS_APP, database: omis, account: tos_app}
-    assist-mysql: {jndi_name: jboss/datasources/Mysql, database: codb, account: fpds}
-    assist-omis_pep: {jndi_name: jboss/datasources/OMIS_PEP, database: omis, account: omis}
-    assist-tos_app: {jndi_name: jboss/datasources/TOS_APP, database: omis, account: tos_app}
-    assist-tos_report: {jndi_name: TOS_REPORT, database: omis, account: tos_report}
-  catalog:
-    catalog: {jndi_name: CatalogDS, database: codb, account: fedcat_user}
-  birt:
-    birt-itss_codb: {jndi_name: itss_codb, database: codb, account: itss}
-    birt-tos_report: {jndi_name: TOS_REPORT, database: omis, account: tos_report}
-    birt-birt_reports: {jndi_name: birt_reports, database: codb, account: birt_reports}
-    birt-lportal_omis: {jndi_name: lportal_omis, database: omis, account: lportal}
-    birt-omis_report: {jndi_name: OMIS_REPORT, database: omis, account: omis_report}
-    birt-assist: {jndi_name: assist, database: codb, account: assist}
-  fpds:
-    fpds: {jndi_name: MySqlDS, database: codb, account: fpds}
-  cprm:
-    cprm: {jndi_name: codb, database: codb, account: itss, ojdbc: ojdbc7}
-  itoms:
-    itoms: {jndi_name: eITOMSDS, database: codb, account: itoms_mts}
-  itss:
-    itss-codb: {jndi_name: codb, database: codb, account: itss}
-    itss-support_tools: {jndi_name: SupportToolsDatasource, database: codb, account: codb_support}
-  sso:
-    sso: {jndi_name: assist, database: codb, account: assist}
+    applications:
+      - cprm.ear
   fund:
-    fund-codb: {jndi_name: codb, database: codb, account: itss}
-    fund-archivefund: {jndi_name: codb_archivefunding, database: codb, account: itss_readonly}
+    base_port: 52800
+    datasource_sets: [fund]
+    conf_slot: fund
+    applications:
+      - ItssFundWeb.war
+  itoms:
+    base_port: 52200
+    datasource_sets: [itoms]
+    conf_slot: itoms
+    applications:
+      - itoms-ear.ear
+  itss:
+    base_port: 52000
+    datasource_sets: [itss]
+    conf_slot: itss
+    applications:
+      - edBpm
+      - rba_modernization-ear.ear
   sched:
-    sched-codb: {jndi_name: codb, database: codb, account: scheduler}
-    sched-supporttools: {jndi_name: SupportToolsDatasource, database: codb, account: codb_support}
+    base_port: 53000
+    datasource_sets: [sched]
+    conf_slot: sched
+    applications:
+      - rbascheduler-ear.ear
   services:
-    services-codb: {jndi_name: codb, database: codb, account: itss}
+    base_port: 52600
+    datasource_sets: [services]
+    conf_slot: services
+    applications:
+      - gsapaygov-ear.ear
+      - itssSupportTools
+      - ITSSValidateCCR
+      - rba-attachEAR.ear
 
 
 
-##################################################
-# END OF SETTINGS                                #
-##################################################
-
-# Overview of each setting:
-#
-# use_local:
-#   This is a list of each URL path you would like to have directed to
-#   your local server. If, for example you are running ITSS locally
-#   you would want to put 'rba_modernization' in this list. See below
-#   for examples and a full list of possible values.
-#
-# instances:
-#   Use this to configure which instances you want created and
-#   to specify basic info about them, including data sources and
-#   locations of configuration files.
-#
-# yum::packages:
-#   Use this to list any additional yum packages you would like to have
-#   installed. Just make sure they don't clash with any that Puppet is
-#   already installing or you will get an error message.
-#
-
-## More info on use_local:
-#
-# Examples:
-#
-# To run Liferay and ITSS locally you would do:
-# use_local:
-#   ROOT: portal1
-#   rba_modernization: itss1
-#
-# To run only CPRM (formerly GWAC) locally you would do:
-# use_local:
-#   gwac-pam-web: cprm1
 
 
-## Valid locations for using local:
-# (NOTE: ROOT means the '/' location which is Liferay.)
-#
-# FPDSIntegrationService, FedsimTimesheet,
-# IIMAInvoiceImageRetrieverWeb, IIMAInvoiceXMLUpdateWeb,
-# ITSSArchiveFundWeb, ITSSFundWeb, ITSSPerfProjWeb,
-# ITSSSupportToolsWeb, ITSSValidateCCRProjWeb, ITSSValidateWeb, ROOT,
-# SupportTools, XMLUpdate, accrual-web, agreement-web, assist-web,
-# billing-web, birt, catalog, cpet, gsapaygov, gwac-pam-web,
-# itoms-struts, omis, opensso, rba-attach-web, rba-servicedesk-web,
-# rba_modernization, services, static, tos, waa
-
-## More info on instances:
-#
-# Example:
-#
-# This creates two instances: fpds1 and cprm1.
-#
-# REQUIRED: base_port tells what ports the server will use. The first
-# port is base_port+1 which it used for HTTP. There are several others
-# used for server management, AJP, etc.
-#
-# OPTIONAL: set_proxy_name and proxy_name are used if the application
-# requires the server name. If it does require it and it is not
-# present, you will see strange redirects. In that happens, change
-# set_proxy_name to 'true' and put the front-end URL as proxy_name.
-#
-# REQUIRED: datasource_set tells us what set of datasources the server
-# requires. The list is above in the 'dsFiles' variable.
-#
-# OPTIONAL: conf_slot is used if your server requires a property
-# file. The slot name must be a slot in the JBoss conf module in
-# SVN. If it is not, your server will fail to start. Each instance
-# should have its own slot, so if one does not exist for your
-# instance/application, please create a new one.
-#
-# instances:
-#   fpds1:
-#     base_port: 50000
-#     set_proxy_name: true
-#     proxy_name: lab5-portal.fas.gsarba.com
-#     datasource_set: fpds
-#     conf_slot: fpds
-#   cprm1:
-#     base_port: 51000
-#     datasource_set: cprm

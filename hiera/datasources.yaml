@@ -1,0 +1,119 @@
+---
+##################################################
+############      Data Sources      ##############
+##################################################
+
+# Database accounts:
+dataSources:
+  codb:
+    hostname: 172.22.12.20
+    sid: dte3
+    accounts:
+      accrual: {password: 'ACCRUE_u534u'}
+      agreement: {password: 'AGREE_u534u'}
+      assist: {password: 'ass1st_us3r'}
+      billing: {password: 'BILL_u534u'}
+      birt_reports: {password: 'birt1_user'}
+      codb_support: {password: 'gsa_1234b'}
+      fedcat_user: {password: 'ass1st_us3r'}
+      fpds: {password: 'gsa_1234a'}
+      itoms_mts: {password: 'gsa_1234a'}
+      itss: {password: 'gsa_1234a'}
+      itss_readonly: {password: 'gsa_1234a'}
+      lportal: {password: 'liferay1_pass'}
+      scheduler: {password: 'sch3du7e_1234a'}
+  omis:
+    hostname: 172.22.12.27
+    sid: omis
+    accounts:
+      lportal: {password: 'NBA_12345b'}
+      mobile_ts: {password: 'M0b1le_ts'}
+      omis: {password: 'JasonWitten(82)'}
+      omis_report: {password: 'JeremyShockey(88)'}
+      tos_app: {password: 't0$NBA(T0sApp)'}
+      tos_omis_log: {password: 't0$NBA(0misL0g)'}
+      tos_report: {password: 't0$NBA(Rep0rt)'}
+      tos_fm: {password: 'tos_fm'}
+      fmt: {password: 'ToddHeap(86)'}
+      ftw: {password: 'FredDavis(86)'}
+
+# Datasource Sets.
+#
+# List of connections for each datasource file. Format:
+# instance_name: <--- Used for lookups.
+#   title:       <--- Must be unique accross all instances (it becomes the Puppet resource name).
+#     jndi_name: <--- JNDI name used by Java code for this connection.
+#     database:  <--- Must be a database listed in dataSources above.
+#     account:   <--- Must be an account listed in dataSources above.
+#     ojdbc:     <--- (Optional) OJDBC version to use. Defaults to ojdbc7. Other values: ojdbc14 and ojdbc6.
+
+dsFiles:
+  lportal:
+    portal-liferaydb: {jndi_name: liferaydb, database: codb, account: lportal}
+    portal-codb: {jndi_name: codb, database: codb, account: lportal}
+    portal-omis: {jndi_name: omis, database: omis, account: tos_omis_log}
+    portal-TOS_CODB: {jndi_name: TOS_CODB, database: codb, account: lportal}
+    portal-itss_codb: {jndi_name: itss_codb, database: codb, account: itss}
+    portal-TOS_REPORT: {jndi_name: TOS_REPORT, database: omis, account: tos_report}
+  tos:
+    tos-clin_omis: {jndi_name: CLIN_OMIS, database: omis, account: tos_fm}
+    tos-tos_app: {jndi_name: TOS_APP, database: omis, account: tos_app}
+    tos-fmt: {jndi_name: FMT, database: omis, account: fmt}
+    tos-tos_report: {jndi_name: TOS_REPORT, database: omis, account: tos_report}
+    tos-tos_inv: {jndi_name: TOS_INV, database: omis, account: ftw}
+    tos-tos_codb: {jndi_name: TOS_CODB, database: omis, account: lportal}
+    tos-omis_log: {jndi_name: omis_log, database: omis, account: tos_omis_log}
+    tos-omis_performance: {jndi_name: OMIS_PERFORMANCE, database: omis, account: omis}
+    tos-portfolio_codb: {jndi_name: PORTFOLIO_CODB, database: omis, account: lportal}
+    tos-aasba_codb: {jndi_name: AASBS_CODB, database: codb, account: itss}
+  brms_assist:
+    brms_assist-ds: {jndi_name: Brms_AssistDS, database: codb, account: assist}
+    brms_assist-itss: {jndi_name: itssDS, database: codb, account: itss}
+  brms_task_assist:
+    brms_task_assist: {jndi_name: Brms_Task_AssistDS, database: codb, account: assist, ds_type: no-tx}
+  assist:
+    assist-assist: {jndi_name: AssistDS, database: codb, account: assist}
+    assist-omis: {jndi_name: jboss/datasources/OMIS, database: omis, account: omis}
+    assist-tos_app: {jndi_name: TOS_APP, database: omis, account: tos_app}
+    assist-mysql: {jndi_name: jboss/datasources/Mysql, database: codb, account: fpds}
+    assist-omis_pep: {jndi_name: jboss/datasources/OMIS_PEP, database: omis, account: omis}
+    assist-tos_app: {jndi_name: jboss/datasources/TOS_APP, database: omis, account: tos_app}
+    assist-tos_report: {jndi_name: TOS_REPORT, database: omis, account: tos_report}
+  catalog:
+    catalog: {jndi_name: CatalogDS, database: codb, account: fedcat_user}
+  billing:
+    billing-baar: {jndi_name: BaarDS, database: codb, account: agreement}
+    billing-assist: {jndi_name: AssistDS, database: codb, account: assist}
+    billing-billing: {jndi_name: BillingDS, database: codb, account: billing}
+    billing-accrual: {jndi_name: AccrualDS, database: codb, account: accrual}
+  birt:
+    birt-itss_codb: {jndi_name: itss_codb, database: codb, account: itss}
+    birt-tos_report: {jndi_name: TOS_REPORT, database: omis, account: tos_report}
+    birt-birt_reports: {jndi_name: birt_reports, database: codb, account: birt_reports}
+    birt-lportal_omis: {jndi_name: lportal_omis, database: omis, account: lportal}
+    birt-omis_report: {jndi_name: OMIS_REPORT, database: omis, account: omis_report}
+    birt-assist: {jndi_name: assist, database: codb, account: assist}
+  fpds:
+    fpds: {jndi_name: MySqlDS, database: codb, account: fpds}
+  cprm:
+    cprm: {jndi_name: codb, database: codb, account: itss}
+  itoms:
+    itoms: {jndi_name: eITOMSDS, database: codb, account: itoms_mts}
+  itss:
+    itss-codb: {jndi_name: codb, database: codb, account: itss}
+    itss-support_tools: {jndi_name: SupportToolsDatasource, database: codb, account: codb_support}
+  sso:
+    sso: {jndi_name: assist, database: codb, account: assist}
+  fund:
+    fund-codb: {jndi_name: codb, database: codb, account: itss}
+    fund-archivefund: {jndi_name: codb_archivefunding, database: codb, account: itss_readonly}
+  sched:
+    sched-codb: {jndi_name: codb, database: codb, account: scheduler}
+    sched-supporttools: {jndi_name: SupportToolsDatasource, database: codb, account: codb_support}
+  services:
+    services-codb: {jndi_name: codb, database: codb, account: itss}
+  timesheets:
+    timesheets-ts: {jndi_name: MOBILE_TS, database: omis, account: mobile_ts}
+
+
+    

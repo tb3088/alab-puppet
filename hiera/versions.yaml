@@ -1,0 +1,3 @@
+---
+versions::jboss_modules: prototype
+versions::cprm: baseline
