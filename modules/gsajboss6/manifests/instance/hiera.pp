@@ -16,6 +16,6 @@ define gsajboss6::instance::hiera (
     gsajboss6::instance::hiera_instance{ $instances: }
   }
   else {
-    fail("Instances variable is not an array")
+    fail('Instances variable is not an array')
   }
 }

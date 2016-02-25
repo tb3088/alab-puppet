@@ -16,7 +16,7 @@ define datasource_file::hiera_instance_dslist (
   $ds_hash = $all_ds_defs[$ds_list]
 
   if !is_hash($ds_hash){
-    fail("No ds hash for instance '$instance' with datasource list '$ds_list'")
+    fail("No ds hash for instance '${instance}' with datasource list '${ds_list}'")
   }
 
   # Create a datasource entry for each datasource in the list:
