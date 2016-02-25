@@ -1,6 +1,6 @@
 # Create JBoss instance
 
-define gsajboss::instance::local_instance64()
+define local_mods::local_instance64()
 {
 
   include stdlib
