@@ -1,6 +1,6 @@
 # Create JBoss instance
 
-define gsajboss::instance::hiera_instance
+define gsajboss6::instance::hiera_instance
 (
   $instance = $title,
 )
@@ -15,5 +15,5 @@ define gsajboss::instance::hiera_instance
   $instance_hash = $instance_list[$instance]
   $instance_info = delete($instance_hash, 'applications')
 
-  create_resources('gsajboss::instance', {$instance => $instance_info}, $defaults)
+  create_resources('gsajboss6::instance', {$instance => $instance_info}, $defaults)
 }

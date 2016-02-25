@@ -1,6 +1,6 @@
 # Install packages for GSA JBoss
 
-class gsajboss::packages($jboss_version = '6.4', $jdk_version = '8u71', $is_jre = true)
+class gsajboss6::packages($jboss_version = '6.4', $jdk_version = '8u71', $is_jre = true)
 {
   require machine_conf::jboss_user
   require machine_conf::repo

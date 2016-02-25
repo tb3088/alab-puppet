@@ -4,7 +4,7 @@ class local_mods
 {
   include stdlib
 
-  require gsajboss::packages
+  require gsajboss6::packages
   #require machine_conf::jboss_user
 
   File {

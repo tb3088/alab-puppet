@@ -1,6 +1,6 @@
 # Install Techflow JBoss modules.
 
-class gsajboss::modules
+class gsajboss6::modules
 (
   $jboss_modules_version = hiera('versions::jboss_modules', 'baseline'),
 )

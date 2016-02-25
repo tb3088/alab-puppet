@@ -1,6 +1,6 @@
 # Create JBoss instance
 
-define gsajboss::instance::instance64
+define gsajboss6::instance::instance64
 (
   $base_port,
   $base_instance,
@@ -11,8 +11,8 @@ define gsajboss::instance::instance64
   $local = false,
 )
 {
-  require gsajboss::packages
-  require gsajboss::modules
+  require gsajboss6::packages
+  require gsajboss6::modules
   include stdlib
 
   $adjusted_base_port = 0 + $base_port - 27000
@@ -25,7 +25,7 @@ define gsajboss::instance::instance64
   }
 
   file { "/opt/sw/jboss/logs/config/${instance}.sh":
-    content => template('gsajboss/instance/instance_conf.sh.erb')
+    content => template('gsajboss6/instance/instance_conf.sh.erb')
   }->
   exec{ "create-instance-${title}":
     command     => "echo 'y' | /opt/sw/jboss/gsainstall/6.4/bin/install_server.sh /opt/sw/jboss/logs/config/${instance}.sh",

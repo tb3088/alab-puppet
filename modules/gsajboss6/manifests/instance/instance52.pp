@@ -1,8 +1,8 @@
 # Create JBoss instance
 
-define gsajboss::instance::instance52($base_port,$base_instance='default')
+define gsajboss6::instance::instance52($base_port,$base_instance='default')
 {
-  require gsajboss::packages
+  require gsajboss6::packages
   include stdlib
 
   exec{ "create-instance-${title}":

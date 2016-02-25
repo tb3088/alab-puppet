@@ -1,6 +1,6 @@
 # Create JBoss instance
 
-define gsajboss::instance
+define gsajboss6::instance
 (
   $base_port,
   $datasource_sets,
@@ -12,13 +12,13 @@ define gsajboss::instance
   $local = false,
 )
 {
-  require gsajboss::packages
+  require gsajboss6::packages
   if $jboss_version == '5.2' {
     $base_instance_name = $base_instance ? {
       'UNSET' => 'default',
       default => $base_instance,
     }
-    gsajboss::instance::instance52{ $name:
+    gsajboss6::instance::instance52{ $name:
       base_port     => $base_port,
       base_instance => $base_instance,
     }
@@ -29,7 +29,7 @@ define gsajboss::instance
       'UNSET' => 'standalone-full',
       default => $base_instance,
     }
-    gsajboss::instance::instance64{ $name:
+    gsajboss6::instance::instance64{ $name:
       base_port       => $base_port,
       base_instance   => $base_instance_name,
       proxy_name      => $proxy_name,

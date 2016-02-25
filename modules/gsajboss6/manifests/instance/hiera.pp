@@ -1,6 +1,6 @@
 # Use Hiera to create a datasource file for an instance with all required connections.
 
-define gsajboss::instance::hiera (
+define gsajboss6::instance::hiera (
   $server_group,
   $ensure = 'present',
 )
@@ -13,7 +13,7 @@ define gsajboss::instance::hiera (
 
   if is_array($instances) {
     # Pull info from Hiera and generate the instance:
-    gsajboss::instance::hiera_instance{ $instances: }
+    gsajboss6::instance::hiera_instance{ $instances: }
   }
   else {
     fail("Instances variable is not an array")
