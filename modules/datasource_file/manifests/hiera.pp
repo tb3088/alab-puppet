@@ -3,20 +3,22 @@
 define datasource_file::hiera (
   $instance,
   $ensure = 'present',
-  $ds_list = $title,
 )
 {
 
-  $defaults = {
-    instance => $instance
-  }
+  # Get the list of all datasource lists to be applied to the instance:
+  $instances = hiera_hash('instances')
+  $instance_hash = $instances[$instance]
+  $ds_lists = $instance_hash['datasource_sets']
 
-  $all_ds_defs = hiera_hash('dsFiles')
-  $ds_hash = $all_ds_defs[$ds_list]
-
+  # Add OJDBC driver modules to the instance configuration file:
   datasource_file::drivers{ "${instance}-db-drivers":
-    file => "/opt/sw/jboss/gsaconfig/instances/${instance}/server/instanceconfig/configuration/${instance}.xml",
+    instance => $instance,
   }
 
-  create_resources(datasource_file::datasource, $ds_hash, $defaults)
+  # Add all of the datasources to the instance configuration file:
+  datasource_file::hiera_instance_dslist { $ds_lists:
+    instance => $instance,
+  }
+
 }

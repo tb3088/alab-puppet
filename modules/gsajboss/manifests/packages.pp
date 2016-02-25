@@ -2,8 +2,8 @@
 
 class gsajboss::packages($jboss_version = '6.4', $jdk_version = '8u71', $is_jre = true)
 {
-  require gsajboss::user
-  require gsajboss::repo
+  require machine_conf::jboss_user
+  require machine_conf::repo
 
   $gsainstall = $jboss_version ? {
     '6.4'   => 'gsainstall-6.4',
@@ -22,14 +22,13 @@ class gsajboss::packages($jboss_version = '6.4', $jdk_version = '8u71', $is_jre 
       "jboss-eap-${jboss_version}",
     ]:
     ensure  => present,
-    require => Yumrepo['tf-gsa-yum-repo'],
   }->
   file {
     [
       '/opt/sw/jboss/logs',
       '/opt/sw/jboss/logs/config',
       '/logs/jboss',
-      '/appconfig/jboss'
+      '/appconfig/jboss',
     ]:
     ensure => directory,
     owner  => 'jboss',

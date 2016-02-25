@@ -17,7 +17,7 @@ define datasource_file::datasource (
   $sid         = $db['sid']
   $pw          = $db['accounts'][$account]['password']
 
-  augeas { "datasource/${jndi_name}":
+  augeas { "${instance}/datasource/${jndi_name}":
     lens    => 'Xml.lns',
     incl    => $standalone_xml,
     changes => [

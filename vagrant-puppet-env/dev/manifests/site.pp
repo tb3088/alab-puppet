@@ -8,8 +8,9 @@ if versioncmp($::puppetversion,'3.6.1') >= 0 {
   }
 }
 
-include gsajboss
-include localdev
-include devproxy
-include gsajboss::instance::hiera
+class {'local_mods':}->
+
+gsajboss::instance::hiera { 'app-server':
+  server_group => 'apps',
+}
 

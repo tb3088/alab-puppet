@@ -1,8 +1,10 @@
 # Add OJDBC modules as datasource driver entries
 
-define datasource_file::drivers($file) {
+define datasource_file::drivers($instance) {
 
-  augeas { "${name}-oracle-drivers":
+  $file = "/opt/sw/jboss/gsaconfig/instances/${instance}/server/instanceconfig/configuration/${instance}.xml"
+
+  augeas { "${title}-oracle-drivers":
     lens    => 'Xml.lns',
     incl    => $file,
     changes => [
