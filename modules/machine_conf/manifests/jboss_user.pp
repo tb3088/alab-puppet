@@ -1,13 +1,17 @@
 # Create user for GSA JBoss
 
-class gsajboss::user
+class machine_conf::jboss_user
 {
+  include stdlib
+
   file { ['/opt','/opt/sw']:
     ensure => directory,
-  }->
+    owner  => root,
+    group  => root,
+  }
   group { 'jboss':
     gid => 201,
-  }->
+  }
   user { 'jboss':
     ensure   => present,
     uid      => 201,
@@ -16,17 +20,6 @@ class gsajboss::user
     shell    => '/bin/bash',
     comment  => 'JBoss',
     password => hiera('jboss_pw_hash','$1$Oj1PJXy0$jwSNlDA9wMM7iQuR.vHlB/'),
-  }->
-  file { ['/opt/sw/jboss','/opt/sw/jboss/.ssh']:
-    ensure => directory,
-    owner  => 'jboss',
-    group  => 'jboss',
-  }->
-  # Make sure Vagrant is able to ssh in as the 'jboss' user:
-  file { '/opt/sw/jboss/.ssh/authorized_keys':
-    source => '/home/vagrant/.ssh/authorized_keys',
-    owner  => 'jboss',
-    group  => 'jboss',
-    mode   => '0600',
+    require  => [ Group['jboss'], File['/opt/sw'] ],
   }
 }

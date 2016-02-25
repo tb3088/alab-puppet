@@ -1,6 +1,6 @@
 # CentOS 5/6 configuration
 
-class gsajboss::repo (
+class machine_conf::repo (
   $repo_url    = "http://mirror.techflow.com/techflow/centos/${::operatingsystemmajrelease}/x86_64/",
 )
 {
