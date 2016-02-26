@@ -1,6 +1,6 @@
 # Create a Java datasource entry
 
-define datasource_file::datasource (
+define datasource_file_jb6::datasource (
   $instance,
   $database,
   $account,

@@ -1,6 +1,6 @@
 # Use Hiera to create a datasource file for an instance with all required connections.
 
-define datasource_file::hiera (
+define datasource_file_jb6::hiera (
   $instance,
   $ensure = 'present',
 )
@@ -12,12 +12,12 @@ define datasource_file::hiera (
   $ds_lists = $instance_hash['datasource_sets']
 
   # Add OJDBC driver modules to the instance configuration file:
-  datasource_file::drivers{ "${instance}-db-drivers":
+  datasource_file_jb6::drivers{ "${instance}-db-drivers":
     instance => $instance,
   }
 
   # Add all of the datasources to the instance configuration file:
-  datasource_file::hiera_instance_dslist { $ds_lists:
+  datasource_file_jb6::hiera_instance_dslist { $ds_lists:
     instance => $instance,
   }
 

@@ -1,6 +1,6 @@
 # Add OJDBC modules as datasource driver entries
 
-define datasource_file::drivers($instance) {
+define datasource_file_jb6::drivers($instance) {
 
   $file = "/opt/sw/jboss/gsaconfig/instances/${instance}/server/instanceconfig/configuration/${instance}.xml"
 

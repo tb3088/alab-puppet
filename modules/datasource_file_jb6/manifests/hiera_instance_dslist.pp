@@ -1,6 +1,6 @@
 # Use Hiera to create a datasource file for an instance with all required connections.
 
-define datasource_file::hiera_instance_dslist (
+define datasource_file_jb6::hiera_instance_dslist (
   $instance,
   $ds_list = $title,
   $ensure = 'present',
@@ -20,6 +20,6 @@ define datasource_file::hiera_instance_dslist (
   }
 
   # Create a datasource entry for each datasource in the list:
-  create_resources(datasource_file::datasource, $ds_hash, $defaults)
+  create_resources(datasource_file_jb6::datasource, $ds_hash, $defaults)
 
 }

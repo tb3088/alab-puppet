@@ -126,7 +126,7 @@ define gsajboss6::instance::instance64
       }
     }
 
-    datasource_file::hiera{ "${title}-datasources":
+    datasource_file_jb6::hiera{ "${title}-datasources":
       instance => $instance,
       require  => File["/opt/sw/jboss/gsaconfig/instances/${name}/server/instanceconfig/configuration/${name}.xml"],
     }
