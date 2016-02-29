@@ -1,3 +1,45 @@
 ---
-versions::jboss_modules: prototype
+
+versions::FPDSIntegration: baseline
+
+versions::ItssFundWeb: baseline
+
+versions::Liferay: baseline
+versions::MobileTimesheet: baseline
+
+versions::billing: baseline
+versions::accrual: baseline
+versions::agreement: baseline
+
+versions::assist-web-services: baseline
+versions::assist-web: baseline
+versions::static: baseline
+
+versions::birt-app: baseline
+versions::birt-reports: baseline
+
+versions::catalog: baseline
+versions::cpet: baseline
+
 versions::cprm: baseline
+
+versions::itoms: baseline
+
+versions::jboss_modules: prototype
+
+versions::omis: baseline
+
+versions::opensso: baseline
+
+versions::rba-attach: baseline
+versions::rbascheduler: baseline
+versions::gsapaygov: baseline
+versions::ITSSValidateCCR: baseline
+
+versions::edBpm: baseline
+versions::itssSupportTools: baseline
+versions::rba_modernization: baseline
+
+versions::tos: baseline
+versions::Portfolio: baseline
+versions::WebAuditAdmin: baseline
