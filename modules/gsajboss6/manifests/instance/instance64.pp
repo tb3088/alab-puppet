@@ -124,11 +124,6 @@ define gsajboss6::instance::instance64
       }
     }
 
-    datasource_file_jb6::hiera{ "${title}-datasources":
-      instance => $instance,
-      require  => File["/opt/sw/jboss/gsaconfig/instances/${name}/server/instanceconfig/configuration/${name}.xml"],
-    }
-
     # Set the instance to use our common modules:
     file { "/appconfig/jboss/${instance}/running/":
       ensure => directory,
