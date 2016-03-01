@@ -96,7 +96,6 @@ define gsajboss6::instance::instance64
       replace => false,
     }
 
-
     Augeas {
       incl    => "/opt/sw/jboss/gsaconfig/instances/${instance}/server/instanceconfig/configuration/${instance}.xml",
       lens    => 'Xml.lns',
@@ -133,9 +132,14 @@ define gsajboss6::instance::instance64
       target => '/appconfig/jboss/modules',
     }
 
+    @gsajboss6::util::deploy_files { "/opt/sw/jboss/gsaconfig/instances/${instance}/server/instanceconfig/deployments/":
+        require => Exec["make-${title}-instance-dirs"]
+    }
+
     if $local {
       local_mods::local_instance64{$instance:}
     }
+
   }
 
   # Nuke the instance if 'absent' is requested.
