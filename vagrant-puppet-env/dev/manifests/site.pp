@@ -10,7 +10,4 @@ if versioncmp($::puppetversion,'3.6.1') >= 0 {
 
 class {'local_mods':}->
 
-gsajboss6::instance::hiera { 'app-server':
-  server_group => 'apps',
-}
-
+class { 'applications::cprm': }
