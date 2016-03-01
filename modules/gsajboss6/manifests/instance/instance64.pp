@@ -16,9 +16,6 @@ define gsajboss6::instance::instance64
   require gsajboss6::modules
   include stdlib
 
-  $adjusted_base_port = 0 + $base_port - 27000
-  $http_port = 1 + $base_port
-
   File {
     owner  => 'jboss',
     group  => 'jboss',
@@ -27,16 +24,19 @@ define gsajboss6::instance::instance64
   Exec {
     user  => 'jboss',
     group => 'jboss',
+    path  => ['/bin','/usr/bin'],
   }
 
   if $ensure == 'present' {
+
+    $adjusted_base_port = 0 + $base_port - 27000
+    $http_port = 1 + $base_port
 
     file { "/opt/sw/jboss/logs/config/${instance}.sh":
       content => template('gsajboss6/instance/instance_conf.sh.erb')
     }->
     exec{ "create-instance-${title}":
       command     => "echo 'y' | /opt/sw/jboss/gsainstall/6.4/bin/install_server.sh /opt/sw/jboss/logs/config/${instance}.sh",
-      path        => ['/bin','/usr/bin'],
       environment => ['HOME=/opt/sw/jboss'],
       cwd         => '/opt/sw/jboss/gsainstall/6.4/bin/',
       creates     => "/opt/sw/jboss/gsaconfig/instances/${instance}/",
@@ -60,7 +60,6 @@ define gsajboss6::instance::instance64
     }~>
     exec{ "config-instance-${title}":
       command     => "echo | /opt/sw/jboss/gsainstall/6.4/bin/config_server.sh /opt/sw/jboss/logs/config/${instance}.sh",
-      path        => ['/bin','/usr/bin'],
       environment => ['HOME=/opt/sw/jboss'],
       cwd         => '/opt/sw/jboss/gsainstall/6.4/bin/',
       refreshonly => true,
@@ -71,7 +70,6 @@ define gsajboss6::instance::instance64
     # Using a File resource will interfere with the instance configuration module
     exec { "make-${title}-instance-dirs":
       command => "mkdir -p /opt/sw/jboss/gsaconfig/instances/${instance}/server/instanceconfig/{configuration,deployments}",
-      path    => ['/bin','/usr/bin'],
       creates => "/opt/sw/jboss/gsaconfig/instances/${instance}/server/instanceconfig/deployments",
       require => Exec["create-instance-${title}"]
     }->
@@ -147,15 +145,30 @@ define gsajboss6::instance::instance64
 
   # Nuke the instance if 'absent' is requested.
   if $ensure == 'absent' {
-    exec {
-      [
-        "rm -rf /opt/sw/jboss/jboss/jboss-eap-6.4/${instance}",
-        "rm -rf /opt/sw/jboss/gsaconfig/instances/${instance}",
-        "rm -f /opt/sw/jboss/rc_scripts/*${instance}.sh",
-        "rm -rf /appconfig/jboss/${instance}",
-        "rm -rf /logs/jboss/${instance}",
-      ]:
-        path => ['/bin','/usr/bin'],
+    exec { "rm -rf /opt/sw/jboss/jboss/jboss-eap-6.4/${instance}":
+        onlyif  => "/usr/bin/test -d /opt/sw/jboss/jboss/jboss-eap-6.4/${instance}",
+    }
+    exec { "rm -rf /opt/sw/jboss/gsaconfig/instances/${instance}":
+        onlyif  => "/usr/bin/test -d /opt/sw/jboss/gsaconfig/instances/${instance}",
+    }
+    exec { "rm -rf /appconfig/jboss/${instance}":
+        onlyif  => "/usr/bin/test -d /appconfig/jboss/${instance}",
+    }
+    exec { "rm -rf /logs/jboss/${instance}":
+        onlyif  => "/usr/bin/test -d /logs/jboss/${instance}",
+    }
+    exec { "rm -f /opt/sw/jboss/rc_scripts/*${instance}.sh":
+        onlyif  => "/usr/bin/test -f /opt/sw/jboss/rc_scripts/start_jboss_${instance}.sh",
+    }
+    file_line { "instance-alias-${title}":
+      ensure => absent,
+      path   => '/opt/sw/jboss/gsaconfig/servertab/servertab.props',
+      line   => "gsa.instance.alias.${instance}=${instance}",
+    }
+    file_line { "instance-rcstart-${title}":
+      ensure => absent,
+      path   => '/opt/sw/jboss/gsaconfig/servertab/servertab.props',
+      line   => "gsa.instance.rcstart.${instance}=ON",
     }
   }
 
