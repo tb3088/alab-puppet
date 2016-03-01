@@ -50,113 +50,157 @@ instances:
     base_port: 50400
     datasource_sets: [catalog]
     conf_slot: apps
-    applications:
-      - catalog-war
-      - cpet-war
   billing:
     base_port: 50300
     datasource_sets: [billing]
     conf_slot: billing
-    applications:
-      - accrual-war.war
-      - agreement-war.war
-      - billing-war.war
   fpds:
     base_port: 50200
     datasource_sets: [fpds]
     conf_slot: fpds
-    applications:
-      - FPDSIntegrationear.ear
   omisapp:
     base_port: 50600
     datasource_sets: [assist]
     conf_slot: omis
-    applications:
-      - omis-war
   reports:
     base_port: 50100
     datasource_sets: [birt]
     conf_slot: reports
-    applications:
-      - birt-report-viewer
   timesheets:
     base_port: 50500
     datasource_sets: [timesheets]
     conf_slot: timesheets
-    applications:
-      - MobileTimesheet
   nbajboss:
     base_port: 5xx00
     datasource_sets: [tos]
     conf_slot: tos
-    applications:
-      - Portfolio.war
-      - tos.war
-      - WebAuditAdmin
   assist:
     base_port: 53200
     datasource_sets: [assist,brms_assist,brms_task_assist]
     conf_slot: assist
-    applications:
-      - assist-web-services-war.war
-      - assist-web-war.war
-      - static
   portal:
     base_port: 52000
     datasource_sets: [portal]
     conf_slot: portal
-    applications:
-      - Liferay
   sso:
     base_port: 52200
     datasource_sets: [sso]
     conf_slot: sso
-    applications:
-      - opensso.war
   cprm:
     base_port: 52400
     datasource_sets: [cprm]
     set_proxy_name: true
     proxy_name: lab5-was.itss.fas.gsarba.com
     conf_slot: cprm
-    applications:
-      - cprm.ear
   fund:
     base_port: 52800
     datasource_sets: [fund]
     conf_slot: fund
-    applications:
-      - ItssFundWeb.war
   itoms:
     base_port: 52200
     datasource_sets: [itoms]
     conf_slot: itoms
-    applications:
-      - itoms-ear.ear
   itss:
     base_port: 52000
     datasource_sets: [itss]
     conf_slot: itss
-    applications:
-      - edBpm
-      - rba_modernization-ear.ear
   sched:
     base_port: 53000
     datasource_sets: [sched]
     conf_slot: sched
-    applications:
-      - rbascheduler-ear.ear
   services:
     base_port: 52600
     datasource_sets: [services]
     conf_slot: services
-    applications:
-      - gsapaygov-ear.ear
-      - itssSupportTools
-      - ITSSValidateCCR
-      - rba-attachEAR.ear
 
 
+applications:
+  accrual:
+    instance: billing
+    build_dirs: [accrual-war]
+  agreement:
+    instance: billing
+    build_dirs: [agreement-war]
+  assist_web:
+    instance: assist
+    build_dirs: [assist-web-war]
+  assist_web_services:
+    instance: assist
+    build_dirs: [assistservices]
+  billing:
+    instance: billing
+    build_dirs: [billing-war]
+  birt_app:
+    instance: reports
+    build_dirs: [BIRTReports]
+  birt_reports:
+    instance: reports
+    build_dirs: [BIRTFiles]
+  catalog:
+    instance: apps
+    build_dirs: [catalog]
+  cpet:
+    instance: apps
+    build_dirs: [cpet]
+  cprm:
+    instance: cprm
+    build_dirs: [gwac]
+  edbpm:
+    instance: itss
+    build_dirs: [edbpm]
+  fpds_integration:
+    instance: fpds
+    build_dirs: [FPDS]
+  funding:
+    instance: fund
+    build_dirs: [fund]
+  gsa_paygov:
+    instance: services
+    build_dirs: [gsapay]
+  itoms:
+    instance: itoms
+    build_dirs: [itoms]
+  itss:
+    instance: itss
+    build_dirs: [rba_modernization]
+  itss_validate_ccr:
+    instance: services
+    build_dirs: [itssvalidateccr]
+  jboss_modules:
+    build_dirs: [JBoss6Modules]
+  liferay:
+    instance: portal
+    build_dirs: [fedsim-portal,enablePortal,enablePortalTheme]
+  mobile_timesheet:
+    instance: timesheets
+    build_dirs: [mobiletimesheet]
+  omis:
+    instance: omisapp
+    build_dirs: [omisapp]
+  portfolio:
+    instance: nbajboss
+    build_dirs: [portfolio]
+  rba_attach:
+    instance: services
+    build_dirs: [attachments]
+  rba_scheduler:
+    instance: sched
+    build_dirs: [sched]
+  sso:
+    instance: sso
+    build_dirs: [opensso]
+  static:
+    instance: assist
+    build_dirs: [static]
+  support_tools:
+    instance: itss
+    build_dirs: [SupportTools]
+  tos:
+    instance: nbajboss
+    build_dirs: [tosnext]
+  web_audit_admin:
+    instance: nbajboss
+    build_dirs: [waa]
 
 
 

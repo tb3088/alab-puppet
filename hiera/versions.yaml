@@ -1,45 +1,31 @@
 ---
-
-versions::FPDSIntegration: baseline
-
-versions::ItssFundWeb: baseline
-
-versions::Liferay: baseline
-versions::MobileTimesheet: baseline
-
-versions::billing: baseline
-versions::accrual: baseline
-versions::agreement: baseline
-
-versions::assist-web-services: baseline
-versions::assist-web: baseline
-versions::static: baseline
-
-versions::birt-app: baseline
-versions::birt-reports: baseline
-
-versions::catalog: baseline
-versions::cpet: baseline
-
-versions::cprm: baseline
-
-versions::itoms: baseline
-
 versions::jboss_modules: prototype
 
+versions::accrual: baseline
+versions::agreement: baseline
+versions::assist_web: baseline
+versions::assist_web_services: baseline
+versions::billing: baseline
+versions::birt_app: baseline
+versions::birt_reports: baseline
+versions::catalog: baseline
+versions::cpet: baseline
+versions::cprm: baseline
+versions::edbpm: baseline
+versions::fpds_integration: baseline
+versions::funding: baseline
+versions::gsa_paygov: baseline
+versions::itoms: baseline
+versions::itss: baseline
+versions::itss_validate_ccr: baseline
+versions::liferay: baseline
+versions::mobile_timesheet: baseline
 versions::omis: baseline
-
-versions::opensso: baseline
-
-versions::rba-attach: baseline
-versions::rbascheduler: baseline
-versions::gsapaygov: baseline
-versions::ITSSValidateCCR: baseline
-
-versions::edBpm: baseline
-versions::itssSupportTools: baseline
-versions::rba_modernization: baseline
-
+versions::portfolio: baseline
+versions::rba_attach: baseline
+versions::rba_scheduler: baseline
+versions::sso: baseline
+versions::static: baseline
+versions::support_tools: baseline
 versions::tos: baseline
-versions::Portfolio: baseline
-versions::WebAuditAdmin: baseline
+versions::web_audit_admin: baseline
