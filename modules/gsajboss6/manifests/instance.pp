@@ -11,16 +11,19 @@ define gsajboss6::instance
   $conf_slot = 'UNSET',
   $local = false,
   $ensure = 'present',
+  $applications = 'UNSET',
+  $instance = $title,
 )
 {
   require gsajboss6::packages
+
   if $jboss_version == '6.4' {
 
     $base_instance_name = $base_instance ? {
       'UNSET' => 'standalone-full',
       default => $base_instance,
     }
-    gsajboss6::instance::instance64{ $name:
+    gsajboss6::instance::instance64{ $title:
       ensure         => $ensure,
       base_port      => $base_port,
       base_instance  => $base_instance_name,
@@ -28,6 +31,7 @@ define gsajboss6::instance
       set_proxy_name => $set_proxy_name,
       conf_slot      => $conf_slot,
       local          => $local,
+      instance       => $instance,
     }
   }
   else {
