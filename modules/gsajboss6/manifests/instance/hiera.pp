@@ -1,21 +1,20 @@
-# Use Hiera to create a datasource file for an instance with all required connections.
+# Use Hiera to create virtual resources for instances.
+# Realize instances with
+#    Gsajboss6::Instance<| title == 'instname' |>
+# or
+#    realize(Gsajboss6::Instance['instname'])
 
-define gsajboss6::instance::hiera (
-  $server_group,
-  $ensure = 'present',
-)
-{
+class gsajboss6::instance::hiera (
+   $ensure = 'present',
+ )
+ {
   include stdlib
 
-  $server_list = hiera_hash('servers')
-  $server_hash = $server_list[$server_group]
-  $instances = $server_hash['instances']
+  $defaults = {
+    local => hiera('use_local',false)
+   }
 
-  if is_array($instances) {
-    # Pull info from Hiera and generate the instance:
-    gsajboss6::instance::hiera_instance{ $instances: }
-  }
-  else {
-    fail('Instances variable is not an array')
-  }
+  $instances = hiera_hash('instances')
+
+  create_resources('@gsajboss6::instance', $instances, $defaults)
 }
