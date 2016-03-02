@@ -133,7 +133,13 @@ define gsajboss6::instance::instance64
     }
 
     @gsajboss6::util::deploy_files { "/opt/sw/jboss/gsaconfig/instances/${instance}/server/instanceconfig/deployments/":
-        require => Exec["make-${title}-instance-dirs"]
+      instance => $instance,
+      require  => Exec["make-${title}-instance-dirs"]
+    }
+
+    gsajboss6::util::restart{ $instance:
+      ensure  => present,
+      require => Exec["make-${title}-instance-dirs"]
     }
 
     if $local {
