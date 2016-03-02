@@ -12,8 +12,10 @@ use_local: true
 machine_conf::repo::repo_url: http://mirror.techflow.com/techflow/centos/%{::operatingsystemmajrelease}/x86_64/
 
 # Server groups and each instance in them
+#
 # Note: A server group is just a group of servers all having the same set of instances in them.
 # The hosts list is intended to be used for load balancers.
+#
 servers:
   apps:
     hosts: [172.22.12.38]
@@ -45,6 +47,9 @@ servers:
       - services
 
 # Instance info:
+#
+# Used for basic configuration of the instance.
+#
 instances:
   apps:
     base_port: 50400
@@ -113,7 +118,13 @@ instances:
     datasource_sets: [services]
     conf_slot: services
 
-
+# Application config
+#
+# Configures which instance the application is deployed to
+#   and which build directories it should pull from.
+# By default this is all used by the instances::<inst_name>
+#   class, but that can all be overridden in Puppet if needed.
+#
 applications:
   accrual:
     instance: billing
