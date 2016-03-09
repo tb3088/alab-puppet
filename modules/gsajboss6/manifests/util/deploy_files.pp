@@ -18,6 +18,7 @@ define gsajboss6::util::deploy_files (
       group        => $group,
       mode         => $mode,
       recurse      => true,
+      purge        => true,
       sourceselect => all,
       notify       => Gsajboss6::Util::Restart[$instance],
     }

@@ -129,71 +129,93 @@ applications:
   accrual:
     instance: billing
     build_dirs: [accrual-war]
+    delete_patterns: [ 'accrual-war-BUILDJENKINS*.war' ]
   agreement:
     instance: billing
     build_dirs: [agreement-war]
+    delete_patterns: [ 'agreement-war-BUILDJENKINS*.war' ]
   assist_web:
     instance: assist
     build_dirs: [assist-web-war]
+    delete_patterns: [ 'assist-web-war-BUILDJENKINS*.war' ]
   assist_web_services:
     instance: assist
     build_dirs: [assistservices]
+    delete_patterns: [ 'assist-web-services-war-BUILDJENKINS*.war' ]
   billing:
     instance: billing
     build_dirs: [billing-war]
+    delete_patterns: [ 'billing-war-BUILDJENKINS*.war' ]
   birt_app:
     instance: reports
     build_dirs: [BIRTReports]
+    delete_patterns: [ 'birt-report-viewer-BUILDJENKINS*.war', 'birt-app-BUILDJENKINS*.war' ]
   birt_reports:
     instance: reports
     build_dirs: [BIRTFiles]
+    delete_patterns: [ 'birt-reports-BUILDJENKINS*.zip' ]
   catalog:
     instance: apps
     build_dirs: [catalog]
+    delete_patterns: [ 'catalog-war-BUILD*.war' ]
   cpet:
     instance: apps
     build_dirs: [cpet]
+    delete_patterns: [ 'cpet-war-BUILDJENKINS*.war' ]
   cprm:
     instance: cprm
     build_dirs: [gwac]
+    delete_patterns: [ 'cprm-BUILD*.ear' ]
   edbpm:
     instance: itss
     build_dirs: [edbpm]
+    delete_patterns: [ 'RBAEdbpm-BUILDJENKINS*.war' ]
   fpds_integration:
     instance: fpds
     build_dirs: [FPDS]
+    delete_patterns: [ 'FPDSIntegrationEAR-BUILDJENKINS*.ear' ]
   funding:
     instance: fund
     build_dirs: [fund]
+    delete_patterns: [ 'ITSSFundWebEAR-BUILDJENKINS*.ear' ]
   gsa_paygov:
     instance: services
     build_dirs: [gsapay]
+    delete_patterns: [ 'gsapaygov-ear-BUILDJENKINS*.ear' ]
   itoms:
     instance: itoms
     build_dirs: [itoms]
+    delete_patterns: [ 'itoms-ear-BUILDJENKINS*.ear' ]
   itss:
     instance: itss
     build_dirs: [rba_modernization]
+    delete_patterns: [ 'rba_modernization-ear-BUILDJENKINS*.ear' ]
   itss_validate_ccr:
     instance: services
     build_dirs: [itssvalidateccr]
+    delete_patterns: [ 'ITSSValidateCCRProj-BUILDJENKINS*.ear' ]
   jboss_modules:
     build_dirs: [JBoss6Modules]
   liferay:
     instance: portal
     build_dirs: [fedsim-portal,enablePortal,enablePortalTheme]
+    delete_patterns: [ 'fedsim-portal-BUILDJENKINS*.war', 'enablePortal-BUILDJENKINS*.war', 'enablePortalTheme-BUILDJENKINS*.war' ]
   mobile_timesheet:
     instance: timesheets
     build_dirs: [mobiletimesheet]
+    delete_patterns: [ 'MobileTimesheet-JENKINS*.war' ]
   omis:
     instance: omisapp
     build_dirs: [omisapp]
+    delete_patterns: [ 'omis-war-BUILDJENKINS*.war' ]
   portfolio:
     instance: nbajboss
     build_dirs: [portfolio]
+    delete_patterns: [ 'portfolio-BUILDJENKINS*.war' ]
   rba_attach:
     instance: services
     build_dirs: [attachments]
+    delete_patterns: [ 'rba-attachEAR-BUILDJENKINS*.ear' ]
   rba_scheduler:
     instance: sched
     build_dirs: [sched]
@@ -203,15 +225,17 @@ applications:
   static:
     instance: assist
     build_dirs: [static]
+    delete_patterns: [ 'static-BUILDJENKINS*.war' ]
   support_tools:
     instance: itss
     build_dirs: [SupportTools]
   tos:
     instance: nbajboss
     build_dirs: [tosnext]
+    delete_patterns: [ 'tos-BUILDJENKINS*.war' ]
   web_audit_admin:
     instance: nbajboss
     build_dirs: [waa]
-
+    delete_patterns: [ 'webAuditAdmin-BUILDJENKINS*.war' ]
 
 

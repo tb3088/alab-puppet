@@ -132,9 +132,14 @@ define gsajboss6::instance::instance64
       target => '/appconfig/jboss/modules',
     }
 
+    @gsajboss6::util::delete_files {"$instance":
+      notify => Gsajboss6::Util::Restart[$instance],
+    }
+
     @gsajboss6::util::deploy_files { "/opt/sw/jboss/gsaconfig/instances/${instance}/server/instanceconfig/deployments/":
       instance => $instance,
-      require  => Exec["make-${title}-instance-dirs"]
+      require  => Exec["make-${title}-instance-dirs"],
+      notify   => Gsajboss6::Util::Delete_files[$instance],
     }
 
     gsajboss6::util::restart{ $instance:
