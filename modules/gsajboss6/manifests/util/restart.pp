@@ -28,8 +28,6 @@ define gsajboss6::util::restart ($ensure, $instance = $title) {
       command     => "/bin/su - jboss --command='/opt/sw/jboss/rc_scripts/restart_jboss_${instance}.sh'",
       refreshonly => true,
       logoutput   => on_failure,
-      user        => 'jboss',
-      group       => 'jboss',
     }
   }
 }
