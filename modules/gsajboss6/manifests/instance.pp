@@ -15,7 +15,7 @@ define gsajboss6::instance
   $instance = $title,
 )
 {
-  require gsajboss6::packages
+  require ::gsajboss6
 
   if $jboss_version == '6.4' {
 
