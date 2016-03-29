@@ -10,6 +10,4 @@ if versioncmp($::puppetversion,'3.6.1') >= 0 {
 
 class {'local_mods':}->
 
-class { 'applications::cprm': }->
-class { 'applications::birt_app': }->
-class { 'applications::birt_reports': }
+class {'role::jbossapps':}

@@ -11,6 +11,8 @@ use_local: true
 
 machine_conf::repo::repo_url: http://mirror.techflow.com/techflow/centos/%{::operatingsystemmajrelease}/x86_64/
 
+deploy_baar_mock: true
+
 # Server groups and each instance in them
 #
 # Note: A server group is just a group of servers all having the same set of instances in them.
@@ -142,6 +144,10 @@ applications:
     instance: assist
     build_dirs: [assistservices]
     delete_patterns: [ 'assist-web-services-war-BUILDJENKINS*.war' ]
+  baar_mock:
+    instance: billing
+    build_dirs: [baar-mock]
+    delete_patterns: [ 'baar-mock-BUILDJENKINS*.war' ]
   billing:
     instance: billing
     build_dirs: [billing-war]

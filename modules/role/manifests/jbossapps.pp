@@ -17,4 +17,11 @@ class role::jbossapps (
       'applications::mobile_timesheet',
     ]:
   }
+
+  if hiera('deploy_baar_mock', false) {
+    notice('baar mock')
+    class { 'applications::baar_mock': }
+  }else{
+    notice('no baar mock')
+  }
 }
