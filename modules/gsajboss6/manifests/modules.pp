@@ -20,6 +20,7 @@ class gsajboss6::modules
     ignore             => '.svn',
     source_permissions => ignore,
     purge              => true,
+    backup             => false,
     force              => true,
     require            => File['/appconfig/jboss'],
   }~>
