@@ -33,6 +33,16 @@ class gsajboss6::packages($jboss_version = '6.4', $jdk_version = '8u71', $is_jre
     ensure => directory,
     owner  => 'jboss',
     group  => 'jboss',
+  }
+
+  # This script will make sure we run the restart command with the environment in place.
+  # The old solution of using 'su -' does not always work since it may require a tty.
+  file { '/opt/sw/jboss/rc_scripts/restart_instance.sh':
+      ensure  => present,
+      content => "#!/bin/bash\n\nsource /opt/sw/jboss/.bashrc\n/opt/sw/jboss/rc_scripts/restart_jboss_\${1}.sh\n",
+      owner   => 'jboss',
+      group   => 'jboss',
+      mode    => '0750',
   }->
   # The remaining three file resources are only to make up for an error in the RPM.
   # Once it is fixed and rebuilt they can be removed.
