@@ -43,19 +43,5 @@ class gsajboss6::packages($jboss_version = '6.4', $jdk_version = '8u71', $is_jre
       owner   => 'jboss',
       group   => 'jboss',
       mode    => '0750',
-  }->
-  # The remaining three file resources are only to make up for an error in the RPM.
-  # Once it is fixed and rebuilt they can be removed.
-  file { '/opt/sw/jboss/gsaconfig/servertab/servertab.props':
-    source  => '/opt/sw/jboss/gsainstall/env/servertab.props',
-    replace => false,
-  }->
-  file { '/opt/sw/jboss/rc_scripts/jboss_startup.sh':
-    source  => '/opt/sw/jboss/gsainstall/env/jboss_startup.sh',
-    replace => false,
-  }->
-  file { '/opt/sw/jboss/rc_scripts/jboss_shutdown.sh':
-    source  => '/opt/sw/jboss/gsainstall/env/jboss_shutdown.sh',
-    replace => false,
   }
 }
