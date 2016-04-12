@@ -14,7 +14,7 @@ class role::jbossapps (
       'applications::omis',
       'applications::birt_app',
       'applications::birt_reports',
-      'applications::mobile_timesheet',
+      'applications::timesheets',
     ]:
   }
 

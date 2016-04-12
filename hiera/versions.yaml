@@ -20,7 +20,7 @@ versions::itoms: baseline
 versions::itss: baseline
 versions::itss_validate_ccr: baseline
 versions::liferay: baseline
-versions::mobile_timesheet: baseline
+versions::timesheets: baseline
 versions::omis: baseline
 versions::portfolio: baseline
 versions::rba_attach: baseline

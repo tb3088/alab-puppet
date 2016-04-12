@@ -206,10 +206,6 @@ applications:
     instance: portal
     build_dirs: [fedsim-portal,enablePortal,enablePortalTheme]
     delete_patterns: [ 'fedsim-portal-BUILDJENKINS*.war', 'enablePortal-BUILDJENKINS*.war', 'enablePortalTheme-BUILDJENKINS*.war' ]
-  mobile_timesheet:
-    instance: timesheets
-    build_dirs: [mobiletimesheet]
-    delete_patterns: [ 'MobileTimesheet-JENKINS*.war' ]
   omis:
     instance: omisapp
     build_dirs: [omisapp]
@@ -235,6 +231,10 @@ applications:
   support_tools:
     instance: itss
     build_dirs: [SupportTools]
+  timesheets:
+    instance: apps
+    build_dirs: [timesheets]
+    delete_patterns: [ 'Timesheets-BUILDJENKINS*.war' ]
   tos:
     instance: nbajboss
     build_dirs: [tosnext]
