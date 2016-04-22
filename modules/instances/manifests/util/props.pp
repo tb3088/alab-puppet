@@ -1,0 +1,66 @@
+# Create/configure instance
+
+define instances::util::props
+(
+  $instance = $title,
+  $ensure = 'present',
+  $assist = true,
+  $rba = true,
+  $nba = false,
+  $billing = false,
+)
+{
+  require gsajboss6::modules
+
+  File {
+    owner  => 'jboss',
+    group  => 'jboss',
+    mode   => '0640',
+    backup => false,
+  }
+
+  $conf_slot = hiera_hash('instances')[$instance]['conf_slot']
+  $property_path = "/appconfig/jboss/modules/conf/${conf_slot}/properties"
+
+
+  if $assist {
+    # If assist is desired, create it and make rba and billing symlink to it:
+    file { "${property_path}/assist.properties":
+      ensure  => present,
+      content => template('instances/assist.properties.erb'),
+    }
+    if $rba {
+      file { "${property_path}/rba.properties":
+        ensure => link,
+        target => "${property_path}/assist.properties",
+      }
+    }
+    if $billing {
+      file { "${property_path}/billing.properties":
+        ensure => link,
+        target => "${property_path}/assist.properties",
+      }
+    }
+  } else {
+    # If no assist, just populate with the normal assist.properties template:
+    if $rba {
+      file { "${property_path}/rba.properties":
+        ensure  => present,
+        content => template('instances/assist.properties.erb'),
+      }
+    }
+    if $billing {
+      file { "${property_path}/billing.properties":
+        ensure  => present,
+        content => template('instances/assist.properties.erb'),
+      }
+    }
+  }
+
+  if $nba {
+    file { "${property_path}/nba.properties":
+      ensure  => present,
+      content => template('instances/nba.properties.erb'),
+    }
+  }
+}

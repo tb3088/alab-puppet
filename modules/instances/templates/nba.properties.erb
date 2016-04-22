@@ -1,0 +1,36 @@
+reports.username=omis_report
+reports.password=JeremyShockey(88)
+reports.database=omisdev
+gsa.active.directory.ldap.url=ldap://Lab5-AD.gsarba.com:389
+gsa.active.directory.ldap.initial-context.factory=com.sun.jndi.ldap.LdapCtxFactory
+gsa.active.directory.ldap.security.authentication=simple
+#gsa.active.directory.ldap.user.dn=CN=opensso techflow,CN=Users,DC=ext2008,DC=gsa,DC=gov
+gsa.active.directory.ldap.user.dn=CN=opensso techflow,CN=Users,DC=gsarba,DC=com
+gsa.active.directory.ldap.user.password=P@ssw0rd
+gsa.active.directory.ldap.base.tree.dn=ou=Internal GSA Users,DC=gsarba,DC=com
+tos.domino.ldap.url=ldap://Lab5-domExtran1.fas.gsarba.com:389
+tos.domino.ldap.security.authentication=simple
+tos.domino.ldap.initial-context.factory=com.sun.jndi.ldap.LdapCtxFactory
+tos.domino.ldap.username=CN=WebSphere Administration
+tos.domino.ldap.password=websphereadminextra
+tos.domino.ldap.base.tree.dn=
+tos.ltpa.generator.service.url=http://Lab5-tos.fas.gsarba.com:8085/ltpa/generateLtpaToken
+#http://nbapme-tos.gsanba.com:8085/ltpa/generateLtpaToken
+tos.ltpa.generator.admin.username=systemadmin
+tos.ltpa.generator.admin.password=sysadministrat0r
+tos.ltpa.cookie.name=LtpaToken
+tos.ltpa.cookie.domain=.fas.gsarba.com
+tos.ltpa.cookie.path=/
+tos.ltpa.cookie.is.secure=true
+forgotpassword.smtp.server=mail.techflow.com
+forgotpassword.smtp.username=
+forgotpassword.smtp.password=
+forgotpassword.smtp.adminemail=tos.help.desk@gsa.gov
+forgotpassword.rba.reset.url=https://Lab5-domWeb1.itss.gsarba.com/itss/utility.nsf/!ForgotPassword!OpenForm&Seq=1
+
+opensso.admin.user=amadmin
+opensso.admin.password=P@ssw0rd
+bo.pass.phrase=GWAC/BO Encryption K3y.!
+bo.username.encrypt=Y
+reports.auth.url=%1$s/reports/rwservlet/setauth?username\=%2$s&password\=%3$s&database\=%4$s&authtype\=D&nextpage\=login&genuser\=&mask\=GQ==&isjsp\=no
+tos.ltpa.generator.domino.secret=ANgUZt35KfhLHCJCeJmjrMcvzFs=
