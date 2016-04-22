@@ -155,6 +155,13 @@ define gsajboss6::instance::instance64
       }
     }
 
+    # Configure the server to have a LONG deployment timeout (15 min)
+    augeas { "timeout-config-${title}":
+      changes => [
+        "set server//subsystem[#attribute/xmlns='urn:jboss:domain:deployment-scanner:1.1']/deployment-scanner/#attribute/deployment-timeout 900",
+      ],
+    }
+
     # Set the instance to use our common modules:
     file { "/appconfig/jboss/${instance}/running/":
       ensure => directory,
