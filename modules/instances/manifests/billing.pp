@@ -18,19 +18,8 @@ class instances::billing
   }
 
   ## Place instance customizations here.
-  require gsajboss6::modules
-
-  file { '/appconfig/jboss/modules/conf/billing/properties/assist.properties':
-    owner   => 'jboss',
-    group   => 'jboss',
-    mode    => '0640',
-    content => template('instances/assist.properties.erb'),
-  }
-
-  file { '/appconfig/jboss/modules/conf/billing/properties/billing.properties':
-    owner   => 'jboss',
-    group   => 'jboss',
-    mode    => '0640',
-    content => template('instances/billing.properties.erb'),
+  instances::util::props { $instance:
+    rba     => false,
+    billing => true,
   }
 }

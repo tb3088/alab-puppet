@@ -18,5 +18,7 @@ class instances::omisapp
   }
 
   ## Place instance customizations here.
-
+  instances::util::props { $instance:
+    rba => false,
+  }
 }

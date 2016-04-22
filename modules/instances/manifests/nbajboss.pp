@@ -18,5 +18,9 @@ class instances::nbajboss
   }
 
   ## Place instance customizations here.
-
+  instances::util::props { $instance:
+    rba    => false,
+    nba    => true,
+    assist => false,
+  }
 }

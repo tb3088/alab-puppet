@@ -18,12 +18,7 @@ class instances::apps
   }
 
   ## Place instance customizations here.
-  require gsajboss6::modules
-
-  file { '/appconfig/jboss/modules/conf/apps/properties/assist.properties':
-    owner   => 'jboss',
-    group   => 'jboss',
-    mode    => '0640',
-    content => template('instances/assist.properties.erb'),
+  instances::util::props { $instance:
+    rba => false,
   }
 }

@@ -18,5 +18,9 @@ class instances::portal
   }
 
   ## Place instance customizations here.
-
+  instances::util::props { $instance:
+    assist => false,
+    rba    => false,
+    nba    => true,
+  }
 }

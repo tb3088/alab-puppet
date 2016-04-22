@@ -18,5 +18,5 @@ class instances::reports
   }
 
   ## Place instance customizations here.
-
+  instances::util::props { $instance: }
 }
