@@ -32,6 +32,7 @@ define gsajboss6::instance::instance64
   }
   File_line {
     require => Exec["create-instance-${title}"],
+    notify  => Gsajboss6::Util::Restart[$instance],
   }
 
   if $ensure == 'present' {
@@ -107,6 +108,7 @@ define gsajboss6::instance::instance64
       incl    => $standalone_file,
       lens    => 'Xml.lns',
       require => File_line["system-properties-${title}"],
+      notify  => Gsajboss6::Util::Restart[$instance],
     }
 
     if $set_proxy_name {
