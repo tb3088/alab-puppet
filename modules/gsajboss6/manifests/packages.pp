@@ -33,6 +33,14 @@ class gsajboss6::packages($jboss_version = '6.4', $jdk_version = '8u71', $is_jre
     ensure => directory,
     owner  => 'jboss',
     group  => 'jboss',
+  }->
+  file { '/opt/sw/jboss/gsaconfig/servertab/servertab.props':
+    ensure  => present,
+    owner   => 'jboss',
+    group   => 'jboss',
+    mode    => '0640',
+    source  => '/opt/sw/jboss/gsainstall/env/servertab.props',
+    replace => false,
   }
 
   # This script will make sure we run the restart command with the environment in place.
