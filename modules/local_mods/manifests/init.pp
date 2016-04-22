@@ -20,14 +20,14 @@ class local_mods
     match  => '^#*FULL_HOSTNAME=.*$',
   }
 
-  # put in a keystore. It probably won't be used but some scripts will fail without it.
-  file { '/opt/sw/jboss/gsaconfig/host':
-    ensure => directory,
-  }->
-  file { '/opt/sw/jboss/gsaconfig/host/localhost.localdomain.keystore':
-    ensure => present,
-    source => 'puppet:///modules/local_mods/gsarba-dev.keystore',
-  }
+  ## put in a keystore. It probably won't be used but some scripts will fail without it.
+  #file { '/opt/sw/jboss/gsaconfig/host':
+  #  ensure => directory,
+  #}->
+  #file { '/opt/sw/jboss/gsaconfig/host/localhost.localdomain.keystore':
+  #  ensure => present,
+  #  source => 'puppet:///modules/local_mods/gsarba-dev.keystore',
+  #}
 
   file { '/opt/sw/jboss/dev-files':
     ensure => directory,

@@ -14,7 +14,11 @@ define gsajboss6::instance::instance64
 {
   require gsajboss6::packages
   require gsajboss6::modules
+  require gsajboss6::keystores
   include stdlib
+
+  $standalone_file = "/opt/sw/jboss/gsaconfig/instances/${instance}/server/instanceconfig/configuration/${instance}.xml"
+  $connector_path = "server/profile/subsystem[#attribute/xmlns='urn:jboss:domain:web:2.2']"
 
   File {
     owner  => 'jboss',
@@ -25,6 +29,9 @@ define gsajboss6::instance::instance64
     user  => 'jboss',
     group => 'jboss',
     path  => ['/bin','/usr/bin'],
+  }
+  File_line {
+    require => Exec["create-instance-${title}"],
   }
 
   if $ensure == 'present' {
@@ -82,14 +89,14 @@ define gsajboss6::instance::instance64
       ensure => directory,
       mode   => '0755',
     }->
-    file { "/opt/sw/jboss/gsaconfig/instances/${instance}/server/instanceconfig/configuration/${instance}.xml":
+    file { $standalone_file:
       source  => "/opt/sw/jboss/jboss/jboss-eap-6.4/${instance}/configuration/${instance}.xml",
       replace => false,
     }->
     # The system-properties seems to need to be in a particular location, so make sure it is where it belongs:
     file_line { "system-properties-${title}":
       ensure  => present,
-      path    => "/opt/sw/jboss/gsaconfig/instances/${instance}/server/instanceconfig/configuration/${instance}.xml",
+      path    => $standalone_file,
       line    => '    <system-properties></system-properties>',
       after   => '    </extensions>',
       match   => '.*<system-properties>.*',
@@ -97,20 +104,45 @@ define gsajboss6::instance::instance64
     }
 
     Augeas {
-      incl    => "/opt/sw/jboss/gsaconfig/instances/${instance}/server/instanceconfig/configuration/${instance}.xml",
+      incl    => $standalone_file,
       lens    => 'Xml.lns',
       require => File_line["system-properties-${title}"],
     }
 
     if $set_proxy_name {
-      augeas { 'standalone proxy config':
+      augeas { "${title} standalone proxy config":
         changes => [
-          "set server//connector[#attribute/name='http']/#attribute/proxy-name ${proxy_name}",
-          "set server//connector[#attribute/name='http']/#attribute/proxy-port 443",
-          "set server//connector[#attribute/name='http']/#attribute/scheme https",
-          "set server//connector[#attribute/name='http']/#attribute/secure true",
+          "set ${connector_path}/connector[#attribute/name='http']/#attribute/proxy-name ${proxy_name}",
+          "set ${connector_path}/connector[#attribute/name='http']/#attribute/proxy-port 443",
+          "set ${connector_path}/connector[#attribute/name='http']/#attribute/scheme https",
+          "set ${connector_path}/connector[#attribute/name='http']/#attribute/secure true",
         ],
       }
+    }
+
+    augeas { "${title} standalone https config":
+      changes => [
+        "set ${connector_path}/connector[#attribute/name='https']/#attribute/name https",
+        "set ${connector_path}/connector[#attribute/name='https']/#attribute/protocol HTTP/1.1",
+        "set ${connector_path}/connector[#attribute/name='https']/#attribute/scheme https",
+        "set ${connector_path}/connector[#attribute/name='https']/#attribute/socket-binding https",
+        "set ${connector_path}/connector[#attribute/name='https']/#attribute/secure true",
+        "set ${connector_path}/connector[#attribute/name='https']/ssl/#attribute/name ${instance}-tls",
+        "set ${connector_path}/connector[#attribute/name='https']/ssl/#attribute/protocol TLSv1,TLSv1.1,TLSv1.2",
+        "set ${connector_path}/connector[#attribute/name='https']/ssl/#attribute/certificate-key-file \${gsa.host.ssl.keyStore}",
+        "set ${connector_path}/connector[#attribute/name='https']/ssl/#attribute/password \${gsa.host.ssl.keyStorePassword}",
+        "set ${connector_path}/connector[#attribute/name='https']/ssl/#attribute/key-alias \${keyAlias}",
+        "set ${connector_path}/connector[#attribute/name='https']/ssl/#attribute/cipher-suite \${gsa.host.ssl.ciphers}",
+      ],
+    }
+
+    augeas { "${title} standalone ajp config":
+      changes => [
+        "set ${connector_path}/connector[#attribute/name='ajp']/#attribute/name ajp",
+        "set ${connector_path}/connector[#attribute/name='ajp']/#attribute/protocol AJP/1.3",
+        "set ${connector_path}/connector[#attribute/name='ajp']/#attribute/scheme http",
+        "set ${connector_path}/connector[#attribute/name='ajp']/#attribute/socket-binding ajp",
+      ],
     }
 
     # Configure the server to use the "conf" module, in to which property files may be placed:
@@ -131,6 +163,44 @@ define gsajboss6::instance::instance64
       ensure => link,
       target => '/appconfig/jboss/modules',
     }
+
+    file_line { "${title}-ssl-props-truststore-location":
+      ensure  => present,
+      path    => "/opt/sw/jboss/gsaconfig/instances/${instance}/runconfig/${instance}_shared.props",
+      line    => 'javax.net.ssl.trustStore=/opt/sw/jboss/gsaconfig/host/gsa-jboss.truststore',
+      match   => '^javax.net.ssl.trustStore=.*$',
+      replace => true,
+    }
+    file_line { "${title}-ssl-props-truststore-password":
+      ensure  => present,
+      path    => "/opt/sw/jboss/gsaconfig/instances/${instance}/runconfig/${instance}_shared.props",
+      line    => 'javax.net.ssl.trustStorePassword=changeit',
+      match   => '^javax.net.ssl.trustStorePassword=.*$',
+      replace => true,
+    }
+    file_line { "${title}-ssl-props-keystore-location":
+      ensure  => present,
+      path    => "/opt/sw/jboss/gsaconfig/instances/${instance}/runconfig/${instance}_shared.props",
+      line    => "gsa.host.ssl.keyStore=/opt/sw/jboss/gsaconfig/host/${::fqdn}.keystore",
+      match   => '^gsa.host.ssl.keyStore=.*$',
+      replace => true,
+    }
+    file_line { "${title}-ssl-props-keystore-password":
+      ensure  => present,
+      path    => "/opt/sw/jboss/gsaconfig/instances/${instance}/runconfig/${instance}_shared.props",
+      line    => 'gsa.host.ssl.keyStorePassword=changeit',
+      match   => '^gsa.host.ssl.keyStorePassword=.*$',
+      replace => true,
+    }
+    file_line { "${title}-ssl-props-keystore-alias":
+      ensure  => present,
+      path    => "/opt/sw/jboss/gsaconfig/instances/${instance}/runconfig/${instance}_shared.props",
+      line    => 'keyAlias=gsarba-dev',
+      match   => '^keyAlias=.*$',
+      replace => true,
+    }
+
+
 
     @gsajboss6::util::delete_files {"$instance":
       notify => Gsajboss6::Util::Restart[$instance],
