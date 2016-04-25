@@ -5,7 +5,6 @@ define gsajboss6::instance::instance64
   $base_port,
   $base_instance,
   $proxy_name,
-  $set_proxy_name,
   $conf_slot,
   $instance = $title,
   $local = false,
@@ -111,15 +110,13 @@ define gsajboss6::instance::instance64
       notify  => Gsajboss6::Util::Restart[$instance],
     }
 
-    if $set_proxy_name {
-      augeas { "${title} standalone proxy config":
-        changes => [
-          "set ${connector_path}/connector[#attribute/name='http']/#attribute/proxy-name ${proxy_name}",
-          "set ${connector_path}/connector[#attribute/name='http']/#attribute/proxy-port 443",
-          "set ${connector_path}/connector[#attribute/name='http']/#attribute/scheme https",
-          "set ${connector_path}/connector[#attribute/name='http']/#attribute/secure true",
-        ],
-      }
+    augeas { "${title} standalone proxy config":
+      changes => [
+        "set ${connector_path}/connector[#attribute/name='http']/#attribute/proxy-name ${proxy_name}",
+        "set ${connector_path}/connector[#attribute/name='http']/#attribute/proxy-port 443",
+        "set ${connector_path}/connector[#attribute/name='http']/#attribute/scheme https",
+        "set ${connector_path}/connector[#attribute/name='http']/#attribute/secure true",
+      ],
     }
 
     augeas { "${title} standalone https config":
