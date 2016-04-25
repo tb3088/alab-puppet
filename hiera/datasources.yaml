@@ -70,7 +70,7 @@ dsFiles:
     brms_assist-ds: {jndi_name: Brms_AssistDS, database: codb, account: assist}
     brms_assist-itss: {jndi_name: itssDS, database: codb, account: itss}
   brms_task_assist:
-    brms_task_assist: {jndi_name: Brms_Task_AssistDS, database: codb, account: assist, ds_type: no-tx}
+    brms_task_assist: {jndi_name: Brms_Task_AssistDS, database: codb, account: assist}
   assist:
     assist-assist: {jndi_name: AssistDS, database: codb, account: assist}
     assist-omis: {jndi_name: jboss/datasources/OMIS, database: omis, account: omis}

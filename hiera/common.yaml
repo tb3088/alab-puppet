@@ -80,6 +80,7 @@ instances:
   nbajboss:
     base_port: 5xx00
     datasource_sets: [tos]
+    proxy_name: tos.fas.gsarba.com
     conf_slot: tos
   assist:
     base_port: 53200
@@ -87,7 +88,7 @@ instances:
     conf_slot: assist
   portal:
     base_port: 52000
-    datasource_sets: [portal]
+    datasource_sets: [lportal]
     conf_slot: portal
   sso:
     base_port: 52200
@@ -96,28 +97,32 @@ instances:
   cprm:
     base_port: 52400
     datasource_sets: [cprm]
-    set_proxy_name: true
-    proxy_name: lab5-was.itss.fas.gsarba.com
+    proxy_name: lab5-was.itss.gsarba.com
     conf_slot: cprm
   fund:
     base_port: 52800
     datasource_sets: [fund]
+    proxy_name: lab5-was.itss.gsarba.com
     conf_slot: fund
   itoms:
     base_port: 52200
     datasource_sets: [itoms]
+    proxy_name: lab5-was.itss.gsarba.com
     conf_slot: itoms
   itss:
     base_port: 52000
     datasource_sets: [itss]
+    proxy_name: lab5-was.itss.gsarba.com
     conf_slot: itss
   sched:
     base_port: 53000
     datasource_sets: [sched]
+    proxy_name: lab5-was.itss.gsarba.com
     conf_slot: sched
   services:
     base_port: 52600
     datasource_sets: [services]
+    proxy_name: lab5-was.itss.gsarba.com
     conf_slot: services
 
 # Application config
@@ -233,8 +238,8 @@ applications:
     build_dirs: [SupportTools]
   timesheets:
     instance: apps
-    build_dirs: [timesheets]
-    delete_patterns: [ 'Timesheets-BUILDJENKINS*.war' ]
+    build_dirs: [timesheet-war]
+    delete_patterns: [ 'timesheet-war*.war' ]
   tos:
     instance: nbajboss
     build_dirs: [tosnext]
@@ -243,5 +248,6 @@ applications:
     instance: nbajboss
     build_dirs: [waa]
     delete_patterns: [ 'webAuditAdmin-BUILDJENKINS*.war' ]
+
 
 
