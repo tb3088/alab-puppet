@@ -19,7 +19,9 @@ define instances::util::props
     backup => false,
   }
 
-  $conf_slot = hiera_hash('instances')[$instance]['conf_slot']
+  $instances_hash = hiera_hash('instances')
+  $instance_hash = $instances_hash[$instance]
+  $conf_slot = $instance_hash['conf_slot']
   $property_path = "/appconfig/jboss/modules/conf/${conf_slot}/properties"
 
 
