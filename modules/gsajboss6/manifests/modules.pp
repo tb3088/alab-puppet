@@ -24,7 +24,7 @@ class gsajboss6::modules
     force              => true,
     require            => File['/appconfig/jboss'],
   }~>
-  exec { 'unzip-report-files':
+  exec { 'unzip-jboss-module-files':
     command     => 'rm -rf *; tar xzf /appconfig/jboss/module_zip/jboss-modules-*-module-package.tgz',
     cwd         => '/appconfig/jboss/modules',
     path        => ['/bin','/usr/bin'],
