@@ -22,8 +22,6 @@ class applications::birt_reports (
   $builds_dir = $app['build_dirs'][0]
   $zip_name_pattern = $app['delete_patterns'][0]
 
-  $hipchat_notify = hiera('hipchat::notify', false)
-
   file { $birt_dir:
     ensure => directory,
     owner  => 'jboss',
