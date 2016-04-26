@@ -19,9 +19,6 @@ class role::jbossapps (
   }
 
   if hiera('deploy_baar_mock', false) {
-    notice('baar mock')
     class { 'applications::baar_mock': }
-  }else{
-    notice('no baar mock')
   }
 }
