@@ -5,6 +5,8 @@ class gsajboss6::packages($jboss_version = '6.4', $jdk_version = '8u71', $is_jre
   require machine_conf::jboss_user
   require machine_conf::repo
 
+  include stdlib
+
   $gsainstall = $jboss_version ? {
     '6.4'   => 'gsainstall-6.4',
     default => 'gsainstall',
@@ -52,4 +54,12 @@ class gsajboss6::packages($jboss_version = '6.4', $jdk_version = '8u71', $is_jre
       group   => 'jboss',
       mode    => '0750',
   }
+
+  file_line { "fix-gsa-script-bug":
+    path    => '/opt/sw/jboss/gsaenv/bashrc.common.sh',
+    line    => '  local THIS_COMMAND="cd ${THIS_GSA_CONFIG_DIR}/server/instanceconfig/deployments" ;',
+    match   => '  local THIS_COMMAND="cd ${THIS_GSA_CONFIG_DIR}/server/instanceconfig/deployment" ;',
+    require => Package[$gsainstall],
+  }
 }
+
