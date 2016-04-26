@@ -58,7 +58,7 @@ class gsajboss6::packages($jboss_version = '6.4', $jdk_version = '8u71', $is_jre
   file_line { "fix-gsa-script-bug":
     path    => '/opt/sw/jboss/gsaenv/bashrc.common.sh',
     line    => '  local THIS_COMMAND="cd ${THIS_GSA_CONFIG_DIR}/server/instanceconfig/deployments" ;',
-    match   => '  local THIS_COMMAND="cd ${THIS_GSA_CONFIG_DIR}/server/instanceconfig/deployment" ;',
+    match   => '  local THIS_COMMAND="cd \${THIS_GSA_CONFIG_DIR}/server/instanceconfig/deployment" ;',
     require => Package[$gsainstall],
   }
 }
