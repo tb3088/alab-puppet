@@ -1,6 +1,6 @@
 # Create user for GSA JBoss
 
-class machine_conf::jboss_user
+class machine_conf::jboss_user($uid = 201, $gid = 201)
 {
   include stdlib
 
@@ -10,12 +10,12 @@ class machine_conf::jboss_user
     group  => root,
   }
   group { 'jboss':
-    gid => 201,
+    gid => $gid,
   }
   user { 'jboss':
     ensure   => present,
-    uid      => 201,
-    gid      => 201,
+    uid      => $uid,
+    gid      => $gid,
     home     => '/opt/sw/jboss',
     shell    => '/bin/bash',
     comment  => 'JBoss',
