@@ -49,4 +49,5 @@ class applications::birt_reports (
     user        => 'jboss',
     group       => 'jboss',
   }
+
 }
