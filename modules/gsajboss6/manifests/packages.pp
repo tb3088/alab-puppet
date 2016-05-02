@@ -4,6 +4,7 @@ class gsajboss6::packages($jboss_version = '6.4', $jdk_version = '8u71', $is_jre
 {
   require machine_conf::jboss_user
   require machine_conf::repo
+  require machine_conf::hosts
 
   include stdlib
 
