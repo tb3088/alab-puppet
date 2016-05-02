@@ -208,7 +208,7 @@ define gsajboss6::instance::instance64
 
 
 
-    @gsajboss6::util::delete_files {"$instance":
+    @gsajboss6::util::delete_files {$instance:
       notify => Gsajboss6::Util::Restart[$instance],
     }
 

@@ -23,13 +23,13 @@ define gsajboss6::instance
       default => $base_instance,
     }
     gsajboss6::instance::instance64{ $title:
-      ensure         => $ensure,
-      base_port      => $base_port,
-      base_instance  => $base_instance_name,
-      proxy_name     => $proxy_name,
-      conf_slot      => $conf_slot,
-      local          => $local,
-      instance       => $instance,
+      ensure        => $ensure,
+      base_port     => $base_port,
+      base_instance => $base_instance_name,
+      proxy_name    => $proxy_name,
+      conf_slot     => $conf_slot,
+      local         => $local,
+      instance      => $instance,
     }
   }
   else {

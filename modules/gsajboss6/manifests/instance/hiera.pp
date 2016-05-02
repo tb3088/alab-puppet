@@ -5,14 +5,14 @@
 #    realize(Gsajboss6::Instance['instname'])
 
 class gsajboss6::instance::hiera (
-   $ensure = 'present',
- )
- {
+  $ensure = 'present',
+)
+{
   include stdlib
 
   $defaults = {
+  }
     local => hiera('use_local',false)
-   }
 
   $instances = hiera_hash('instances')
 

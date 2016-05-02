@@ -15,7 +15,7 @@ define applications::util::app_init
   include "instances::${instance}"
 
   # Clean the deploy directory:
-  gsajboss6::util::clean_deploy_dir {"${app_name}":}
+  gsajboss6::util::clean_deploy_dir {$app_name:}
 
   # Need to use virtual resources for instances in case multiple applications share an instance:
   realize(Gsajboss6::Instance[$instance])

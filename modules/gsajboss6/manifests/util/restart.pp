@@ -1,3 +1,4 @@
+# Restart server after changes are made.
 define gsajboss6::util::restart ($ensure, $instance = $title) {
   include stdlib
 

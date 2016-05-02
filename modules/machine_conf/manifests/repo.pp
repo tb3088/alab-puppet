@@ -5,8 +5,8 @@ class machine_conf::repo (
 )
 {
   yumrepo { 'tf-gsa-yum-repo':
+    ensure   => present,
     descr    => 'TechFlow-GSA-yum-repo',
-    ensure   => 'present',
     baseurl  => $repo_url,
     gpgcheck => '0',
   }
