@@ -67,7 +67,7 @@ instances:
     conf_slot: fpds
   omisapp:
     base_port: 50600
-    datasource_sets: [assist]
+    datasource_sets: [omisapp]
     conf_slot: omis
   reports:
     base_port: 50100

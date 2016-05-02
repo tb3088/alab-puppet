@@ -79,6 +79,9 @@ dsFiles:
     assist-omis_pep: {jndi_name: jboss/datasources/OMIS_PEP, database: omis, account: omis}
     assist-tos_app: {jndi_name: jboss/datasources/TOS_APP, database: omis, account: tos_app}
     assist-tos_report: {jndi_name: TOS_REPORT, database: omis, account: tos_report}
+  omisapp:
+    omisapp-assist: {jndi_name: AssistDS, database: codb, account: assist}
+    omisapp-omis: {jndi_name: OMIS, database: omis, account: omis}
   catalog:
     catalog: {jndi_name: CatalogDS, database: codb, account: fedcat_user}
   billing:
