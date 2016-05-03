@@ -5,6 +5,7 @@ define gsajboss6::util::deploy
   $app_name = $title,
   $deploy_dir = 'UNSET',
   $source = [],
+  $version = 'UNSET',
 )
 {
   include stdlib
@@ -13,7 +14,10 @@ define gsajboss6::util::deploy
   $app = $apps[$app_name]
   $instance = $app['instance']
   $build_dirs = $app['build_dirs']
-  $version = hiera("versions::${app_name}")
+  $app_version = $version ? {
+    'UNSET' => hiera("versions::${app_name}"),
+    default => $version,
+  }
 
   $deploy_to = $deploy_dir ? {
     'UNSET' => "/opt/sw/jboss/gsaconfig/instances/${instance}/server/instanceconfig/deployments/",
@@ -22,7 +26,7 @@ define gsajboss6::util::deploy
 
   if $source == [] {
     # If no source is provided, use Hiera-provided build folders for the hiera-provided version:
-    $sources = suffix(prefix($build_dirs , 'puppet:///builds/'), "/${version}/")
+    $sources = suffix(prefix($build_dirs , 'puppet:///builds/'), "/${app_version}/")
   } else {
     $sources = $source
   }

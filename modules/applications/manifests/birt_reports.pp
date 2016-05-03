@@ -1,10 +1,11 @@
 # CPRM application
 
 class applications::birt_reports (
-  $birt_reports_version = hiera('versions::birt_reports', 'baseline'),
   $birt_dir = '/opt/sw/jboss/birt',
   $birt_zip_dir = '/opt/sw/jboss/birt_zip',
-)
+  $version=$applications::params::birt_reports_version
+) inherits applications::params
+
 {
 
   # Make sure the instance is present:
@@ -32,7 +33,7 @@ class applications::birt_reports (
     sourceselect       => all,
     owner              => 'jboss',
     group              => 'jboss',
-    source             => "puppet:///builds/${builds_dir}/${birt_reports_version}",
+    source             => "puppet:///builds/${builds_dir}/${version}",
     recurse            => true,
     ignore             => '.svn',
     source_permissions => ignore,

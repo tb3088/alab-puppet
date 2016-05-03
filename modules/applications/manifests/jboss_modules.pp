@@ -1,6 +1,9 @@
-# CPRM application
+# JBoss Modules application
 
-class applications::jboss_modules {
+class applications::jboss_modules (
+  $version=$applications::params::jboss_modules_version
+) inherits applications::params
+{
 
   # Make sure the instance is present:
   applications::util::app_init { 'jboss_modules': }
