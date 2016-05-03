@@ -11,8 +11,8 @@ class gsajboss6::instance::hiera (
   include stdlib
 
   $defaults = {
-  }
     local => hiera('use_local',false)
+  }
 
   $instances = hiera_hash('instances')
 
