@@ -32,4 +32,6 @@ class applications::params {
   $support_tools_version = hiera('versions::support_tools', 'baseline')
   $tos_version = hiera('versions::tos', 'baseline')
   $web_audit_admin_version = hiera('versions::web_audit_admin', 'baseline')
+
+  $deploy_baar_mock = hiera('deploy_baar_mock', false)
 }
