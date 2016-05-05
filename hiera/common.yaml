@@ -7,7 +7,11 @@
 #                                                          #
 ############################################################
 
+# BEGIN Local use only; do not put in a lab:
 use_local: true
+machine_conf::hosts::dmz_subnet_base: 172.22.12
+machine_conf::hosts::backend_subnet_base: 172.22.12
+# END   Local
 
 machine_conf::repo::repo_url: http://mirror.techflow.com/techflow/centos/%{::operatingsystemmajrelease}/x86_64/
 
