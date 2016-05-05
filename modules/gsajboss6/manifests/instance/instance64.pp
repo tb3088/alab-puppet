@@ -41,7 +41,6 @@ define gsajboss6::instance::instance64
     # We want to use a friendly base_port, but GSA scripts adjust it
     # up by 27000, so we need to make adjustments here:
     $adjusted_base_port = 0 + $base_port - 27000
-    $http_port = 1 + $base_port
 
     # Generate the script used by the creation script:
     file { "/opt/sw/jboss/logs/config/${instance}.sh":
