@@ -134,6 +134,8 @@ define gsajboss6::instance::instance64
       changes => [
         "set ${connector_path}/connector[#attribute/name='https']/#attribute/name https",
         "set ${connector_path}/connector[#attribute/name='https']/#attribute/protocol HTTP/1.1",
+        "set ${connector_path}/connector[#attribute/name='https']/#attribute/proxy-name ${proxy_name}",
+        "set ${connector_path}/connector[#attribute/name='https']/#attribute/proxy-port 443",
         "set ${connector_path}/connector[#attribute/name='https']/#attribute/scheme https",
         "set ${connector_path}/connector[#attribute/name='https']/#attribute/socket-binding https",
         "set ${connector_path}/connector[#attribute/name='https']/#attribute/secure true",
