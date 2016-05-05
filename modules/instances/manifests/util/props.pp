@@ -1,4 +1,4 @@
-# Create/configure instance
+# Add property files to the instance.
 
 define instances::util::props
 (
@@ -10,7 +10,7 @@ define instances::util::props
   $billing = false,
 )
 {
-  require gsajboss6::modules
+  require applications::jboss_modules
 
   File {
     owner  => 'jboss',

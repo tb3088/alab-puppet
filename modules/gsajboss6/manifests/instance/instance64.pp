@@ -12,7 +12,7 @@ define gsajboss6::instance::instance64
 )
 {
   require gsajboss6::packages
-  require gsajboss6::modules
+  require applications::jboss_modules
   require gsajboss6::keystores
   include stdlib
 
