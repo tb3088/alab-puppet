@@ -1,4 +1,5 @@
-# Create a Java datasource entry
+# Use Hiera to obtain information about a single datasource
+# and then create the datasource entry.
 
 define datasource_file_jb6::datasource (
   $instance,
@@ -11,12 +12,14 @@ define datasource_file_jb6::datasource (
 
   $standalone_xml = "/opt/sw/jboss/gsaconfig/instances/${instance}/server/instanceconfig/configuration/${instance}.xml"
 
+  # Obtain information about the requested database and database account from Hiera:
   $dataSources = hiera_hash('dataSources')
   $db          = $dataSources[$database]
   $host        = $db['hostname']
   $sid         = $db['sid']
   $pw          = $db['accounts'][$account]['password']
 
+  # Add the datasource to the instance's standalone.xml file:
   augeas { "${instance}/datasource/${jndi_name}":
     lens    => 'Xml.lns',
     incl    => $standalone_xml,

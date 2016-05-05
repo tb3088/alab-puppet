@@ -1,4 +1,4 @@
-# Create JBoss instance
+# Create a JBoss instance for JBoss EAP 6.4
 
 define gsajboss6::instance::instance64
 (
@@ -19,6 +19,7 @@ define gsajboss6::instance::instance64
   $standalone_file = "/opt/sw/jboss/gsaconfig/instances/${instance}/server/instanceconfig/configuration/${instance}.xml"
   $connector_path = "server/profile/subsystem[#attribute/xmlns='urn:jboss:domain:web:2.2']"
 
+  # Make sure we don't accidentally create anything as root:
   File {
     owner  => 'jboss',
     group  => 'jboss',
@@ -29,6 +30,7 @@ define gsajboss6::instance::instance64
     group => 'jboss',
     path  => ['/bin','/usr/bin'],
   }
+
   File_line {
     require => Exec["create-instance-${title}"],
     notify  => Gsajboss6::Util::Restart[$instance],
@@ -36,12 +38,16 @@ define gsajboss6::instance::instance64
 
   if $ensure == 'present' {
 
+    # We want to use a friendly base_port, but GSA scripts adjust it
+    # up by 27000, so we need to make adjustments here:
     $adjusted_base_port = 0 + $base_port - 27000
     $http_port = 1 + $base_port
 
+    # Generate the script used by the creation script:
     file { "/opt/sw/jboss/logs/config/${instance}.sh":
       content => template('gsajboss6/instance/instance_conf.sh.erb')
     }->
+    # Create the instance:
     exec{ "create-instance-${title}":
       command     => "echo 'y' | /opt/sw/jboss/gsainstall/6.4/bin/install_server.sh /opt/sw/jboss/logs/config/${instance}.sh",
       environment => ['HOME=/opt/sw/jboss'],
@@ -50,6 +56,7 @@ define gsajboss6::instance::instance64
       user        => jboss,
       group       => jboss,
     }->
+    # Ensure the instance aliases are present:
     file_line { "instance-alias-${title}":
       path  => '/opt/sw/jboss/gsaconfig/servertab/servertab.props',
       line  => "gsa.instance.alias.${instance}=${instance}",
@@ -60,11 +67,13 @@ define gsajboss6::instance::instance64
       line  => "gsa.instance.rcstart.${instance}=ON",
       match => "^gsa.instance.rcstart.${instance}=.*$",
     }->
+    # Set the port offset so that the configure script will pick it up:
     file_line { "instance-port-offset-${title}":
       path  => "/opt/sw/jboss/gsaconfig/instances/${instance}/runconfig/${instance}_server.props",
       line  => "jboss.socket.binding.port-offset=${adjusted_base_port}",
       match => '^jboss.socket.binding.port-offset=.*$',
     }~>
+    # Run the configure script to set up all of the correct ports:
     exec{ "config-instance-${title}":
       command     => "echo | /opt/sw/jboss/gsainstall/6.4/bin/config_server.sh /opt/sw/jboss/logs/config/${instance}.sh",
       environment => ['HOME=/opt/sw/jboss'],
@@ -74,7 +83,8 @@ define gsajboss6::instance::instance64
       group       => jboss,
     }
 
-    # Using a File resource will interfere with the instance configuration module
+    # Ensure all required instanceconfig directories are present.
+    # NOTE: Using a File resource will interfere with the instance configuration module
     exec { "make-${title}-instance-dirs":
       command => "mkdir -p /opt/sw/jboss/gsaconfig/instances/${instance}/server/instanceconfig/{configuration,deployments}",
       creates => "/opt/sw/jboss/gsaconfig/instances/${instance}/server/instanceconfig/deployments",
@@ -89,6 +99,7 @@ define gsajboss6::instance::instance64
       ensure => directory,
       mode   => '0755',
     }->
+    # Make sure the instanceconfig has the standalone.xml file:
     file { $standalone_file:
       source  => "/opt/sw/jboss/jboss/jboss-eap-6.4/${instance}/configuration/${instance}.xml",
       replace => false,
@@ -110,6 +121,7 @@ define gsajboss6::instance::instance64
       notify  => Gsajboss6::Util::Restart[$instance],
     }
 
+    # Set proxy config for the HTTP connector:
     augeas { "${title} standalone proxy config":
       changes => [
         "set ${connector_path}/connector[#attribute/name='http']/#attribute/proxy-name ${proxy_name}",
@@ -118,7 +130,7 @@ define gsajboss6::instance::instance64
         "set ${connector_path}/connector[#attribute/name='http']/#attribute/secure true",
       ],
     }
-
+    # Add an HTTPS connector
     augeas { "${title} standalone https config":
       changes => [
         "set ${connector_path}/connector[#attribute/name='https']/#attribute/name https",
@@ -134,7 +146,7 @@ define gsajboss6::instance::instance64
         "set ${connector_path}/connector[#attribute/name='https']/ssl/#attribute/cipher-suite \${gsa.host.ssl.ciphers}",
       ],
     }
-
+    # Add an AJP connector
     augeas { "${title} standalone ajp config":
       changes => [
         "set ${connector_path}/connector[#attribute/name='ajp']/#attribute/name ajp",
@@ -170,6 +182,7 @@ define gsajboss6::instance::instance64
       target => '/appconfig/jboss/modules',
     }
 
+    # Set the keystore and truststore info in the shared.props file:
     file_line { "${title}-ssl-props-truststore-location":
       ensure  => present,
       path    => "/opt/sw/jboss/gsaconfig/instances/${instance}/runconfig/${instance}_shared.props",
@@ -207,22 +220,25 @@ define gsajboss6::instance::instance64
     }
 
 
-
+    # Clear the instance of old files (if requested)
     @gsajboss6::util::delete_files {$instance:
       notify => Gsajboss6::Util::Restart[$instance],
     }
 
+    # Deploy files (if requested)
     @gsajboss6::util::deploy_files { "/opt/sw/jboss/gsaconfig/instances/${instance}/server/instanceconfig/deployments/":
       instance => $instance,
       require  => Exec["make-${title}-instance-dirs"],
       notify   => Gsajboss6::Util::Delete_files[$instance],
     }
 
+    # Restart the server
     gsajboss6::util::restart{ $instance:
       ensure  => present,
       require => Exec["make-${title}-instance-dirs"]
     }
 
+    # If running local (for testing), add some extra bits to the instance:
     if $local {
       local_mods::local_instance64{$instance:}
     }

@@ -1,4 +1,6 @@
-# Use Hiera to create a datasource file for an instance with all required connections.
+# Given a single list of datasources, add those datasources to an instance.
+#
+# If you have a list of lists, use the hiera type instead.
 
 define datasource_file_jb6::hiera_instance_dslist (
   $instance,

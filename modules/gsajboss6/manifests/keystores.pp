@@ -1,4 +1,5 @@
 # Add base keystore and truststore
+# Since this is intended for vlabs, we simple use the development keystore and truststore.
 
 class gsajboss6::keystores {
 

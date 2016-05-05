@@ -1,4 +1,7 @@
 # Create JBoss instance
+#
+# This is intended to permit creation of multiple JBoss versions by delegating to the appropriate module.
+# Currently only JBoss EAP 6.4 is supported.
 
 define gsajboss6::instance
 (

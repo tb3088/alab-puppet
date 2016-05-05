@@ -1,4 +1,8 @@
-# Set up the instance for an application
+# Initialize an application. This will:
+# * Ensure the virtual resource for instances are present
+# * Ensure the instance is created (i.e. realize the virtual resource for the instance)
+# * Include any configuration for the instance to make sure anything specific to it is done.
+# * Ensure that the deploy directory gets cleaned of old application files
 
 define applications::util::app_init
 (

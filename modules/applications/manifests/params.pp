@@ -1,4 +1,8 @@
 # Parameters for application classes
+#
+# All version numbers will default to their Hiera versions,
+# and if the Hiera versions are not present, in most cases
+# will default to the value of 'baseline'.
 
 class applications::params {
   $jboss_modules_version = hiera('versions::jboss_modules', 'prototype')

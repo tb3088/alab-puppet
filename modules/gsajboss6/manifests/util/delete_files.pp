@@ -1,4 +1,4 @@
-# Delete files matching a given pattern from the deploy directory
+# Delete files matching a given list of patterns from the deploy directory
 
 define gsajboss6::util::delete_files (
   $instance = $title,
@@ -10,6 +10,7 @@ define gsajboss6::util::delete_files (
   validate_array($delete_patterns)
   validate_string($instance)
 
+  # Since we take a list of patterns, we need to expand them out:
   if $delete_patterns != [] {
     $commands = prefix($delete_patterns, "rm -rf /opt/sw/jboss/jboss/jboss-eap-6.4/${instance}/deployments/")
 

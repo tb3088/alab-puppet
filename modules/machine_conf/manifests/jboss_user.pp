@@ -1,4 +1,7 @@
 # Create user for GSA JBoss
+#
+# Note that in some cases, the JBoss user will require a special UID/GID to match NFS mounts.
+# Ensure the correct values are set prior to the very first run or it will be difficult to correct.
 
 class machine_conf::jboss_user($uid = 201, $gid = 201)
 {

@@ -1,4 +1,4 @@
-# CentOS 5/6 configuration
+# CentOS 5/6 Yum repository configuration
 
 class machine_conf::repo (
   $repo_url    = "http://mirror.techflow.com/techflow/centos/${::operatingsystemmajrelease}/x86_64/",

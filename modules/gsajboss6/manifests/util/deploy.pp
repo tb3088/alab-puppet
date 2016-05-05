@@ -33,6 +33,7 @@ define gsajboss6::util::deploy
 
   validate_array($sources)
 
+  # Add files to the list of those to deploy:
   Gsajboss6::Util::Deploy_files <| title == $deploy_to |> {
     source +> $sources,
   }
