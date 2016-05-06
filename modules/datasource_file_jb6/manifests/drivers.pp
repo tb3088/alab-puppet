@@ -20,6 +20,7 @@ define datasource_file_jb6::drivers($instance) {
       "set server//subsystem/datasources/drivers/driver[#attribute/name='ojdbc7']/#attribute/name ojdbc7",
       "set server//subsystem/datasources/drivers/driver[#attribute/name='ojdbc7']/#attribute/module oracle.jdbc:7",
       "set server//subsystem/datasources/drivers/driver[#attribute/name='ojdbc7']/driver-class/#text oracle.jdbc.driver.OracleDriver",
+      "set server//subsystem/datasources/drivers/driver[#attribute/name='ojdbc7']/xa-datasource-class/#text oracle.jdbc.xa.client.OracleXADataSource",
     ],
   }
 }

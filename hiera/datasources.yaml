@@ -81,7 +81,7 @@ dsFiles:
     assist-tos_report: {jndi_name: TOS_REPORT, database: omis, account: tos_report}
   omisapp:
     omisapp-assist: {jndi_name: AssistDS, database: codb, account: assist}
-    omisapp-omis: {jndi_name: OMIS, database: omis, account: omis}
+    omisapp-omis: {jndi_name: OMIS, database: omis, account: omis, xa: true}
   catalog:
     catalog: {jndi_name: CatalogDS, database: codb, account: fedcat_user}
   billing:
