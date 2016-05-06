@@ -17,6 +17,15 @@ define datasource_file_jb6::hiera (
   $instance_hash = $instances[$instance]
   $ds_lists = $instance_hash['datasource_sets']
 
+  # Remove unused example datasource
+  augeas { "${instance}-remove-ExampleDS":
+    lens    => 'Xml.lns',
+    incl    => "/opt/sw/jboss/gsaconfig/instances/${instance}/server/instanceconfig/configuration/${instance}.xml",
+    changes => [
+      "rm  server//subsystem/datasources/datasource[#attribute/jndi-name='java:jboss/datasources/ExampleDS']",
+    ],
+  }
+
   # Add OJDBC driver modules to the instance configuration file:
   datasource_file_jb6::drivers{ "${instance}-db-drivers":
     instance => $instance,
