@@ -13,11 +13,13 @@ define datasource_file_jb6::drivers($instance) {
     ],
   }
 
-  augeas { "${instance}-remove-h2-driver":
+  augeas { "${instance}-remove-unused-db-drivers":
     lens    => 'Xml.lns',
-    incl    => "/opt/sw/jboss/gsaconfig/instances/${instance}/server/instanceconfig/configuration/${instance}.xml",
+    incl    => $file,
     changes => [
-      "rm  server//subsystem/datasources/drivers/driver[#attribute/name='h2']",
+      "rm  server//subsystem/datasources/drivers/driver[#attribute/name='h2']",             # JBoss EAP default
+      "rm  server//subsystem/datasources/drivers/driver[#attribute/name='ojdbc11.2.0.4']",  # GSA provided OJDBC
+      "rm  server//subsystem/datasources/drivers/driver[#attribute/name='opena']",          # GSA provided
     ],
   }
 
