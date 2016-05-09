@@ -32,6 +32,8 @@ define datasource_file_jb6::datasource (
         "set server//subsystem/datasources/xa-datasource[#attribute/jndi-name='java:/${jndi_name}']/driver/#text ${ojdbc}",
         "set server//subsystem/datasources/xa-datasource[#attribute/jndi-name='java:/${jndi_name}']/xa-datasource-property/#attribute/name URL",
         "set server//subsystem/datasources/xa-datasource[#attribute/jndi-name='java:/${jndi_name}']/xa-datasource-property/#text jdbc:oracle:thin:@${host}:1521:${sid}",
+        "set server//subsystem/datasources/xa-datasource[#attribute/jndi-name='java:/${jndi_name}']/xa-pool/is-same-rm-override/#text false",
+        "set server//subsystem/datasources/xa-datasource[#attribute/jndi-name='java:/${jndi_name}']/xa-pool/no-tx-separate-pools #empty",
         "set server//subsystem/datasources/xa-datasource[#attribute/jndi-name='java:/${jndi_name}']/security/user-name/#text ${account}",
         "set server//subsystem/datasources/xa-datasource[#attribute/jndi-name='java:/${jndi_name}']/security/password/#text ${pw}",
       ],
