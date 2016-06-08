@@ -22,4 +22,21 @@ class instances::assist
     rba => false,
   }
 
+  $standalone_file = "/opt/sw/jboss/gsaconfig/instances/${instance}/server/instanceconfig/configuration/${instance}.xml"
+
+
+
+  # Configure BAAR messaging port and security
+  # set port to: 26496 (update someday to use math to make sure it ends up on 52696)
+  augeas { "baar-messaging-${title}":
+    incl    => $standalone_file,
+    lens    => 'Xml.lns',
+    changes => [
+      "set server/socket-binding-group/socket-binding[#attribute/name='messaging']/#attribute/port 26496",
+      "set server/profile/subsystem[#attribute/xmlns='urn:jboss:domain:messaging:1.4']/hornetq-server/security-enabled/#text false",
+    ],
+  }
+
+
+
 }
