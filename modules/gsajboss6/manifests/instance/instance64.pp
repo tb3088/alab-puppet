@@ -119,11 +119,21 @@ define gsajboss6::instance::instance64
       require => File_line["system-properties-${title}"],
       notify  => Gsajboss6::Util::Restart[$instance],
     }
+	
+	if $proxy_name != '' {
+	  # Set proxy config for the HTTP connector:
+      augeas { "${title} standalone proxy config proxy name":
+        changes => [
+          "set ${connector_path}/connector[#attribute/name='http']/#attribute/proxy-name ${proxy_name}",
+          "set ${connector_path}/connector[#attribute/name='https']/#attribute/proxy-name ${proxy_name}",
+		  "set ${connector_path}/connector[#attribute/name='https']/#attribute/proxy-port 443",
+		],
+      }
+	}
 
     # Set proxy config for the HTTP connector:
     augeas { "${title} standalone proxy config":
       changes => [
-        "set ${connector_path}/connector[#attribute/name='http']/#attribute/proxy-name ${proxy_name}",
         "set ${connector_path}/connector[#attribute/name='http']/#attribute/proxy-port 443",
         "set ${connector_path}/connector[#attribute/name='http']/#attribute/scheme https",
         "set ${connector_path}/connector[#attribute/name='http']/#attribute/secure true",
@@ -134,8 +144,6 @@ define gsajboss6::instance::instance64
       changes => [
         "set ${connector_path}/connector[#attribute/name='https']/#attribute/name https",
         "set ${connector_path}/connector[#attribute/name='https']/#attribute/protocol HTTP/1.1",
-        "set ${connector_path}/connector[#attribute/name='https']/#attribute/proxy-name ${proxy_name}",
-        "set ${connector_path}/connector[#attribute/name='https']/#attribute/proxy-port 443",
         "set ${connector_path}/connector[#attribute/name='https']/#attribute/scheme https",
         "set ${connector_path}/connector[#attribute/name='https']/#attribute/socket-binding https",
         "set ${connector_path}/connector[#attribute/name='https']/#attribute/secure true",
