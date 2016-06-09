@@ -228,7 +228,16 @@ define gsajboss6::instance::instance64
       replace => true,
     }
 
-
+    file_line { "${title}-run-config-squid":
+      ensure  => present,
+      path    => "/opt/sw/jboss/gsaconfig/instances/${instance}/runconfig/${instance}_run.conf",
+      line    => 'JAVA_OPTS="$JAVA_OPTS -Dhttp.nonProxyHosts=localhost\|*.fas.gsarba.com\|*.itss.gsarba.com\|172.22.11.*\|172.22.10.* -Dhttps.proxyHost=squid -Dhttps.proxyPort=3128"',
+      match   => '^.*proxyHost.*$',
+	  after   => '   JAVA_OPTS="$JAVA_OPTS -Djboss.modules.policy-permissions=true"',
+      replace => true,
+    }
+	
+	
     # Clear the instance of old files (if requested)
     @gsajboss6::util::delete_files {$instance:
       notify => Gsajboss6::Util::Restart[$instance],
