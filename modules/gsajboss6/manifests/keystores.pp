@@ -17,7 +17,7 @@ class gsajboss6::keystores {
     owner  => 'jboss',
     group  => 'jboss',
     mode   => '0640',
-    source => 'puppet:///modules/gsajboss6/dev-20150609-03.truststore',
+    source => 'puppet:///modules/gsajboss6/dev-20160524-01.truststore',
     backup => false,
   }
 

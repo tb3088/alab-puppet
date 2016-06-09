@@ -40,6 +40,6 @@ class local_mods
     owner  => 'jboss',
     group  => 'jboss',
     mode   => '0640',
-    source => 'puppet:///modules/local_mods/dev-20150609-03.truststore',
+    source => 'puppet:///modules/local_mods/dev-20160524-01.truststore',
   }
 }
