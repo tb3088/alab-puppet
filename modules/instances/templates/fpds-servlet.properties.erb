@@ -1,0 +1,33 @@
+# authentication info (to be encrypted)
+# Beta Account:
+AuthUser               = 4735_RBS_NBS
+# Production Account:
+#AuthUser               = 4735_GPDS
+AuthPassword           = changeme1#
+SystemLevelUserId      =TOS.HELPDESK@GSA.GOV
+ 
+# URL's for each FPDS-NG web service call that will be made by the FPDS Integration Servlet
+ApproveAwardUrl            = https://beta2.fpds.gov/FPDS/BusinessServices/DataCollection/contracts/1.4/Award
+GetAwardUrl                = https://beta2.fpds.gov/FPDS/BusinessServices/DataCollection/contracts/1.4/Award
+IsExistingAwardCompleteUrl = https://beta2.fpds.gov/FPDS/BusinessServices/DataCollection/contracts/1.4/Award
+GetExistingAwardUrlUrl     = https://beta2.fpds.gov/FPDS/GUIServices/DataCollection/contracts/1.4/Award
+CreateAwardUrl             = https://beta2.fpds.gov/FPDS/BusinessServices/DataCollection/contracts/1.4/Award
+ExistsIDVUrl               = https://beta2.fpds.gov/FPDS/BusinessServices/DataCollection/contracts/1.4/IDV
+ExistsAwardUrl             = https://beta2.fpds.gov/FPDS/BusinessServices/DataCollection/contracts/1.4/Award
+ 
+# Production URLS:
+#ApproveAwardUrl            = https://www.fpds.gov/FPDS/BusinessServices/DataCollection/contracts/1.4/Award
+#CreateAwardUrl             = https://www.fpds.gov/FPDS/BusinessServices/DataCollection/contracts/1.4/Award
+#GetAwardUrl                = https://www.fpds.gov/FPDS/BusinessServices/DataCollection/contracts/1.4/Award
+#GetExistingAwardUrlUrl     = https://www.fpds.gov/FPDS/GUIServices/DataCollection/contracts/1.4/Award
+#IsExistingAwardCompleteUrl = https://www.fpds.gov/FPDS/BusinessServices/DataCollection/contracts/1.4/Award
+#ExistsIDVUrl               = https://www.fpds.gov/FPDS/BusinessServices/DataCollection/contracts/1.4/IDV
+#ExistsAwardUrl             = https://www.fpds.gov/FPDS/BusinessServices/DataCollection/contracts/1.4/Award
+ 
+com.techflow.fpds.services.ApproveAward.logSoapRequest = true
+com.techflow.fpds.services.CreateAward.logSoapRequest = true
+com.techflow.fpds.services.GetAward.logSoapRequest = true
+com.techflow.fpds.services.GetExistingAwardUrl.logSoapRequest = true
+com.techflow.fpds.services.IsExistingAwardComplete.logSoapRequest = true
+com.techflow.fpds.services.ExistsIDV.logSoapRequest = true
+com.techflow.fpds.services.ExistsAward.logSoapRequest = true

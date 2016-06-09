@@ -8,6 +8,7 @@ define instances::util::props
   $rba = true,
   $nba = false,
   $billing = false,
+  $fpds = false,
 )
 {
   require applications::jboss_modules
@@ -63,6 +64,13 @@ define instances::util::props
     file { "${property_path}/nba.properties":
       ensure  => present,
       content => template('instances/nba.properties.erb'),
+    }
+  }
+  
+  if $fpds {
+    file { "${property_path}/servlet.properties":
+      ensure  => present,
+      content => template('instances/fpds-servlet.properties.erb'),
     }
   }
 }

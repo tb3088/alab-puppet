@@ -18,5 +18,10 @@ class instances::fpds
   }
 
   ## Place instance customizations here.
-
+  instances::util::props { $instance:
+    assist => false,
+    rba    => false,
+    nba    => false,
+	fpds   => true,
+  }
 }
