@@ -119,17 +119,17 @@ define gsajboss6::instance::instance64
       require => File_line["system-properties-${title}"],
       notify  => Gsajboss6::Util::Restart[$instance],
     }
-	
-	if $proxy_name != '' {
-	  # Set proxy config for the HTTP connector:
+
+  if $proxy_name != '' {
+    # Set proxy config for the HTTP connector:
       augeas { "${title} standalone proxy config proxy name":
         changes => [
           "set ${connector_path}/connector[#attribute/name='http']/#attribute/proxy-name ${proxy_name}",
           "set ${connector_path}/connector[#attribute/name='https']/#attribute/proxy-name ${proxy_name}",
-		  "set ${connector_path}/connector[#attribute/name='https']/#attribute/proxy-port 443",
-		],
+      "set ${connector_path}/connector[#attribute/name='https']/#attribute/proxy-port 443",
+    ],
       }
-	}
+  }
 
     # Set proxy config for the HTTP connector:
     augeas { "${title} standalone proxy config":
@@ -233,11 +233,11 @@ define gsajboss6::instance::instance64
       path    => "/opt/sw/jboss/gsaconfig/instances/${instance}/runconfig/${instance}_run.conf",
       line    => 'JAVA_OPTS="$JAVA_OPTS -Dhttp.nonProxyHosts=localhost\|*.fas.gsarba.com\|*.itss.gsarba.com\|172.22.11.*\|172.22.10.* -Dhttps.proxyHost=squid -Dhttps.proxyPort=3128"',
       match   => '^.*proxyHost.*$',
-	  after   => '   JAVA_OPTS="$JAVA_OPTS -Djboss.modules.policy-permissions=true"',
+    after     => '   JAVA_OPTS="$JAVA_OPTS -Djboss.modules.policy-permissions=true"',
       replace => true,
     }
-	
-	
+
+
     # Clear the instance of old files (if requested)
     @gsajboss6::util::delete_files {$instance:
       notify => Gsajboss6::Util::Restart[$instance],

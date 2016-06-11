@@ -22,6 +22,6 @@ class instances::fpds
     assist => false,
     rba    => false,
     nba    => false,
-	fpds   => true,
+  fpds     => true,
   }
 }

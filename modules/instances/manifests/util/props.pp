@@ -66,7 +66,7 @@ define instances::util::props
       content => template('instances/nba.properties.erb'),
     }
   }
-  
+
   if $fpds {
     file { "${property_path}/servlet.properties":
       ensure  => present,
