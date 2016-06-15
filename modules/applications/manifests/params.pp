@@ -9,6 +9,7 @@ class applications::params {
 
   $accrual_version = hiera('versions::accrual', 'baseline')
   $agreement_version = hiera('versions::agreement', 'baseline')
+  $archivefund_version = hiera('versions::archivefund', 'baseline')
   $assist_web_version = hiera('versions::assist_web', 'baseline')
   $assist_web_services_version = hiera('versions::assist_web_services', 'baseline')
   $baar_mock_version = hiera('versions::baar_mock', 'FY15QX_Aug_Qrtly')

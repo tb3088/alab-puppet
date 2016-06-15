@@ -3,6 +3,7 @@ versions::jboss_modules: prototype
 
 versions::accrual: baseline
 versions::agreement: baseline
+versions::archivefund: baseline
 versions::assist_web: baseline
 versions::assist_web_services: baseline
 versions::baar_mock: FY15QX_Aug_Qrtly

@@ -145,6 +145,9 @@ applications:
     instance: billing
     build_dirs: [agreement-war]
     delete_patterns: [ 'agreement-war-BUILDJENKINS*.war' ]
+  archivefund:
+    instance: fund
+    build_dirs: [archivefund]
   assist_web:
     instance: assist
     build_dirs: [assist-web-war]

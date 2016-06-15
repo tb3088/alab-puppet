@@ -2,6 +2,7 @@
 
 class role::jbossrba (
       $cprm_version              = $applications::params::cprm_version,
+      $archivefund_version       = $applications::params::archivefund_version,
       $funding_version           = $applications::params::funding_version,
       $itoms_version             = $applications::params::itoms_version,
       $edbpm_version             = $applications::params::edbpm_version,
@@ -16,6 +17,9 @@ class role::jbossrba (
   class { 'applications::cprm':
     version => $cprm_version,
   }
+  class { 'applications::archivefund':
+    version => $archivefund_version,
+  }  
   class { 'applications::funding':
     version => $funding_version,
   }
