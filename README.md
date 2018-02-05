@@ -1,40 +1,39 @@
-# JBoss 6 Puppet project
+# JBoss 6 ALAB Puppet project
 
 ## Purpose
 
-This module installs JBoss and JBoss instances.
-
-## Prerequisites
-
-Local Testing/Development:
-
-* VirtualBox
-* Vagrant
-* Connection to Techflow network (specifically, to
-  mirror.techflow.com)
-* Connection to the internet
-
-Lab:
-
-* Puppet
-* Lab Machine
-* Hiera
-* Connection to mirror.techflow.com
+This module installs JBoss and JBoss instances in the ALAB1 AWS Environment. This code was adapted from Danny's JBoss 6 puppet project, with the necessary changes to run in AWS.
 	
 ## Local Testing/Development Instructions
 
-1. Download the project. Make sure to update the submodules (`git
-   submodule init` followed by `git submoudle update` or check out
-   with the `--recursive` flag).
-2. Run `vagrant up` in the project directory. If you have not already
-   downloaded the Vagrant box, it will do that. Then it will create
-   the machine and run Puppet.
+(To be completed. Thus far I've been messing around in vim)
 
-Run `vagrant destroy -f` when you are all finished and no longer want
-the machine taking up your diskspace.
+## Pre-Installation Instructions
 
-## Tidbits
+As root, ensure that the following folder is created on the box:
 
-* The `jboss` password is the same as in labs. The first time you log
-  in you may need to choose 'Other' at the login prompt and enter the
-  username manually.
+```bash
+mkdir -p /srv/puppet
+```
+
+Since there is no puppet master server planned for this environment, puppet runs are completed on each box via a 'puppet apply', run as root. To this end, the following script goes in `/root/run_puppet.sh`:
+
+```bash
+#!/bin/bash
+
+set -e
+
+puppet_path=/srv/puppet
+hiera_path=/srv/puppet/hiera
+
+#echo "Updating Puppet from git..."
+
+#pushd ${puppet_path}
+#git pull origin master
+#popd
+
+echo "Applying Puppet..."
+puppet apply -t ${puppet_path}/manifests/site.pp --modulepath=${puppet_path}/modules --hiera_config=${hiera_path}/hiera.yaml
+
+echo "Done."
+```

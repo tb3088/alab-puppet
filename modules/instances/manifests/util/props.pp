@@ -23,7 +23,7 @@ define instances::util::props
   $instances_hash = hiera_hash('instances')
   $instance_hash = $instances_hash[$instance]
   $conf_slot = $instance_hash['conf_slot']
-  $property_path = "/appconfig/jboss/modules/conf/${conf_slot}/properties"
+  $property_path = "/opt/sw/jboss/appconfig/jboss/modules/conf/${conf_slot}/properties"
 
 
   if $assist {

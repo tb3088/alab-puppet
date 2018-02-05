@@ -5,7 +5,7 @@
 :hierarchy:
   - common
   - datasources
-  - versions
 
 :yaml:
-  :datadir: /vagrant/hiera
+  :datadir: /srv/puppet/hiera
+

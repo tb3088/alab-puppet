@@ -13,7 +13,7 @@ machine_conf::hosts::dmz_subnet_base: 172.22.12
 machine_conf::hosts::backend_subnet_base: 172.22.12
 # END   Local
 
-machine_conf::repo::repo_url: http://mirror.techflow.com/techflow/centos/%{::operatingsystemmajrelease}/x86_64/
+# machine_conf::repo::repo_url: http://9f360c3d418ff28d5eb0a57bc2b1f0a4-software.s3-website-us-east-1.amazonaws.com/ 
 
 deploy_baar_mock: true
 

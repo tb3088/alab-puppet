@@ -93,7 +93,7 @@ define gsajboss6::instance::instance64
     file {
       [
         "/logs/jboss/${instance}",
-        "/appconfig/jboss/${instance}",
+        "/opt/sw/jboss/appconfig/jboss/${instance}",
       ]:
       ensure => directory,
       mode   => '0755',
@@ -183,12 +183,12 @@ define gsajboss6::instance::instance64
     }
 
     # Set the instance to use our common modules:
-    file { "/appconfig/jboss/${instance}/running/":
+    file { "/opt/sw/jboss/appconfig/jboss/${instance}/running/":
       ensure => directory,
     }->
-    file { "/appconfig/jboss/${instance}/running/modules":
+    file { "/opt/sw/jboss/appconfig/jboss/${instance}/running/modules":
       ensure => link,
-      target => '/appconfig/jboss/modules',
+      target => '/opt/sw/jboss/appconfig/jboss/modules',
     }
 
     # Set the keystore and truststore info in the shared.props file:
@@ -271,8 +271,8 @@ define gsajboss6::instance::instance64
     exec { "rm -rf /opt/sw/jboss/gsaconfig/instances/${instance}":
         onlyif  => "/usr/bin/test -d /opt/sw/jboss/gsaconfig/instances/${instance}",
     }
-    exec { "rm -rf /appconfig/jboss/${instance}":
-        onlyif  => "/usr/bin/test -d /appconfig/jboss/${instance}",
+    exec { "rm -rf /opt/sw/jboss/appconfig/jboss/${instance}":
+        onlyif  => "/usr/bin/test -d /opt/sw/jboss/appconfig/jboss/${instance}",
     }
     exec { "rm -rf /logs/jboss/${instance}":
         onlyif  => "/usr/bin/test -d /logs/jboss/${instance}",
