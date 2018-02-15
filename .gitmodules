@@ -1,3 +1,8 @@
+# Run 'git submodule init; git submodule update' to populate
+# or original clone with '--recurse-submodules'.
+#
+# Reference: https://git-scm.com/book/en/v2/Git-Tools-Submodules
+
 [submodule "modules/stdlib"]
 	path = modules/stdlib
 	url = https://github.com/puppetlabs/puppetlabs-stdlib
@@ -10,3 +15,9 @@
 [submodule "modules/timezone"]
 	path = modules/timezone
 	url = https://github.com/saz/puppet-timezone
+[submodule "ec2tagfacts"]
+	path = ec2tagfacts
+	url = https://github.com/BIAndrews/ec2tagfacts
+[submodule "modules/ec2tagfacts"]
+	path = modules/ec2tagfacts
+	url = https://github.com/BIAndrews/ec2tagfacts
