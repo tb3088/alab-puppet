@@ -1,35 +1,60 @@
 ## This part is just to supress a warning. Continue on for the main portions of the file
 # Turn off virtual packages unless overridden by Hiera:
-if versioncmp($::puppetversion,'3.6.1') >= 0 {
-  $allow_virtual_packages = hiera('allow_virtual_packages',false)
-
-  Package {
-    allow_virtual => $allow_virtual_packages,
-  }
+if versioncmp($::puppetversion, '3.6.1') >= 0 {
+  Package { allow_virtual => hiera('allow_virtual_packages', false) }
 }
 
-File {
-  backup => false,
-}
+File { backup => false }
 
+# Globals
+$facterdir = hiera('facterdir', "${facts['confdir']/../facter}")
+
+# NOTE ec2 tags and external factor needs to match code!
+#https://puppet.com/docs/pe/2017.2/r_n_p_full_example.html
+#TODO convert to structured Fact - https://github.com/BIAndrews/ec2tagfacts
+#  $facts['ec2_tag']['puppet']['role']
+
+# role ::== java-container::jboss | java::tomcat, java:;websphere, cache::squid, lb::haproxy, lb::apache lb::f5
+$role = $facts['ec2_tag.puppet.role']
+# 
+
+# profile/java, apache, squid, haproxy
+# assist/itoms, reports, omisdb
+# instance/same?
+# profile ::== assist::<appname> ?
+
+#TODO change to 'flavor'?
+$instance = $facts['ec2_tag.puppet.instance']
+# an 'instance=sso' may have multiple WARs and potentially separate containers for all of them.
+# but all we need to do is call $role::deploy() with source of war, listen port, source of keystores, JNDI/server.xml
+
+#NOTE! we will NOT support Puppet's 'environment' aside from just defaulting to 'production'.
+# 3rd party modules will go in $codedir/modules/ and put there with git submodules mechanism.
+# whether it be alab1, PI#, somebody's private sandbox, it is *ALL* controlled by the Git Branch that 
+# was checked out and NO representation on disk or Hiera!
+
+# FIXME this doesn't belong here. should be picked up by 'role/jboss*.pp'
+# but should be in hiera as a setting.
 class { 'machine_conf::jboss_user':
   uid => 512611,
   gid => 612611,
 }
 
 ## An attempt to do it the way Danny intended and grab the installation packages from a yum repo wasn't working out.
-## Commented it out for now; we can revisit this later if need be.
+# FIXME use external Hash driven from ec2 CLI
 #class { 'machine_conf::repo':
 #  repo_url => "http://9f360c3d418ff28d5eb0a57bc2b1f0a4-software.s3-website-us-east-1.amazonaws.com/software",
 #}
 
-class { 'gsajboss6::packages':
-  install_from_packages => true,
-}
+# this doesn't belong here. It's specified as a 'require' in gsajboss6
+#class { 'gsajboss6::packages':
+#  install_from_packages => true,
+#}
 
-# The assist box. As we progress through other instances more nodes will be added with node-specific configurations
-node 'ip-172-16-0-81.ec2.internal' {
-
-  ## This will vary based on the machine. So to install the 'apps' instance, you would declare instances::apps.
-  class { 'instances::assist': }
+node 'default' {
+#https://docs.puppet.com/hiera/1/puppet.html#assigning-classes-to-nodes-with-hiera-hierainclude
+  #lookup("instances.${facts['ec2_tag.puppet.instance']}.classes").include
+  if $instance {
+    class { "instances::${instance}": }
+  }
 }
