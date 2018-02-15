@@ -1,0 +1,1 @@
+* refacter sub-modules to use Params and centralize settings and magic paths
