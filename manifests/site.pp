@@ -29,7 +29,7 @@ class { 'gsajboss6::packages':
 
 # The assist box. As we progress through other instances more nodes will be added with node-specific configurations
 node 'ip-172-16-0-81.ec2.internal' {
- 
+
   ## This will vary based on the machine. So to install the 'apps' instance, you would declare instances::apps.
   class { 'instances::assist': }
-}  
+}
