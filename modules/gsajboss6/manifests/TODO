@@ -1,0 +1,4 @@
+* implement a Define in a 'utiity' that can do the tar/zip thing or use Package resource
+
+* define a ::params.pp to set module-wide settings and use inheritance or 'include'. or put them in 'init.pp' and the children packages include the top level class. Didn't I do that somewhere else (mpatton)?
+

@@ -5,14 +5,17 @@ class gsajboss6::packages(
   $jdk_version = '8u131',
   $is_jre = true,
   $install_from_packages = false,
+#TODO use a hash for versions
 )
 {
+  include stdlib
+
+#FIXME all these magic paths need to be defined in a central module Hash
+
   if $install_from_packages {
     require machine_conf::jboss_user
     #require machine_conf::repo
     #require machine_conf::hosts
-
-    include stdlib
 
     $gsainstall = $jboss_version ? {
       '6.4'   => 'gsainstall-6.4',
@@ -27,10 +30,11 @@ class gsajboss6::packages(
     ## Vlab-style directory structure because new things are scary
     file {"/opt/sw/jboss/jboss":
       ensure  => directory,
+#FIXME refernce machine_conf::jboss_user
       owner   => jboss,
       group   => jboss,
       recurse => true,
-  }
+    }
     
     ## The JBoss installation package, grabbed from s3. I plan to store that URL in the hiera data later on.
     file {"/opt/sw/jboss/jboss/zip":
