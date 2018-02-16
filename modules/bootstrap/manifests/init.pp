@@ -1,7 +1,7 @@
 #
 class bootstrap {
   include stdlib
-  include lower("os::${facts['kernel']}")
+  include downcase("os::${facts['kernel']}")
   
   # needed to populate sub-modules
   Package { 'git': }
@@ -9,8 +9,8 @@ class bootstrap {
   
   #FIXME hiera.data is poiting wrong place. use confdir == /etc/puppetlabs/puppet/
   # this needs to go in init.pp
-  file { 'facterdir':
-    path    => $facts[$title],
+  file { 'facterdir':  FIXME, need to pre-run 'puppet config print > facts/puppet_config'
+    path    => lookup('facterdir', { 'default_value' => "${facts['confdir']}/../facter" }),
     ensure  => 'directory',
     owner   => 'root',
     group   => 'root',
@@ -29,14 +29,14 @@ class bootstrap {
   file { 'puppetlabs/facts/ec2-tags.sh':
     path    => "${File['system_facts']['path']}/${title}",
     source  => "puppet:///modules/${module_name}/${title}",
-    mode    => $perms['exec']
+    mode    => $perms['exec'],
     require => File['system_facts'],
   }
 
   file { 'puppetlabs/facter.conf':
     path    => "${File['system_facts']['path']}/${title}",
     source  => "puppet:///modules/${module_name}/${title}",
-    mode    => $perms['exec']
+    mode    => $perms['exec'],
     require => File['system_facts'],
   }
 
