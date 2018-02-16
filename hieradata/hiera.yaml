@@ -1,11 +1,23 @@
 ---
-:backends:
-  - yaml
+version: 5
 
-:hierarchy:
-  - common
-  - datasources
+# https://docs.puppet.com/hiera/3.1/variables.html#where-to-interpolate-data
+#https://codingbee.net/tutorials/puppet/puppet-working-with-a-dynamic-hiera-yaml-file
+# first match wins!, puppet automaticlaly exposes all facters and 'puppet config print' items
+hierarchy:
+  - name: "instances"
+    path: instance/%{ec2_tag.instance}.yaml
+  - name: "roles"
+    path: role/%{ec2_tag.role}.yaml
+  - name: "operating system"
+    path: os/%{os.family}.yaml
+  - name: "datasources"
+    path: datasources.yaml
+  - name: "last ditch"
+    path: common.yaml
 
-:yaml:
-  :datadir: /srv/puppet/hiera
+# to merge Arrays & Hashes; 'hiera --merge-array-hash ...'
+#XXX need 'gem install deep_merge' for it to work?
 
+defaults:
+  data_hash: yaml_data
