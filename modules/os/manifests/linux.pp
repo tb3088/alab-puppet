@@ -1,8 +1,8 @@
 class os::linux (
-    family  = $facts['os']['family'],
-    distro  = $facts['os']['name'],
-    major   = $facts['os']['release']['major'],
-    minor   = $facts['os']['release']['minor']
+    $family  = $facts['os']['family'],
+    $distro  = $facts['os']['name'],
+    $major   = $facts['os']['release']['major'],
+    $minor   = $facts['os']['release']['minor']
   ) inherits os::unix {
 
 # TODO these are RHEL, use case statements to branch
@@ -24,7 +24,7 @@ class os::linux (
     group   => 'root'
   }
 
-  File['/etc/passwd'] {
+  File['/etc/shadow'] {
     group   => 'root'
   }
 }

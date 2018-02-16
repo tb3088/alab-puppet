@@ -67,9 +67,9 @@ class os::unix {
   }
 
   file {'/etc/passwd':
-    ensure  => 'present'
-    #owner
-    mode    => "${perms['file'] - umask}"
+    ensure  => 'present',
+    #owner,
+    mode    => $perms['file'] - $umask
   }
   
   file {'/etc/shadow':
