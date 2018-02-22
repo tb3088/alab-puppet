@@ -1,0 +1,26 @@
+{
+  "author": "Matthew Patton <mpatton@cpaglobal.com>",
+  "license": "Apache-2.0",
+  "name": "firsttofile-common",
+  "operatingsystem_support": [
+  	{ "operatingsystem": "RedHat", "operatingsystemrelease": [ "6", "7" ] },
+  	{ "operatingsystem": "CentOS", "operatingsystemrelease": [ "6", "7" ] },
+  	{ "operatingsystem": "OracleLinux", "operatingsystemrelease": [ "6", "7" ] },
+  	{ "operatingsystem": "Amazon", "operatingsystemrelease": [ "2016" ] },
+  	{ "operatingsystem": "Debian", "operatingsystemrelease": [ "7", "8" ] },
+  	{ "operatingsystem": "Ubuntu", "operatingsystemrelease": [ "14.04", "16.04" ] },
+  	{ "operatingsystem": "Windows", "operatingsystemrelease": [ "Server 2008 R2", "Server 2012", "Server 2012 R2" ] }
+    ],
+  "project_page": "https://confluence.central.cpaglobal.com/display/FTFAWS/",
+  "issues_url": "https://jira.central.cpaglobal.com/browse/FTFAWS",
+  "dependencies": [ 
+  	{ "name": "puppetlabs/stdlib" , "version_requirement": ">= 4.11.0 < 5.0.0" }
+    ],
+  "requirements": [ 
+  	{ "name": "puppet" , "version_requirement": ">= 4.8.2 < 5.0.0" }
+    ],
+  "source": "git@workspace.git/~/puppet.git",
+  "summary": "broad helper functions and definitions",
+  "tags": [],
+  "version": "0.1.0"
+}

@@ -1,0 +1,6 @@
+<%- | String  $cifs_user,
+	  String  $cifs_pwd
+    | -%>
+username=<%= $cifs_user %>
+password=<%= $cifs_pwd %>
+domain=CIFSGROUP

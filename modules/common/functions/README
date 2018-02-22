@@ -1,0 +1,3 @@
+https://docs.puppet.com/guides/custom_functions.html
+
+access Factors with lookupvar('<fact>')
