@@ -1,0 +1,2 @@
+fix File resource mode spec regex to accept '[+-][:digit:]{1,4}' and pass it thru to chmod.
+in real life chmod(1) does the correct thing.

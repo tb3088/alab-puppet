@@ -17,14 +17,18 @@ class os::freebsd {
     'nfsnobody' => 65534
   }
 
-  #TODO passwords, uid, groups
-  
-  File['/etc/passwd'] {
-    group   => 'wheel'
-  }
+#    path  => $::facts['os']['family'] ? {
+#        'Solaris' => '/bin:/usr/bin:/usr/sfw/bin:/usr/ucb:/usr/xpg4/bin',
+#        default   => '/bin:/usr/bin:/usr/local/bin' }
 
-  File['/etc/passwd'] {
-    group   => 'wheel'
-  }
+  #TODO passwords, uid, groups
+#FIXME use 'system_passwd' reference  
+  # File['/etc/passwd'] {
+    # group   => 'wheel'
+  # }
+
+  # File['/etc/passwd'] {
+    # group   => 'wheel'
+  # }
 
 }

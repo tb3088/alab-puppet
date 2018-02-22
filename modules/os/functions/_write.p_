@@ -1,0 +1,6 @@
+function os::mode_write (Integer $who) >> Integer {
+  #TODO redefine args as Virtual? and accept both INT and Array
+  # if array, sum across elements
+#  sprintf("%+04d", $os::perms['write'] * $who)
+  $os::perms['write'] * $who
+}

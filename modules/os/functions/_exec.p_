@@ -1,0 +1,4 @@
+function os::mode_exec (Integer $who) >> Integer {
+#  sprintf("%+04d", $os::perms['exec'] * ($who))
+  $os::perms['exec'] * $who
+}

@@ -20,12 +20,22 @@ class os::linux (
 
 #  sudoers is differnt
 
-  File['/etc/passwd'] {
-    group   => 'root'
+  $distro_compat = $facts['os']['name'] ? {
+    # NOTE - assumes AWS using RHEL6 derivative
+    'Amazon'          => 6,
+    '/Debian|Ubuntu/' => $facts['distro']['codename'],
+    default           => $facts['os']['release']['major'],
   }
 
-  File['/etc/shadow'] {
-    group   => 'root'
+  Exec { path   => '/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/bin' }
+  #"${name}::${osflavor}::path".getvar }
+
+  File['system_shadow'] {
+    group => $facts['os']['family'] ? {
+      'Debian' => 'shadow',
+      default  => undef
+    }
   }
+
 }
 
