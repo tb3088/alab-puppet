@@ -1,0 +1,11 @@
+# use http://librarian-puppet.com/
+
+source 'https://forgeapi.puppetlabs.com'
+
+#cookbook 'keytool', '~> 0.8.1', git: 'https://github.com/timothy-spencer/chef-keytool', branch: 'tspencer/fix/additionalcreatestor'
+
+#cookbook 'stdlib', git: 'https://github.com/puppetlabs/puppetlabs-stdlib'
+#cookbook 'epel', git: 'https://github.com/stahnma/puppet-module-epel'
+cookbook 'concat', git: 'https://github.com/puppetlabs/puppetlabs-concat'
+#cookbook 'timezone', git: 'https://github.com/saz/puppet-timezone'
+#cookbook 'ec2tagfacts', git: 'https://github.com/BIAndrews/ec2tagfacts'
