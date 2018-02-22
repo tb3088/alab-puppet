@@ -7,10 +7,6 @@ function runv() {
     "$@"
 }
 
-# using '.' pretends to be a structured fact during dereference but won't display as such with 'factor -p|yj'
-prefix=${PREFIX-"`basename $0 .sh`."}
-filter="$1"
-
 curl='curl --silent'
 meta_url='http://169.254.169.254/latest/meta-data'
 region=`$curl $meta_url/placement/availability-zone | sed -e 's/[a-z]$//'`
@@ -18,8 +14,12 @@ instance_id=`$curl $meta_url/instance-id`
 
 ${DEBUG:+runv} aws ec2 describe-tags --region ${region:?} \
         --filters "Name=resource-id,Values=${instance_id:?}" \
-        --output text 2>/dev/null | \
-    awk -v prefix="$prefix" -v filter="$filter" '$2 !~ filter { gsub(/[^-[:alnum:]._:]/, "_", $2); printf("%s%s=%s\n", prefix, tolower($2), $NF) }'
+        --output text | \
+    awk -v prefix="${PREFIX-`basename $0 .sh`.}" -v filter="${FILTER-$1}" '
+        $2 ~ filter {
+            gsub(/[^-[:alnum:]._:]/, "_", $2)
+            printf("%s%s=%s\n", prefix, tolower($2), $5)
+        }'
 
 
 # potential way to generate Yaml, first line, print PREFIX:\n and then for every element in array if split, indent one space for every index in array. use
