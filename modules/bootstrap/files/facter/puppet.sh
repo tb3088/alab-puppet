@@ -16,11 +16,14 @@ case "${FORMAT,,}" in
         # TODO: some trickery to further structure items
         # keys like ldap, max, plugin, report, ca, splay, agent, ssl_client, config, ca, host, 
         # http, http_proxy, various 'dir's
+
         awk_begin='BEGIN { printf("---\n%s:\n", prefix); }'
-        awk_printf='printf("  %s: %s\n", $1, $3)'
+
+        # wrap values in single-quotes because YAML parser
+        awk_printf='"  %s: \x27%s\x27\n", $1, $3'
         : ${PREFIX:=`basename $0 .sh`}
         ;;
-    *)  awk_printf='printf("%s%s=%s\n", prefix, $1, $3)'
+    *)  awk_printf='"%s%s=%s\n", prefix, $1, $3'
         : ${PREFIX:=`basename $0 .sh`.}
 esac
 
@@ -32,7 +35,7 @@ awk -v prefix='$PREFIX' -v filter='$FILTER' -v key='$key' '
   \$1 ~ /Debug:/ { print; next; }
   \$1 ~ filter {
         if (length(key) != 0) { \$3 = \$1; \$1 = key; }
-        $awk_printf 
+        printf($awk_printf)
     }
 '
 _EOF

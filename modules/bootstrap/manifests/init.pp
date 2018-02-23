@@ -56,8 +56,9 @@ class bootstrap {
     require => File['facter/facts.d/'],
   }
 
-  exec { 'facter/facts.d/puppet.txt' :
-    command => "${File['facter/puppet.sh']['path']} > ${File['facter/facts.d/']['path']}/puppet.txt",   #${basename($title)}",
+  exec { 'facter/facts.d/puppet.yaml' :
+    command => "${File['facter/puppet.sh']['path']} > ${File['facter/facts.d/']['path']}/puppet.yaml", 
+    environment => [ 'FORMAT=yaml' ],
     cwd     => dirname(File['facter/puppet.sh']['path']),
     require => File['facter/puppet.sh'],
   }
