@@ -1,8 +1,16 @@
 class os {
-
+  
   $kernel = $facts['kernel'].downcase()
   class { "${name}::${kernel}" : }
-  
+
+  $separator = empty($facts['separator']) ? { 
+        true    => {
+            'file' => getvar("${name}::${kernel}::file_separator"),
+            'path' => getvar("${name}::${kernel}::path_separator")
+        },
+        default => $facts['separator']
+  }
+
 # use inheritance instead?
   $perms = getvar("${name}::${kernel}::perms")
 

@@ -1,7 +1,7 @@
 # expose Ruby class constants as Facts
 
-Facter.add(:file) do
+Facter.add(:separator) do
   setcode do
-    { 'separator' => File::SEPARATOR, 'path_separator' => File::PATH_SEPARATOR }
+    { 'file' => File::SEPARATOR, 'path' => File::PATH_SEPARATOR }
   end
 end

@@ -7,14 +7,14 @@ function runv() {
     "$@"
 }
 
-curl='curl --silent'
+curl='curl --silent --fail'
 meta_url='http://169.254.169.254/latest/meta-data'
 region=`$curl $meta_url/placement/availability-zone | sed -e 's/[a-z]$//'`
 instance_id=`$curl $meta_url/instance-id`
 
 ${DEBUG:+runv} aws ec2 describe-tags --region ${region:?} \
-        --filters "Name=resource-id,Values=${instance_id:?}" \
-        --output text | \
+       --filters "Name=resource-id,Values=${instance_id:?}" \
+       --output text 2>/dev/null | 
     awk -v prefix="${PREFIX-`basename $0 .sh`.}" -v filter="${FILTER-$1}" '
         $2 ~ filter {
             gsub(/[^-[:alnum:]._:]/, "_", $2)

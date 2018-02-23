@@ -1,5 +1,8 @@
 class os::unix {
 
+  $file_separator = '/'
+  $path_separator = ':'
+
   $perms = {
     'dir'   => 777,
     'file'  => 666,

@@ -16,7 +16,7 @@ function os::dirs(String $path) >> Array {
   # need to reverse_each($dirs) to properly consume!
   
   # iterators
-  $fragments = split(expand_path($path), $facts['file']['separator'])
+  $fragments = split(expand_path($path), $os::separator['file'])
   # $dirs = reduce($fragments, []) |$memo, $value| {
     # $dir = join([ $memo[length($memo)] ] << $value, $::File::Separator)
     # [ $memo ] << $dir
@@ -24,7 +24,7 @@ function os::dirs(String $path) >> Array {
 
   $dirs = map($fragments) |$index, $value| {
     # ignore $value
-    join($fragments[0, $index + 1], $facts['file']['separator'])
+    join($fragments[0, $index + 1], $os::separator['file'])
   }
   notify { "inside dirs() results in ${dirs}": }
   return $dirs
