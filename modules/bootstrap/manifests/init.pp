@@ -2,17 +2,24 @@
 # on a virgin machine you *must* invoke this module like so
 #   FACTER_confdir=`puppet config print confdir` puppet apply --test -e 'include bootstrap'
 
-class bootstrap {
+class bootstrap
+{
   include stdlib
   include os
 
   # The docs claim Puppet settings should be available as '$<setting>' but 
   # only inside the Class object and not manifests. eg. Puppet[:vardir] in stdlib
-  if empty($facts['confdir']) { fail("Facter 'confdir' must be set!") }
+  if ($facts['confdir'].empty() and $facts['puppet']['confdir'].empty()) { fail("Facter 'confdir' must be set!") }
 
   # notify { 'dirsout' :
     # message => "dirs are ${os::dirs($facter_dir)}"
   # }
+
+  file { 'puppet.conf' :
+    path    => "${facts['confdir']}/puppet.conf",
+    source  => "puppet:///modules/${module_name}/puppet.conf",
+    mode    => os::mode_set($os::perms['read'], $os::perms['all']),
+  }
 
   #TODO use Class 'common::directory' to recursive mkdir
   # and define naming scope so $title do what is expected.
