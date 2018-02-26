@@ -9,8 +9,8 @@
 # every single instance defined in Hiera.
 
 class gsajboss6::instance::hiera (
-  $ensure = 'present',
-)
+    $ensure = 'present',
+  )
 {
   include stdlib
 

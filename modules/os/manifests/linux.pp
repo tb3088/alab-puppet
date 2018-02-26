@@ -1,9 +1,11 @@
-class os::linux (
+class os::linux
+  (
     $family  = $facts['os']['family'],
     $distro  = $facts['os']['name'],
     $major   = $facts['os']['release']['major'],
     $minor   = $facts['os']['release']['minor']
-  ) inherits os::unix {
+  ) inherits os::unix
+{
 
 # TODO these are RHEL, use case statements to branch
 # eg. 'ec2-user'=500 on AmzLinux
