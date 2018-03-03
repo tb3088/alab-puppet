@@ -1,0 +1,32 @@
+---
+gsajboss6::packages::jboss_version: '6.4'
+#-x86_64'
+gsajboss6::packages::jdk_version: '8u131'
+
+gsajboss6::java_verson: '8u131'
+
+gsajboss6::base_dir: &base_dir
+  "/opt/sw/jboss"
+  # interesting idea; https://github.com/grasmash/yaml-expander
+  # https://stackoverflow.com/questions/2063616/how-to-reference-a-yaml-setting-from-elsewhere-in-the-same-yaml-file
+  #jboss_dir: ${gsajboss6.base_dir}/jboss also
+
+  #TODO update manifests to call join(..., $facts['separator']) on array
+gsajboss6::jboss_dir:
+    - *base_dir
+    - "jboss-%{$version.$arch"
+gsajboss6::instance_dir: ""
+  # XXX does this work? or recusion loop?
+gsajboss6::java_dir: "%{lookup('gsajboss6::base_dir')}/java/%{lookup('gsajboss6::java_version')}"
+#  java_dir:
+#    - *base_dir
+#    - "java"
+
+# FIXME make a symlink
+gsajboss6::log_dir: "/logs/jboss"
+
+gsajboss6::user: "jboss"
+gsajboss6::uid: 512611
+gsajboss6::group: "jboss"
+gsajboss6::gid: 612611
+

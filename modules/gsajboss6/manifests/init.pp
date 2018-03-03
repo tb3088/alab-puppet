@@ -10,7 +10,7 @@ class gsajboss6 {
 
 # is 'require' correct? does 'keystores' or jboss_modules have resources that depend on items in 'packages'?
 
-  require gsajboss6::packages
-  require applications::jboss_modules
-  require gsajboss6::keystores
+  include $name::packages
+  include applications::jboss_modules
+  include $name::keystores
 }
