@@ -256,5 +256,10 @@ applications:
     build_dirs: [waa]
     delete_patterns: [ 'webAuditAdmin-BUILDJENKINS*.war' ]
 
-
+s3_buckets: 
+  software: "%{lookup('bucket_hash')}-software"
+  provision: "%{lookup('bucket_hash')}-provision"
+  config: "%{lookup('bucket_hash')}-config"
+  logs: "%{lookup('bucket_hash')}-logs"
+  backups: "%{lookup('bucket_hash')}-backups"
 
