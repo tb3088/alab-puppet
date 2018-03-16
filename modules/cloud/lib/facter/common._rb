@@ -1,0 +1,31 @@
+data = {}
+
+#https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/identify_ec2_instances.html#inspect-document
+Facter.add(:cloud) do
+  #XXX case?
+  confine :kernel => "Windows"
+  
+  setcode do
+  end
+end
+
+#https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/identify_ec2_instances.html
+#http://169.254.169.254/latest/dynamic/instance-identity/document
+#{
+#  "availabilityZone" : "us-east-1a",
+#  "instanceId" : "i-04a986f0f9279c7a4",
+#  "instanceType" : "t2.medium",
+#  "privateIp" : "172.16.0.89",
+#  "imageId" : "ami-891232f2",
+#  "accountId" : "171947115466",
+#  "region" : "us-east-1"
+#}
+#
+#[ -f /sys/hypervisor/uuid ] && [ `head -c 3 /sys/hypervisor/uuid` == ec2 ]
+# dmidecode -s bios-version  yields  [4.2.amazon | Google]
+
+Facter.add(:cloud) do
+  setcode do
+    
+  end
+end

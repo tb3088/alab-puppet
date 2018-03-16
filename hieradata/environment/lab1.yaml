@@ -1,0 +1,20 @@
+# YAML anchors and tags work as expected but you 
+# can't join() substrings without an external function.
+
+bucket_hash: &bucket_hash
+  9f360c3d418ff28d5eb0a57bc2b1f0a4
+
+buckets:
+  # because it was mis-named
+  config:   "%{lookup('bucket_hash')}-conf"
+
+gsajboss6::group:
+  gid:  612611
+  
+gsajboss6::user:
+  uid:  512611
+  gid:  "%{lookup('gsajboss6::group.gid')}"
+  #TODO override to sensible.
+  # home: "%{lookup('os::dirs.home')}/jboss"
+  #FIXME SECURITY 
+  password: '$1$Oj1PJXy0$jwSNlDA9wMM7iQuR.vHlB/'

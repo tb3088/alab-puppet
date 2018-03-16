@@ -1,0 +1,13 @@
+---
+version: 5
+
+defaults:
+  data_hash: yaml_data
+  datadir: hieradata
+
+hierarchy:
+  #FIXME need a fact to drive this.
+  - name: "cloud"
+    path: "%{facts.cloud}.yaml"
+  - name: "common"
+    path: common.yaml
