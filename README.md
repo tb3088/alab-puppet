@@ -11,9 +11,14 @@ This module installs JBoss and JBoss instances in the ALAB1 AWS Environment. Thi
 ## Pre-Installation Instructions
 
 As root, ensure that the following folder is created on the box:
+FIXME
+run 'aws s3 rsync the "software" bucket to `puppet config print bucketdir`
+rsync this TLD to `puppet config environmentpath`/<ENVIRONMENT> AKA /etc/puppetlabs/code/environments/<ENV>
+or once it's in S3
+    ( cd "environment path"; s3 cp xxx-configs/puppet.tar - | tar xf - )
 
 ```bash
-mkdir -p /srv/puppet
+NO! mkdir -p /srv/puppet
 ```
 
 Since there is no puppet master server planned for this environment, puppet runs are completed on each box via a 'puppet apply', run as root. To this end, the following script goes in `/root/run_puppet.sh`:

@@ -1,6 +1,5 @@
-class common {
-  include os
-
+class common
+{
   $source_hierarchy = [
     "_prefix_/${facts['fqdn']}",
     "_prefix_/${facts['hostname']}",
@@ -14,9 +13,7 @@ class common {
     '_prefix_/',
  ]
 
-
-  # XXX can be defined as ::$name::package? instead of package_wrapper?
-  define package_wrapper (
+  define package (
       String $ensure = undef,
       String $provider = undef,
       String $url = undef 

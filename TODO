@@ -1,0 +1,37 @@
+set stringify_facts = false in puppet.conf
+
+SECURITY!
+ use https://github.com/voxpupuli/hiera-eyaml or https://github.com/rylarson/keystores instead.
+  # encryption keys could be fetched from S3 or MUCH better yet, do a KMS call with
+  # https://github.com/adenot/hiera-eyaml-kms 
+  # see https://gist.github.com/FransUrbo/88b26033cb513a8aa569bd5392a427b1
+  
+  
+  
+look at stdlib/vardir.rb and do something like this
+
+Facter.add(:getinstallerpath) do
+  setcode do
+     Facter::Util::Resolution.exec(puppet config print)
+
+and convert it into a Hash by iterating over the results.
+https://puppet.com/docs/facter/3.9/fact_overview.html
+
+But there really should be a way to look at teh Module datastructure directly from Ruby and dump that into a hash if
+it isn't one already. https://github.com/puppetlabs/puppet/blob/master/lib/puppet/settings.rb
+It looks like either @config or @values. Accessor function is called 'values(env, section)'
+There is a puppet::settings::values Class. 
+
+Also if you Facter.add(:label) but the label was previously used (eg. 'os') does it merge or last wins?
+
+add s3cmd to modules/aws. https://github.com/s3tools/s3cmd/releases/download/v2.0.1/s3cmd-2.0.1.tar.gz but probably much easier to just 'pip install s3cmd'.
+also ec2-net-utils.rpm
+
+add 'perf', netperf and psacct RPM to modules/os - allows visibility into ram/proc stats beyond the normal stuff
+
+ntopng is from http://packages.ntop.org/
+
+create 'modules/monitoring/nagios.pp' and add various packages
+nrpe, nagios-plugins-all
+
+Fix File resource inability to handle Ints intead of just strings. (puppet version too old?)

@@ -1,0 +1,7 @@
+* aws account can be extracted from, reliably?
+network => {
+    interfaces => {
+      macs => {
+        0a:e4:a9:6d:f6:b4 => {
+          owner-id => "171947115466" 
+
