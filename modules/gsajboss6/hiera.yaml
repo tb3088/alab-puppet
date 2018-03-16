@@ -1,16 +1,14 @@
 ---
 version: 5
+
 defaults:
-  datadir: hieradata
   data_hash: yaml_data
+  datadir: hieradata
 
 hierarchy:
-  - name: "OS Family"
-    path: "os/%{facts.os.family}.yaml"
-
-  - name: "environment"
-    path: "environment/%{facts.environment}.yaml"
-
+  - name: "OS family"
+    path: "%{facts.os.family}.yaml"
+  - name: "OS kernel"
+    paths: [ "%{facts.kernel}.yaml", unix.yaml ]
   - name: "common"
-    path: "common.yaml"
-
+    path: common.yaml

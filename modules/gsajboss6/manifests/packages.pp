@@ -1,19 +1,20 @@
-# Install packages for GSA JBoss
-
-class gsajboss6::packages(
-  $jboss_version = '6.4',
-  $jdk_version = '8u131',
-  $is_jre = true,
-  $install_from_packages = false,
-#TODO use a hash for versions
-)
+# FIXME rename to 'install'
+class gsajboss6::packages (
+#TODO use APL
+    $jboss_version = '6.4',
+    $jdk_version = '8u131',
+    $is_jre = true,
+    $install_from_packages = false,
+#TODO use ::params or Hiera for versions
+  )
 {
   include stdlib
+  require gsajboss6
 
 #FIXME all these magic paths need to be defined in a central module Hash
 
   if $install_from_packages {
-    require machine_conf::jboss_user
+    #deprecated: require machine_conf::jboss_user
     #require machine_conf::repo
     #require machine_conf::hosts
 
@@ -27,32 +28,25 @@ class gsajboss6::packages(
       default => 'jdk',
     }
 
-    ## Vlab-style directory structure because new things are scary
-    file {"/opt/sw/jboss/jboss":
-      ensure  => directory,
-#FIXME refernce machine_conf::jboss_user
-      owner   => jboss,
-      group   => jboss,
-      recurse => true,
-    }
     
     ## The JBoss installation package, grabbed from s3. I plan to store that URL in the hiera data later on.
-    file {"/opt/sw/jboss/jboss/zip":
-      ensure  => directory,
-      owner   => jboss,
-      group   => jboss,
-      recurse => true,
-      require => [ File["/opt/sw/jboss/jboss"], ],
-    }->
-    file {"/opt/sw/jboss/jboss/zip/jboss-eap-6.4_update5.zip":  
+    # file {"/opt/sw/jboss/jboss/zip":
+      # ensure  => directory,
+      # owner   => jboss,
+      # group   => jboss,
+      # recurse => true,
+      # require => [ File["/opt/sw/jboss/jboss"], ],
+    # }->
+    file {"jboss-eap-6.4_update5.zip":  
       ensure             => file,
       owner              => 'jboss',
       group              => 'jboss',
       source_permissions => ignore,
-      source             => 'https://s3.amazonaws.com/9f360c3d418ff28d5eb0a57bc2b1f0a4-software/software/jboss/jboss-eap-6.4_update5.zip',
+      source             => "%{lookup('buckets.software')/jboss/jboss-eap-6.4_update5.zip'"
       sourceselect	 => all,
       require		 => [ File["/opt/sw/jboss/jboss/zip"], ],
-    }~>
+    }
+#    ~>
     exec {"unzip-jboss-instance-files":
       command     => "unzip /opt/sw/jboss/jboss/zip/jboss-eap-6.4_update5.zip",
       cwd         => "/opt/sw/jboss/jboss/",
@@ -75,11 +69,11 @@ class gsajboss6::packages(
       owner              => 'jboss',
       group              => 'jboss',
       source_permissions => ignore,
-      source             => "https://s3.amazonaws.com/9f360c3d418ff28d5eb0a57bc2b1f0a4-software/software/java/server-jre-${jdk_version}-linux-x64.tar.gz",
+      source             => "https://s3.amazonaws.com/9f360c3d418ff28d5eb0a57bc2b1f0a4-software/java/server-jre-${jdk_version}-linux-x64.tar.gz",
       sourceselect	 => all,
       require		 => [ File["/opt/sw/jboss/java"], ],
     }~>
-    exec {"untar-jre":
+    exec { "untar-jre" :
       command     => "tar xzf /opt/sw/jboss/java/server-jre-${jdk_version}-linux-x64.tar.gz", 
       cwd         => "/opt/sw/jboss/java",
       path        => ['/bin','/usr/bin'],
@@ -87,13 +81,13 @@ class gsajboss6::packages(
       require	  => [ File["/opt/sw/jboss/java"], ],
       user        => 'jboss',
       group       => 'jboss',
-  }
+    }
 
     ## GSA install package from s3. This was able to be cleanly installed from the rpm.
     package { $gsainstall:
       ensure   => present,
       provider => rpm,
-      source   => 'http://s3.amazonaws.com/9f360c3d418ff28d5eb0a57bc2b1f0a4-software/software/gsainstall/gsainstall-6.4-2.x86_64.rpm',
+      source   => 'http://s3.amazonaws.com/9f360c3d418ff28d5eb0a57bc2b1f0a4-software/gsainstall/gsainstall-6.4-2.x86_64.rpm',
     }->
     file {
       [
@@ -132,20 +126,6 @@ class gsajboss6::packages(
       require => Package[$gsainstall],
     }
   } else {
-
-    include stdlib
-
-    file {
-      [
-        '/opt/sw/jboss/logs',
-        '/opt/sw/jboss/logs/config',
-        '/logs/jboss',
-        '/opt/sw/jboss/appconfig/jboss',
-      ]:
-      ensure => directory,
-      owner  => 'jboss',
-      group  => 'jboss',
-    }
 
     # This script will make sure we run the restart command with the environment in place.
     # The old solution of using 'su -' does not always work since it may require a tty.

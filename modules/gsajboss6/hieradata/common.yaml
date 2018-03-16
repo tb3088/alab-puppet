@@ -1,32 +1,94 @@
 ---
-gsajboss6::packages::jboss_version: '6.4'
-#-x86_64'
-gsajboss6::packages::jdk_version: '8u131'
+lookup_options:
+  gsajboss6::user:
+    merge: 'deep'
+  gsajboss6::group:
+    merge: 'deep'
+  gsajboss6::dirs:
+    merge: 'deep'
+  # gsajboss6::versions: #wildcard?
+    # merge: 'deep'
 
-gsajboss6::java_verson: '8u131'
+#FIXME
 
-gsajboss6::base_dir: &base_dir
-  "/opt/sw/jboss"
-  # interesting idea; https://github.com/grasmash/yaml-expander
-  # https://stackoverflow.com/questions/2063616/how-to-reference-a-yaml-setting-from-elsewhere-in-the-same-yaml-file
-  #jboss_dir: ${gsajboss6.base_dir}/jboss also
+# 1. 'sw' is gratuitous
+# 2. adopt JBOSS_HOME=/opt/jboss/[jboss-]eap-x.y (shared).
+# instances should have:
+# CONFIG in [/usr/local]/etc/jboss/<instance> and
+# WAR in /var/lib/jboss/<instance> and
+# LOGS in /var/log/jboss/<instance>
+#
+# arguably _BASE = /var/lib/jboss/<instance> 
+# 3. JAVA_HOME if 3rd party should be /opt/java/<version>
 
-  #TODO update manifests to call join(..., $facts['separator']) on array
-gsajboss6::jboss_dir:
-    - *base_dir
-    - "jboss-%{$version.$arch"
-gsajboss6::instance_dir: ""
-  # XXX does this work? or recusion loop?
-gsajboss6::java_dir: "%{lookup('gsajboss6::base_dir')}/java/%{lookup('gsajboss6::java_version')}"
-#  java_dir:
-#    - *base_dir
-#    - "java"
+# TODO
+# use stdlib::file_line resource to rewrite GSA's rc_scripts/config_jboss_example.sh with less stupid.
+# actually just rewrite them all so they pick up on naming: <config|start|stop|restart>_[jboss_]<instance>.sh
 
-# FIXME make a symlink
-gsajboss6::log_dir: "/logs/jboss"
+#lookup_options:
+#  key:
+#    merge: see https://puppet.com/docs/puppet/5.4/hiera_merging.html#merge-behaviors
 
-gsajboss6::user: "jboss"
-gsajboss6::uid: 512611
-gsajboss6::group: "jboss"
-gsajboss6::gid: 612611
+# NOTICE!!
+# While 'lookup()' can return a Hash/Array natively, the right-hand-side of YAML items has to be a String-like
+# object so 'storing' it in YAML for purposes of 'Automatic Parameter Lookup (APL)' force-converts it to String which
+# will then violate Class parameter datatypes if not also set to receive a String. You have to instead put 'lookup()' 
+# in the Class parameter section explicitly. Otherwise the Hash/Array has to spelled out in proper YAML format.
+#
+# CAN NOT DO THIS!!
+#gsajboss6::user:    "%{lookup('os::users.jboss', Hash)}"
+#gsajboss6::group:   %{lookup('os::groups.jboss')}
+gsajboss6::versions:
+  jboss: 6.4
+  java: '8u131'
+
+gsajboss6::group:
+  name: 'jboss'
+  gid:  201
+
+gsajboss6::user:
+  name: 'jboss'
+  uid:  201
+  gid:  "%{lookup('gsajboss6::group.gid')}"
+  home: &root_dir
+    '/opt/sw/jboss'
+  
+gsajboss6::dirs:
+  # think JBOSS_HOME aka CATALINA_HOME, not to be confused with JBOSS_BASE (aka instance root)
+  # FIXME lookup '/opt' from os::dirs.opt
+  home:
+    path: &jboss_home
+      "/opt/sw/jboss-%{lookup('versions.jboss')}"
+  # alternately
+  # - *root_dir
+  # - "jboss-%{lookup('gsajboss6::jboss.version')}"
+  base:
+    path: *root_dir
+  #base_dir: /var/lib/jboss/<instance>
+  #
+  #FIXME this path is just wrong
+  log: '/logs/jboss'
+
+gsajboss6::package::jboss:
+  6.4:
+    - "gsainstall-6.4-2.%{facts.os.architecture}"
+    - 'jboss-eap-6.4_update5.zip'
+
+gsajboss6::package::java:
+  # Facters capitalized and no match for 'x64'
+  '8u131':  'jre-8u131-linux-x64'
+
+
+# interesting idea; https://github.com/grasmash/yaml-expander
+# https://stackoverflow.com/questions/2063616/how-to-reference-a-yaml-setting-from-elsewhere-in-the-same-yaml-file
+#jboss_dir: ${gsajboss6.base_dir}/jboss also
+#
+#TODO update manifests to call isInstance?(Array) then join(..., $facts['separator']) on array
+# alternately
+  # - *root_dir
+  # - "jboss-%{lookup('gsajboss6::jboss_version')}"
+
+
+
+#gsajboss6::java_dir: "%{lookup('gsajboss6::base_dir')}/java/%{lookup('gsajboss6::java_version')}"
 
