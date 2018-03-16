@@ -27,7 +27,7 @@ case "${FORMAT,,}" in
         # keys like ldap, max, plugin, report, ca, splay, agent, ssl_client, config, ca, host, 
         # http, http_proxy, various 'dir's
 
-        awk_begin='BEGIN { printf("---\n%s:\n", prefix); }'
+        awk_begin='printf("---\n%s:\n", prefix)'
 
         # wrap in single-quotes, because YAML parser
         awk_printf='"  %s: \x27%s\x27\n", $1, $3'
@@ -36,12 +36,19 @@ case "${FORMAT,,}" in
         # NOTE - 'filter' and 'key' are by definition mutually exclusive!
         read -r -d '' cmd_awk <<_EOF || true
 |awk -v prefix='$PREFIX' -v filter='$FILTER' -v key='$key' '
-    $awk_begin
+    BEGIN {
+        if (length(key) != 0) { filter=key; done=1 }
+        $awk_begin
+    }
     \$1 ~ /Debug:/ { print; next; }
     \$1 ~ filter {
-        if (length(key) != 0) { \$3 = \$1; \$1 = key; }
         printf($awk_printf)
+        if (done == 1) { exit; }
     }
+    END {
+        $awk_end
+    }
+
 '
 _EOF
         ;;

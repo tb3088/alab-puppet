@@ -24,24 +24,29 @@ case "${FORMAT,,}" in
         post_format="|python -c 'import sys, yaml, json; json.dump(yaml.load(sys.stdin), sys.stdout, indent=4)'"
         ;&
     yaml) 
-        awk_begin='BEGIN { printf("---\n%s:\n", prefix); }'
+        awk_begin='printf("---\n%s:\n", prefix)'
 
         # wrap in single-quotes, because YAML parser
         awk_printf='"  %s: \x27%s\x27\n", tolower($2), $5'
         ;&
     text|yaml|json)
         FORMAT=text
-        # NOTE - 'filter' and 'key' are by definition mutually exclusive!
+        # NOTICE: 'filter' and 'key' are mutually exclusive!
         read -r -d '' cmd_awk <<_EOF || true
 |awk -v prefix='$PREFIX' -v filter='$FILTER' -v key='$key' '
-    $awk_begin
+    BEGIN {
+        if (length(key) != 0) { filter=key; done=1 }
+        $awk_begin
+    }
     \$2 ~ filter {
-        if (\$2 ~ key) { quit=1; }
         gsub(/[^-[:alnum:]._:]/, "_", \$2)
         printf($awk_printf)
-        if (quit == 1) { exit; }
+        if (done == 1) { exit; }
     }
-    $awk_end
+    END {
+        $awk_end
+    }
+
 '
 _EOF
         ;;
