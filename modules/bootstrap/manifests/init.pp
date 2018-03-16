@@ -25,20 +25,19 @@ class bootstrap
   # and define naming scope so $title do what is expected.
   
   file { 'facter/' :
-    path    => expand_path("${facts['confdir']}/../facter"),
     ensure  => 'directory',
+    path    => expand_path("${facts['confdir']}/../facter"),
   }
 
   file { 'facter/facts.d/' :
-    path    => "${File['facter/']['path']}/facts.d",
     ensure  => 'directory',
+    path    => "${File['facter/']['path']}/facts.d",
     require => File['facter/'],
   }
 
   file { 'facter/facter.conf' :
     path    => "${File['facter/']['path']}/facter.conf",
     source  => "puppet:///modules/${module_name}/facter/facter.conf",
-    #mode    => os::mode_exec($os::perms['all']),
     mode    => os::mode_set($os::perms['read'], $os::perms['all']),
     require => File['facter/'],
   }
@@ -50,17 +49,8 @@ class bootstrap
   file { 'facter/puppet.sh' :
    path     => "${File['facter/']['path']}/puppet.sh",
    source   => "puppet:///modules/${module_name}/facter/puppet.sh",
-   #FIXME File resource' *stupid* mode string limitations
-   #mode    => os::mode_exec($os::perms['all']),
    mode     => os::mode_set($os::perms['read']+$os::perms['exec'], $os::perms['all']),
    require  => File['facter/facts.d/'],
-  }
-
-  file { 'facter/facts.d/ec2_tag.sh' :
-    path    => "${File['facter/facts.d/']['path']}/ec2_tag.sh",
-    source  => "puppet:///modules/${module_name}/facter/facts.d/ec2_tag.sh",
-    mode    => os::mode_set($os::perms['read']+$os::perms['exec'], $os::perms['all']),
-    require => File['facter/facts.d/'],
   }
 
   exec { 'facter/facts.d/puppet.yaml' :
