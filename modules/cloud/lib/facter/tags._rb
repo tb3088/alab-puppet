@@ -1,3 +1,3 @@
 #TODO
-#invoke 'FORMAT=yaml facts/ec2_tags.sh' or re-implement using SDK
+#invoke 'FORMAT=yaml facts/tags.sh' or re-implement using SDK
 #https://docs.aws.amazon.com/sdk-for-ruby/v3/api/index.html

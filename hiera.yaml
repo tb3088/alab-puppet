@@ -11,13 +11,13 @@ defaults:
 hierarchy:
 # need node, role, instance
   - name: "instance"
-    path: "instance/%{facts.'ec2_tag.puppet.instance'}.yaml"
+    path: "instance/%{facts.'tags.puppet.instance'}.yaml"
   - name: "lab"
-    path: "environment/%{facts.'ec2_tag.lab'}.yaml"
+    path: "environment/%{facts.'tags.lab'}.yaml"
   - name: "environment"
     path: "environments/%{facts.environment}.yaml"
   - name: "role"
-    path: "role/%{facts.'ec2_tag.puppet.role'}.yaml"
+    path: "role/%{facts.'tags.puppet.role'}.yaml"
   - name: "OS name"
     path: "%{facts.os.name}.yaml"
   - name: "OS family"
@@ -34,9 +34,9 @@ hierarchy:
     path: common.yaml
 
 #  - name: "instances"
-#    path: "instance/%{facts.'ec2_tag.puppet.instance'}.yaml"
+#    path: "instance/%{facts.'tags.puppet.instance'}.yaml"
 #  - name: "roles"
-#    path: "role/%{facts.'ec2_tag.puppet.role'}.yaml"
+#    path: "role/%{facts.'tags.puppet.role'}.yaml"
 
 
 # to merge Arrays & Hashes; 'hiera --merge-array-hash ...'
