@@ -13,9 +13,12 @@ machine_conf::hosts::dmz_subnet_base: 172.22.12
 machine_conf::hosts::backend_subnet_base: 172.22.12
 # END   Local
 
-# machine_conf::repo::repo_url: http://9f360c3d418ff28d5eb0a57bc2b1f0a4-software.s3-website-us-east-1.amazonaws.com/ 
-
+machine_conf::repo.url: "s3://%{lookup('buckets.software')}"
 deploy_baar_mock: true
+
+lookup_options:
+  buckets:
+    merge: 'hash'
 
 # Server groups and each instance in them
 #
@@ -256,10 +259,11 @@ applications:
     build_dirs: [waa]
     delete_patterns: [ 'webAuditAdmin-BUILDJENKINS*.war' ]
 
-s3_buckets: 
+    
+buckets: 
   software: "%{lookup('bucket_hash')}-software"
   provision: "%{lookup('bucket_hash')}-provision"
-  config: "%{lookup('bucket_hash')}-config"
-  logs: "%{lookup('bucket_hash')}-logs"
-  backups: "%{lookup('bucket_hash')}-backups"
+  config:   "%{lookup('bucket_hash')}-config"
+  logs:     "%{lookup('bucket_hash')}-logs"
+  backup:   "%{lookup('bucket_hash')}-backup"
 

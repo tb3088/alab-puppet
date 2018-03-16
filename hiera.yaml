@@ -9,21 +9,35 @@ defaults:
 #https://codingbee.net/tutorials/puppet/puppet-working-with-a-dynamic-hiera-yaml-file
 # first match wins!, puppet automaticlaly exposes all facters and 'puppet config print' items
 hierarchy:
-# these are handled at the module level
-   - name: "environment"
-     path: environments/%{facts.environment}.yaml
-   - name: "lab"
-     path: environments/%{facts.ec2_tag.lab}.yaml
-#  - name: "instances"
-#    path: instance/%{facts.ec2_tag.puppet.instance}.yaml
-#  - name: "roles"
-#    path: role/%{ec2_tag.puppet.role}.yaml
-  - name: "operating system"
-    path: os/%{facts.os.family}.yaml
+# need node, role, instance
+  - name: "instance"
+    path: "instance/%{facts.'ec2_tag.puppet.instance'}.yaml"
+  - name: "lab"
+    path: "environment/%{facts.'ec2_tag.lab'}.yaml"
+  - name: "environment"
+    path: "environments/%{facts.environment}.yaml"
+  - name: "role"
+    path: "role/%{facts.'ec2_tag.puppet.role'}.yaml"
+  - name: "OS name"
+    path: "%{facts.os.name}.yaml"
+  - name: "OS family"
+    path: "%{facts.os.family}.yaml"
+  - name: "OS kernel"
+    paths: [ "%{facts.kernel}.yaml", unix.yaml ]
+    #TODO rename yaml and disperse app stuff to it's module?
+    # reorganize and use lookup() and configure lookup_options like 'os'
+  - name: "application"
+    path: versions.yaml
   - name: "datasource"
     path: datasources.yaml
   - name: "last ditch"
     path: common.yaml
+
+#  - name: "instances"
+#    path: "instance/%{facts.'ec2_tag.puppet.instance'}.yaml"
+#  - name: "roles"
+#    path: "role/%{facts.'ec2_tag.puppet.role'}.yaml"
+
 
 # to merge Arrays & Hashes; 'hiera --merge-array-hash ...'
 #XXX need 'gem install deep_merge' for it to work?

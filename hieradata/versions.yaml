@@ -31,3 +31,10 @@ versions::static: baseline
 versions::support_tools: baseline
 versions::tos: baseline
 versions::web_audit_admin: baseline
+
+# versions:
+  # jboss:    6.4
+  # java:     '8u131'
+  # fuse:
+  # wildfly:  '~> 12.0'
+  # tomcat:   '~> 8.0.50'
