@@ -1,0 +1,4 @@
+---
+os::separator:
+  file: '\'
+  path: ';'

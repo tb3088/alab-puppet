@@ -1,0 +1,20 @@
+---
+#os::users:
+
+os::groups:
+  mail:
+    gid: 12
+  uucp:
+    gid: 14
+  man:
+    gid: 15
+  utmp:
+    gid: 22
+  lock:
+    gid: 54
+  sshd:
+    gid: 74
+  dbus:
+    gid: 81
+  nfsnobody:
+    gid: 65534

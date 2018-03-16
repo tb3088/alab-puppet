@@ -1,4 +1,4 @@
-# this ONLY works without side-effects if $path is an absolute (or possibly './xxx')
+# FIXME this ONLY works without side-effects if $path is an absolute (or possibly './xxx')
 function os::dirs(String $path) >> Array {
   include stdlib
 
@@ -7,9 +7,9 @@ function os::dirs(String $path) >> Array {
   if ($path == undef) or $path.empty() 
   # or 
     # (($path.length() == 1) and 
-       # (($path[0] == $facts['file']['separator']) or
+       # (($path[0] == $facts['os']['separator']) or
         # ($path[0] == '.')))
-    { return undef }
+    { return nil }
 
   # recursion
   #return [ $path ] << os::dirs(dirname($path))
@@ -26,6 +26,7 @@ function os::dirs(String $path) >> Array {
     # ignore $value
     join($fragments[0, $index + 1], $os::separator['file'])
   }
+  
   notify { "inside dirs() results in ${dirs}": }
-  return $dirs
+  return unique($dirs)
 }

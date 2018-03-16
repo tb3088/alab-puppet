@@ -1,0 +1,10 @@
+---
+lookup_options:
+  '^os::(users|uids|groups|gids)$':
+    merge: 'deep'
+  os::packages:
+    merge: 'hash'
+  os::path:
+    merge: 'unique'
+
+os::distro_compat: "%{facts.os.release.major}"

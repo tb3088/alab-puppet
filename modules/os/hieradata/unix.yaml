@@ -1,0 +1,132 @@
+---
+os::separator:
+  file: '/'
+  path: ':'
+
+os::default:
+  shell:    '/bin/bash'
+  # expire:
+  directory: &default_directory
+    owner:  0
+    group:  0
+    # XXX: Puppet 4.10 is till broken and demands string
+    mode:   '0755'
+  file: &default_file
+    owner:  0
+    group:  0
+    mode:   '0644'
+
+os::dirs:
+  etc:
+    path:   '/etc'
+    <<: *default_directory
+  temp:
+    path:   '/tmp'
+    <<: *default_directory
+    mode:   1777
+  var:
+    path:   '/var'
+    <<: *default_directory
+  state:
+    path:   '/var/lib'
+    <<: *default_directory
+  log:
+    path:   '/var/log'
+    <<: *default_directory
+  home:
+    path:  '/home'
+    <<: *default_directory
+  opt:
+    path:   '/opt'
+    <<: *default_directory
+  #3rdparty: *opt
+  local:
+    path:   '/usr/local'
+    <<: *default_directory
+
+os::files:
+  password: 
+    path:   "%{lookup('os::dirs.etc')}/passwd"
+    <<: *default_file
+    mode:   644
+  shadow:   
+    path:   "%{lookup('os::dirs.etc')}/shadow"
+    <<: *default_file
+    mode:   640
+
+os::umask:  22
+os::perms:
+  directory: 777
+  file:     666
+  suid:     4000
+  sgid:     2000
+  sticky:   1000
+  t:        1000
+  exec:     1
+  e:        1
+  write:    2
+  w:        2
+  read:     4
+  r:        4
+  user:     100
+  u:        100
+  group:    10
+  g:        10
+  other:    1
+  o:        1
+  all:      111
+
+os::path: [ '/sbin', '/bin', '/usr/sbin', '/usr/bin' ]  
+
+os::users:
+  root:
+    name:   'root'
+    uid:    0
+    gid:    0
+    groups: []
+    home:   '/'
+#    comment:
+#    expire:
+#    shell:
+
+    # 'bin'   => 1,
+    # 'daemon' => 2,
+    # 'adm'   => 3,
+    # 'lp'    => 4,
+    # 'sync'  => 5,
+    # 'shutdown' => 6,
+    # 'halt'  => 7,
+    # 'mail'  => 8,
+    # 'uucp'  => 10,
+    # 'nobody' => 99
+    
+os::uids:
+  0:    'root'
+  1:    'bin'
+
+os::groups:
+  root:
+    gid: 0
+    # various fields
+    users: []
+  bin:
+    gid: 1
+    users: ['bin', 'daemon']
+  sys:
+    gid: 3
+    users: ['bin', 'adm']
+    # 'adm'   => 4,    #:adm,daemon
+    # 'tty'   => 5,
+    # 'disk'  => 6,
+    # 'lp'    => 7,    #:daemon
+    # 'mem'   => 8,
+    # 'kmem'  => 9,
+    # 'wheel' => 10,
+    # 'nobody' => 99,
+    # 'users' => 100
+
+os::gids:
+  0:    'root'
+  1:    'bin'
+  2:    'daemon'
+  3:    'sys'

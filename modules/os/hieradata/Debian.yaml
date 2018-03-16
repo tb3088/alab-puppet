@@ -1,0 +1,2 @@
+---
+os::distro_compat: "%{facts.distro.codename}"

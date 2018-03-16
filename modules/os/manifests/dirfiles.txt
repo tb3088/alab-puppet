@@ -1,0 +1,101 @@
+#----- Dirs -----
+
+  
+#TODO reduce these to a Hiera lookup so remove programatic assumptions
+
+#  file { 'sysdir_etc' :
+#    ensure => directory,
+#    mode   => $mode['dir']
+  os::directory { 'sysdir_etc' :
+    path   => '/etc',
+  }
+
+  #TODO enforce as mount point
+  os::directory { 'sysdir_temp' :
+    path   => '/tmp',
+    mode   => os::mode($perms['dir'] + $perms['sticky'])
+  }
+
+  #TODO enforce as mount point
+#  file { 'sysdir_var' :
+#    ensure => directory,
+#    mode   => $mode['dir']
+  os::directory { 'sysdir_var' :
+      path   => lookup('os::directory.var')
+  }
+
+#  file { 'sysdir_state' :
+#    ensure => directory,
+#    require => File['sysdir_var'],
+#    path   => "${File['sysdir_var']['path']}/lib",
+#    mode   => $mode['dir']
+  os::directory { 'sysdir_state' :
+    require => Os::Directory['sysdir_var'],
+    path   => "${Os::Directory['sysdir_var']['path']}/lib",
+  }
+
+#  file { 'sysdir_log' :
+#    ensure => directory,
+#    require => File['sysdir_var'],
+#    path   => "${File['sysdir_var']['path']}/log",
+#    mode   => $mode['dir']
+#  }
+#
+#  file { 'sysdir_pid' :
+#    ensure => directory,
+#    require => File['sysdir_var'],
+#    path   => "${File['sysdir_var']['path']}/run",
+#    mode   => $mode['dir']
+#  }
+#
+#  file { 'sysdir_cache' :
+#    ensure => directory,
+#    require => File['sysdir_var'],
+#    path   => "${File['sysdir_var']['path']}/cache",
+#    mode   => $mode['dir']
+#  }
+#
+#  file { 'sysdir_lock' :
+#    ensure => directory,
+#    require => File['sysdir_var'],
+#    path   => "${File['sysdir_var']['path']}/lock",
+#    mode   => $mode['dir']
+#  }
+#
+#  file { 'sysdir_spool' :
+#    ensure => directory,
+#    require => File['sysdir_var'],
+#    path   => "${File['sysdir_var']['path']}/spool",
+#    mode   => $mode['dir']
+#  }
+#
+#  file { 'sysdir_mail' :
+#    ensure => directory,
+#    require => File['sysdir_var'],
+#    path   => "${File['sysdir_spool']['path']}/mail",
+#    mode   => $mode['dir']
+#  }
+
+
+#----- Files -----
+#TODO reduce this to a Hiera lookup so remove programatic assumptions
+  file { 'system_passwd' :
+    require => Os::Directory['sysdir_etc'],
+    path    =>  "${Os::Directory['sysdir_etc']['path']}/passwd",
+#    require => File['sysdir_etc'],
+#    path   =>  "${File['sysdir_etc']['path']}/passwd"
+    mode    => os::mode(644)
+  }
+
+  file { 'system_shadow' :
+#    require => File['sysdir_etc'],
+#    path =>  "${File['sysdir_etc']['path']}/shadow", # solaris uses passwd.shadow?
+    require => Os::Directory['sysdir_etc'],
+    path =>  "${Os::Directory['sysdir_etc']['path']}/shadow",
+    mode   => os::mode(640)
+  }
+#
+#  file { 'system_group' :
+#    require => File['sysdir_etc'],
+#    path =>  "${File['sysdir_etc']['path']}/group"
+#  }

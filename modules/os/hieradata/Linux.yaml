@@ -1,0 +1,9 @@
+---
+os::packages:
+  dmidecode:
+    name: dmidecode
+  ntp: 
+    name: ntp
+    service: ntpd
+  ftp:
+    name: ftp

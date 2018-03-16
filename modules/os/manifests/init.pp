@@ -1,29 +1,39 @@
-class os {
+class os (
+    Hash $separator = $facts['separator'],
+    Hash $perms = undef,
+    Variant[String, Integer] $umask = empty($facts['umask']) ? {
+        true    => 22,
+        default => $facts['umask']
+    },
+    Array[String] $path,
+  )
+{
+  include stdlib
+
+  # $users = lookup('os::users' with deep merge)
+  # $groups = lookup('os::groups' with deep merge)
+  # $uid = lookup('os::uid' with deep merge)
+  # $gid = lookup('os::gid' with deep merge)
   
-  $kernel = $facts['kernel'].downcase()
-  class { "${name}::${kernel}" : }
+  Exec { path => join(lookup('os::path'), $separator['file']) }
 
-  $separator = empty($facts['separator']) ? { 
-        true    => {
-            'file' => getvar("${name}::${kernel}::file_separator"),
-            'path' => getvar("${name}::${kernel}::path_separator")
-        },
-        default => $facts['separator']
-  }
+  File { * => lookup('os::default.file') }
 
-# use inheritance instead?
-  $perms = getvar("${name}::${kernel}::perms")
-
+  #TODO 
+  # get dirs() working
+  # handle different data types, especially Array as input
   define directory ( 
-      String $path  = $title,
-      String $owner = undef,
-      String $group = undef,
-      String $mode  = undef,
-    ) {
+      Variant[String, Array[String]] $path  = $title,
+      Hash $attributes = lookup('os::default.directory', Hash, { 
+            default_value => { user => 0, group => 0, mode => '0755' }
+        }),
+    )
+  {
+    # frankly should just make this an Exec of 'install -d -o $owner -g $group -m $mode $path'.
+    # on windows 'mkdir' but doesn't address ownership
 
- # File<| title == $title |>
-
-  # $params = {
+    # File<| title == $title |>
+  #   $params = {
     # ensure => present,
     # owner  => 'root',
     # group  => 'root',
@@ -41,17 +51,15 @@ class os {
   # }    
     #TODO
 #   $elements = split path to result in array with successive dirname()
-    $elements = os::dirs($path)
+#    $elements = os::dirs($path)
 #   $elements.each | String $element| {
 #   file { $element :
     file { $title :
       ensure => 'directory',
-      path  => $path,
-      owner => $owner,
-      group => $group,
-      mode  => $mode,
+      *       => lookup('os::default.directory')
     }
-#    }
   }
 
+  #$kernel = $facts['kernel'].downcase()
+  class { "${name}::${facts['kernel'].downcase()}" : }
 }
