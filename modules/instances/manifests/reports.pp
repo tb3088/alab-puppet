@@ -1,10 +1,10 @@
 # Create/configure instance
 
 class instances::reports
-(
-  $instance = 'reports',
-  $ensure = 'present',
-)
+  (
+    $instance = 'reports',
+    $ensure = 'present',
+  )
 {
   require gsajboss6::instance::hiera
 
