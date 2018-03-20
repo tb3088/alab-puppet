@@ -14,7 +14,7 @@ set -eo pipefail
 
 case "${FORMAT,,}" in
     text)
-        awk_printf='"%s.%s=\x27%s\x27\n", prefix, $1, $3'
+        awk_printf='printf("%s.%s=%s\n", prefix, $1, $3)'
         ;;&
     json)
         post_format="|python -c 'import sys, yaml, json; json.dump(yaml.load(sys.stdin), sys.stdout, indent=4)'"
@@ -30,7 +30,7 @@ case "${FORMAT,,}" in
         awk_begin='printf("---\n%s:\n", prefix)'
 
         # wrap in single-quotes, because YAML parser
-        awk_printf='"  %s: \x27%s\x27\n", $1, $3'
+        awk_printf='printf("  %s: \x27%s\x27\n", $1, $3)'
         ;&
     text|yaml|json)
         # NOTE - 'filter' and 'key' are by definition mutually exclusive!
@@ -42,7 +42,7 @@ case "${FORMAT,,}" in
     }
     \$1 ~ /Debug:/ { print; next; }
     \$1 ~ filter {
-        printf($awk_printf)
+        $awk_printf
         if (done == 1) { exit; }
     }
     END {

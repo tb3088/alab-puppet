@@ -19,7 +19,8 @@ meta_url='http://169.254.169.254/latest/meta-data'
 case "${FORMAT,,}" in
     text)  
         awk_begin='printf("%s=[ ", prefix)'
-        awk_printf='"\x27%s\x27, ", $3'
+        # lookup() fails to match if double-quoted
+        awk_printf='gsub(/ /, "\\ ", $3); printf("%s, ", $3)'
         awk_end='printf("]\n")'
         ;;&
     json)
@@ -29,7 +30,7 @@ case "${FORMAT,,}" in
         awk_begin='printf("---\n%s:\n", prefix)'
 
         # wrap in single-quotes, because YAML parser
-        awk_printf='"  - \x27%s\x27\n", $3'
+        awk_printf='printf("  - \x27%s\x27\n", $3)'
         ;&
     text|yaml|json)
         # NOTE - 'filter' and 'key' are by definition mutually exclusive!
@@ -40,7 +41,7 @@ case "${FORMAT,,}" in
         $awk_begin
     }
     \$3 ~ filter {
-        printf($awk_printf)
+        $awk_printf
         if (done == 1) { exit; }
     }
     END {
