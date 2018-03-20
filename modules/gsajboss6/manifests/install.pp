@@ -1,11 +1,8 @@
-# FIXME rename to 'install'
-class gsajboss6::packages (
+# TODO rename to 'install'
+class gsajboss6::install (
 #TODO use APL
-    $jboss_version = '6.4',
-    $jdk_version = '8u131',
-    $is_jre = true,
-    $install_from_packages = false,
-#TODO use ::params or Hiera for versions
+    Array $jboss,
+    Array $java,
   )
 {
   include stdlib
@@ -13,20 +10,12 @@ class gsajboss6::packages (
 
 #FIXME all these magic paths need to be defined in a central module Hash
 
-  if $install_from_packages {
+# XXX really?
+#  if $install_from_packages {
+
     #deprecated: require machine_conf::jboss_user
     #require machine_conf::repo
     #require machine_conf::hosts
-
-    $gsainstall = $jboss_version ? {
-      '6.4'   => 'gsainstall-6.4',
-      default => 'gsainstall',
-    }
-
-    $java_type = $is_jre ? {
-      true    => 'jre',
-      default => 'jdk',
-    }
 
     
     ## The JBoss installation package, grabbed from s3. I plan to store that URL in the hiera data later on.
@@ -42,7 +31,7 @@ class gsajboss6::packages (
       owner              => 'jboss',
       group              => 'jboss',
       source_permissions => ignore,
-      source             => "%{lookup('buckets.software')/jboss/jboss-eap-6.4_update5.zip'"
+      source             => "%{lookup('buckets.software')/jboss/jboss-eap-6.4_update5.zip'",
       sourceselect	 => all,
       require		 => [ File["/opt/sw/jboss/jboss/zip"], ],
     }
@@ -125,8 +114,10 @@ class gsajboss6::packages (
       match   => '  local THIS_COMMAND="cd \${THIS_GSA_CONFIG_DIR}/server/instanceconfig/deployment" ;',
       require => Package[$gsainstall],
     }
-  } else {
 
+#  } else {
+
+  #FIXME change to ERB
     # This script will make sure we run the restart command with the environment in place.
     # The old solution of using 'su -' does not always work since it may require a tty.
     file { '/opt/sw/jboss/rc_scripts/restart_instance.sh':
@@ -136,6 +127,5 @@ class gsajboss6::packages (
         group   => 'jboss',
         mode    => '0750',
     }
-
-  }
+#  }
 }

@@ -69,12 +69,12 @@ gsajboss6::dirs:
   #FIXME this path is just wrong
   log: '/logs/jboss'
 
-gsajboss6::package::jboss:
+gsajboss6::install::jboss:
   6.4:
     - "gsainstall-6.4-2.%{facts.os.architecture}"
     - 'jboss-eap-6.4_update5.zip'
 
-gsajboss6::package::java:
+gsajboss6::install::java:
   # Facters capitalized and no match for 'x64'
   '8u131':  'jre-8u131-linux-x64'
 
