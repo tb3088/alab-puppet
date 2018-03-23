@@ -1,12 +1,13 @@
 # TODO replace with https://forge.puppet.com/dsestero/java ?
 
 class gsajboss6::java (
-    String $source  = $os::dirs['temp'],
+    Variant[String, Numeric] $version,
+    String $source  = $os::dirs['temp']['path'],
     Variant[String, Array[String]] $package = '',
     Variant[String, Array[String]] $file    = '',
   )
 {
-#  include stdlib
+  include stdlib
   include os
 
   #FIXME - total hack
@@ -14,29 +15,36 @@ class gsajboss6::java (
   $method = 's3'
   $fetch = lookup("bucket_command.${method}")
   
-  #TODO filtering so as to not copy everything?
-  exec { 'fetch' :
+  exec { 'fetch_java-distro' :
+  #FIXME --recursive doesn't work except on DIRs. otherwise need individual filenames.
+  #XXX using s3cmd is far more useful than 'aws s3 cp'
     command     => "${fetch} --recursive ${source} .",
     provider    => shell,
-    cwd         => $os::dirs['temp']['path']
+    cwd         => $os::dirs['temp']['path'],
+#    refreshonly => true
   }
 
-  ## Java installation package also grabbed from s3.
-    # file {"/opt/sw/jboss/java":
-      # ensure    => directory,
-      # owner   => jboss,
-      # group   => jboss,
-      # recurse => true,
-    # }->
-    # file {"/opt/sw/jboss/java/server-jre-${jdk_version}-linux-x64.tar.gz":
-      # ensure             => file,
-      # owner              => 'jboss',
-      # group              => 'jboss',
-      # source_permissions => ignore,
-      # source             => "https://s3.amazonaws.com/9f360c3d418ff28d5eb0a57bc2b1f0a4-software/java/server-jre-${jdk_version}-linux-x64.tar.gz",
-      # sourceselect	 => all,
-      # require		 => [ File["/opt/sw/jboss/java"], ],
-    # }~>
+  #TODO handle array of files
+  # exec { 'unzip_jboss-eap' :
+    # command     => "unzip ${os::dirs['temp']['path']}/${file}",
+    # provider    => shell,
+    # cwd         => $gsajboss6::dirs['root']['path'],
+    # # user        => $gsajboss6::user,
+    # # group       => $gsajboss6::group,
+    # require     => Exec['fetch_jboss-distro'],
+    # creates     => $gsajboss6::dirs['home']['path']
+  # }
+
+  #TODO - OpenJDK or repo-based
+  package { 'java-3rdparty' :
+    ensure      => installed,
+    provider    => rpm,
+    source      => join([ $os::dirs['temp']['path'], $package ], $os::separator['file']),
+    require     => Exec['fetch_java-distro']
+    #FIXME need conditional, ! defined Package[$package] or $package ends in .'rpm|pkg|deb' etc.?
+  }
+
+
     # exec { "untar-jre" :
       # command     => "tar xzf /opt/sw/jboss/java/server-jre-${jdk_version}-linux-x64.tar.gz", 
       # cwd         => "/opt/sw/jboss/java",
@@ -46,31 +54,4 @@ class gsajboss6::java (
       # user        => 'jboss',
       # group       => 'jboss',
     # }
-
-    # file { '/opt/sw/jboss/gsaconfig/servertab/servertab.props':
-      # ensure  => present,
-      # owner   => 'jboss',
-      # group   => 'jboss',
-      # mode    => '0640',
-      # source  => '/opt/sw/jboss/gsainstall/env/servertab.props',
-      # replace => false,
-    # }
-
-    # file_line { 'fix-gsa-script-bug':
-      # path    => '/opt/sw/jboss/gsaenv/bashrc.common.sh',
-      # line    => '  local THIS_COMMAND="cd ${THIS_GSA_CONFIG_DIR}/server/instanceconfig/deployments" ;',
-      # match   => '  local THIS_COMMAND="cd \${THIS_GSA_CONFIG_DIR}/server/instanceconfig/deployment" ;',
-      # require => Package[$gsainstall],
-    # }
-
-  #FIXME change to ERB
-    # This script will make sure we run the restart command with the environment in place.
-    # The old solution of using 'su -' does not always work since it may require a tty.
-  file { '/opt/sw/jboss/rc_scripts/restart_instance.sh':
-    ensure  => present,
-    content => "#!/bin/bash\n\nsource /opt/sw/jboss/.bashrc\n/opt/sw/jboss/rc_scripts/restart_jboss_\${1}.sh\n",
-    owner   => 'jboss',
-    group   => 'jboss',
-    mode    => '0750',
-  }
 }

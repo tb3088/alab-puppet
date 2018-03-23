@@ -7,8 +7,8 @@ defaults:
 
 hierarchy:
   - name: "OS family"
-    path: "%{facts.os.family}.yaml"
+    path: "os/%{facts.os.family}.yaml"
   - name: "OS kernel"
-    paths: [ "%{facts.kernel}.yaml", unix.yaml ]
+    paths: [ "os/%{facts.kernel}.yaml", 'os/unix.yaml' ]
   - name: "common"
     path: common.yaml
