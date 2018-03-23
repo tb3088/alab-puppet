@@ -1,10 +1,11 @@
-# Module to install GSA JBoss packages.
+# install GSA JBoss packages and supporting scripts
 
 class gsajboss6 (
     # NOTE: the lookup() here is deliberate (hack) since APL only works correctly if the
     # YAML structure is native. Doing a '%{lookup()}' inside a YAML document causes
     # conversion to String.
-    #
+    
+    Variant[String, Integer, Float] $version,
     # This syntax should still allow the Class to be instantiated with arguments
     # and only resort to lookup() (and it's not-found defaults) on their absence.
     Hash $user = {
@@ -20,7 +21,8 @@ class gsajboss6 (
     Hash $group = {
         'name'  => 'jboss',
         'gid'   => 201
-    }
+    },
+    Hash $dirs
   )
 # define magic paths via Hiera, eg.
 # JBOSS_TOP="/opt/sw/jboss"
@@ -30,6 +32,7 @@ class gsajboss6 (
 # JBOSS_INSTANCE_LOGDIR="/logs/jboss/<%= @instance %>"
 
 {
+  include stdlib
   include os
 
   #FIXME get os::dirs() working
@@ -41,26 +44,33 @@ class gsajboss6 (
   group { 'jboss' : * => $group }
   user { 'jboss'  : * => $user, managehome => true }
 
-  #TODO rationalize paths
+  #FIXME fix 
   file {[
         '/opt',
         '/opt/sw',
-        '/logs',
     ]:
     ensure  => directory,
     *       => lookup('os::default.directory')
   }
 
-  File { owner => $user['name'], group => $group['name'] }
+#  File { owner => $user['name'], group => $group['name'] }
 
+  #FIXME remove '/logs' and fix GSAConfig to use a sane path
+  #TODO create array pragmatically
   file {[
-        '/logs/jboss',
-        "${user['home']}/logs",
-        "${user['home']}/logs/config",
-        "${user['home']}/appconfig",
-        "${user['home']}/appconfig/jboss",
+        '/logs',
+        $dirs['log']['path'],
+        $dirs['root']['path'],
+        join([ $dirs['root']['path'], 'logs' ], $os::separator['file']),
+        join([ $dirs['root']['path'], 'logs',
+                                      'config' ], $os::separator['file']),
+        join([ $dirs['root']['path'], 'appconfig' ], $os::separator['file']),
+        join([ $dirs['root']['path'], 'appconfig',
+                                      'jboss' ], $os::separator['file'])
     ]:
     ensure  => directory,
+    owner   => $user['name'],
+    group   => $group['name'],
     #FIXME remove hard-coded paths
     require => [ User['jboss'], File['/opt/sw'] ],
   }

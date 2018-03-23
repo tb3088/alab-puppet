@@ -6,15 +6,17 @@ class os (
         default => $facts['umask']
     },
     Array[String] $path,
+    Hash $users,
+    Hash $groups,
+    Hash $uids,
+    Hash $gids,
+    Variant[String, Integer] $distro_compat,
+    Hash $dirs,
+    Hash $files,
   )
 {
   include stdlib
 
-  # $users = lookup('os::users' with deep merge)
-  # $groups = lookup('os::groups' with deep merge)
-  # $uid = lookup('os::uid' with deep merge)
-  # $gid = lookup('os::gid' with deep merge)
-  
   Exec { path => join(lookup('os::path'), $separator['file']) }
 
   File { * => lookup('os::default.file') }

@@ -10,11 +10,14 @@ buckets:
 
 gsajboss6::group:
   gid:  612611
-  
+
 gsajboss6::user:
   uid:  512611
   gid:  "%{lookup('gsajboss6::group.gid')}"
   #TODO override to sensible.
   # home: "%{lookup('os::dirs.home')}/jboss"
-  #FIXME SECURITY 
+  #FIXME SECURITY
   password: '$1$Oj1PJXy0$jwSNlDA9wMM7iQuR.vHlB/'
+
+gsajboss6::install::source: "%{lookup('buckets.software')}/jboss"
+gsajboss6::java::source: "%{lookup('buckets.software')}/java"

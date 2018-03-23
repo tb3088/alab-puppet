@@ -1,0 +1,8 @@
+#!/bin/bash
+
+JBOSS_ROOT='/opt/sw/jboss'
+JBOSS_HOME='/opt/sw/jboss/jboss-eap-6.4'
+JBOSS_BASE=
+
+source $JBOSS_ROOT/.bashrc
+$JBOSS_ROOT/rc_scripts/restart_jboss_${1}.sh

@@ -1,8 +1,6 @@
 ---
 lookup_options:
-  '^os::(users|uids|groups|gids)$':
-    merge: 'deep'
-  os::packages:
+  '^os::(users|uids|groups|gids|files|dirs|packages)$':
     merge: 'hash'
   os::path:
     merge: 'unique'

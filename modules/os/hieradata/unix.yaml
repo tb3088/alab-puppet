@@ -20,8 +20,14 @@ os::dirs:
   etc:
     path:   '/etc'
     <<: *default_directory
+    #ensure: directory  # XXX useful?
+    owner:  "%{lookup('os::default.directory.owner')}"
+    group:  "%{lookup('os::default.directory.group')}"
+    mode:   "%{lookup('os::default.directory.mode')}"
   temp:
     path:   '/tmp'
+    #TODO - remember everything gets String'ified so no short-cuts
+    #<<: "%{lookup('os::default.directory')}" is BAD!
     <<: *default_directory
     mode:   1777
   var:
@@ -54,7 +60,10 @@ os::files:
     <<: *default_file
     mode:   640
 
+#TODO bother with 'os::default'?
+#os::umask:  "%{lookup('os::default.umask', { default_value => 22 })}"
 os::umask:  22
+
 os::perms:
   directory: 777
   file:     666

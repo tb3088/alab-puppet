@@ -1,13 +1,9 @@
 ---
 lookup_options:
-  gsajboss6::user:
-    merge: 'deep'
-  gsajboss6::group:
-    merge: 'deep'
-  gsajboss6::dirs:
-    merge: 'deep'
-  # gsajboss6::versions: #wildcard?
-    # merge: 'deep'
+  '^gsajboss6::(user|group|dirs)$':
+    merge: 'hash'
+  '^gsajboss6::install::(.*)$':
+    merge: 'hash'
 
 #FIXME
 
@@ -38,9 +34,9 @@ lookup_options:
 # CAN NOT DO THIS!!
 #gsajboss6::user:    "%{lookup('os::users.jboss', Hash)}"
 #gsajboss6::group:   %{lookup('os::groups.jboss')}
-gsajboss6::versions:
-  jboss: 6.4
-  java: '8u131'
+
+
+gsajboss6::version: 6.4
 
 gsajboss6::group:
   name: 'jboss'
@@ -50,33 +46,39 @@ gsajboss6::user:
   name: 'jboss'
   uid:  201
   gid:  "%{lookup('gsajboss6::group.gid')}"
-  home: &root_dir
-    '/opt/sw/jboss'
-  
+  home: '/home/jboss'
+
+# FIXME lookup '/opt' from os::dirs.opt
 gsajboss6::dirs:
-  # think JBOSS_HOME aka CATALINA_HOME, not to be confused with JBOSS_BASE (aka instance root)
-  # FIXME lookup '/opt' from os::dirs.opt
+  root:
+    path: &root_dir
+      '/opt/sw/jboss'
   home:
-    path: &jboss_home
-      "/opt/sw/jboss-%{lookup('versions.jboss')}"
-  # alternately
+    # analogous to CATALINA_HOME for common binary distribution
+    path: "/opt/sw/jboss/jboss-eap-%{lookup('gsajboss6::version')}"
+  # alternately and then detect array and glue
   # - *root_dir
-  # - "jboss-%{lookup('gsajboss6::jboss.version')}"
+  # - "jboss-eap-%{lookup('gsajboss6::version')}"
   base:
-    path: *root_dir
-  #base_dir: /var/lib/jboss/<instance>
-  #
-  #FIXME this path is just wrong
-  log: '/logs/jboss'
+    #FIXME should be /var/lib/jboss/<instance> but GSA's scripts will blow up
+    # actually 'conf' like TOMCAT uses?
+    path: '/opt/sw/jboss/gsaconfig'
+  log:
+    #FIXME this path is just wrong
+    path: '/logs/jboss'
 
-gsajboss6::install::jboss:
-  6.4:
-    - "gsainstall-6.4-2.%{facts.os.architecture}"
-    - 'jboss-eap-6.4_update5.zip'
+gsajboss6::install::package:
+    "gsainstall-%{lookup('gsajboss6::version')}-2.%{facts.os.architecture}.rpm"
 
-gsajboss6::install::java:
-  # Facters capitalized and no match for 'x64'
-  '8u131':  'jre-8u131-linux-x64'
+gsajboss6::install::file:
+    "jboss-eap-%{lookup('gsajboss6::version')}_update5.zip"
+
+
+gsajboss6::java::version: 8u131
+gsajboss6::java::package:
+    "jre-%{lookup('gsajboss6::java::version')}-linux-x64"
+  #source: "%{facts.os.dirst.temp"
+  # Facters capitalized and need match for 'x64' and 'linux'
 
 
 # interesting idea; https://github.com/grasmash/yaml-expander
@@ -84,11 +86,7 @@ gsajboss6::install::java:
 #jboss_dir: ${gsajboss6.base_dir}/jboss also
 #
 #TODO update manifests to call isInstance?(Array) then join(..., $facts['separator']) on array
-# alternately
   # - *root_dir
   # - "jboss-%{lookup('gsajboss6::jboss_version')}"
 
-
-
 #gsajboss6::java_dir: "%{lookup('gsajboss6::base_dir')}/java/%{lookup('gsajboss6::java_version')}"
-

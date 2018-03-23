@@ -259,11 +259,19 @@ applications:
     build_dirs: [waa]
     delete_patterns: [ 'webAuditAdmin-BUILDJENKINS*.war' ]
 
-    
-buckets: 
-  software: "%{lookup('bucket_hash')}-software"
-  provision: "%{lookup('bucket_hash')}-provision"
-  config:   "%{lookup('bucket_hash')}-config"
-  logs:     "%{lookup('bucket_hash')}-logs"
-  backup:   "%{lookup('bucket_hash')}-backup"
 
+# TODO this probably belongs in module 'Os' as 'fetch_command'
+bucket_command:
+  's3':     'aws s3 cp'
+  # curl v7.19+ else use '--remote-name' but might overwrite if not single-ton URL
+  'http':   'curl --silent --location --remote-name-all'
+  'https':  'curl --silent --location --remote-name-all --insecure'
+
+# TODO - look at my old source_hierarchy for deep search ideas.
+# also probably belongs in module 'Cloud'
+buckets:
+  software: "s3://%{lookup('bucket_hash')}-software"
+  provision: "s3://%{lookup('bucket_hash')}-provision"
+  config:   "s3://%{lookup('bucket_hash')}-config"
+  logs:     "s3://%{lookup('bucket_hash')}-logs"
+  backup:   "s3://%{lookup('bucket_hash')}-backup"
