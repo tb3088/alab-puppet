@@ -5,7 +5,6 @@ class gsajboss6 (
     # YAML structure is native. Doing a '%{lookup()}' inside a YAML document causes
     # conversion to String.
     
-    Variant[String, Integer, Float] $version,
     # This syntax should still allow the Class to be instantiated with arguments
     # and only resort to lookup() (and it's not-found defaults) on their absence.
     Hash $user = {

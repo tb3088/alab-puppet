@@ -35,9 +35,6 @@ lookup_options:
 #gsajboss6::user:    "%{lookup('os::users.jboss', Hash)}"
 #gsajboss6::group:   %{lookup('os::groups.jboss')}
 
-
-gsajboss6::version: 6.4
-
 gsajboss6::group:
   name: 'jboss'
   gid:  201
@@ -55,10 +52,10 @@ gsajboss6::dirs:
       '/opt/sw/jboss'
   home:
     # analogous to CATALINA_HOME for common binary distribution
-    path: "/opt/sw/jboss/jboss-eap-%{lookup('gsajboss6::version')}"
+    path: "/opt/sw/jboss/jboss-eap-%{lookup('gsajboss6::install::version')}"
   # alternately and then detect array and glue
   # - *root_dir
-  # - "jboss-eap-%{lookup('gsajboss6::version')}"
+  # - "jboss-eap-%{lookup('gsajboss6::install::version')}"
   base:
     #FIXME should be /var/lib/jboss/<instance> but GSA's scripts will blow up
     # actually 'conf' like TOMCAT uses?
@@ -67,11 +64,12 @@ gsajboss6::dirs:
     #FIXME this path is just wrong
     path: '/logs/jboss'
 
+gsajboss6::install::version: 6.4
 gsajboss6::install::package:
-    "gsainstall-%{lookup('gsajboss6::version')}-2.%{facts.os.architecture}.rpm"
+    "gsainstall-%{lookup('gsajboss6::install::version')}-2.%{facts.os.architecture}.rpm"
 
 gsajboss6::install::file:
-    "jboss-eap-%{lookup('gsajboss6::version')}_update5.zip"
+    "jboss-eap-%{lookup('gsajboss6::install::version')}_update5.zip"
 
 
 gsajboss6::java::version: 8u131

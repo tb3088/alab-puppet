@@ -2,6 +2,7 @@
 # also use https://github.com/dsestero/download_uncompress
 
 class gsajboss6::install (
+    Variant[String, Numeric] $version,
     String $source  = $os::dirs['temp']['path'],
     Variant[String, Array[String]] $package = '',
     Variant[String, Array[String]] $file    = '',
