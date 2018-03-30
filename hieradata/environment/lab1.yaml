@@ -18,6 +18,3 @@ gsajboss6::user:
   # home: "%{lookup('os::dirs.home')}/jboss"
   #FIXME SECURITY
   password: '$1$Oj1PJXy0$jwSNlDA9wMM7iQuR.vHlB/'
-
-gsajboss6::install::source: "%{lookup('buckets.software')}/jboss"
-gsajboss6::java::source: "%{lookup('buckets.software')}/java"

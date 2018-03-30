@@ -9,27 +9,32 @@ os::default:
   directory: &default_directory
     owner:  0
     group:  0
-    # XXX: Puppet 4.10 is till broken and demands string
+    # Puppet 4.10 is till broken and demands string
     mode:   '0755'
+    ensure: directory
   file: &default_file
     owner:  0
     group:  0
     mode:   '0644'
 
-os::dirs:
+os::dirs:   # https://en.wikipedia.org/wiki/Filesystem_Hierarchy_Standard
   etc:
     path:   '/etc'
     <<: *default_directory
-    #ensure: directory  # XXX useful?
-    owner:  "%{lookup('os::default.directory.owner')}"
-    group:  "%{lookup('os::default.directory.group')}"
-    mode:   "%{lookup('os::default.directory.mode')}"
+
+    # TODO - define a YAML tag (eg. !lookup) and extend Ruby's YAML parser class
+    # lookup() in Hiera/YAML parsing context MUST hide inside strings, so this does NOT work
+    #<<: "%{lookup('os::default.directory')}"
+    #
+    # FIXME - this is more correct since it picks up overrides
+    # owner:  "%{lookup('os::default.directory.owner')}"
+    # group:  "%{lookup('os::default.directory.group')}"
+    # mode:   "%{lookup('os::default.directory.mode')}"
   temp:
     path:   '/tmp'
-    #TODO - remember everything gets String'ified so no short-cuts
-    #<<: "%{lookup('os::default.directory')}" is BAD!
     <<: *default_directory
-    mode:   1777
+    # Puppet 4.10 is till broken and demands string
+    mode:   '1777'
   var:
     path:   '/var'
     <<: *default_directory
@@ -42,23 +47,32 @@ os::dirs:
   home:
     path:  '/home'
     <<: *default_directory
-  opt:
+  opt: &opt
     path:   '/opt'
     <<: *default_directory
-  #3rdparty: *opt
+  3rdparty: 
+    <<: *opt
   local:
     path:   '/usr/local'
     <<: *default_directory
+  mount:
+    path:   '/mnt'
+    <<: *default_directory
+  media:
+    path:   '/media'
+    <<: *default_directory
+
 
 os::files:
   password: 
     path:   "%{lookup('os::dirs.etc')}/passwd"
     <<: *default_file
-    mode:   644
+    # Puppet 4.10 is till broken and demands string
+    mode:   '644'
   shadow:   
     path:   "%{lookup('os::dirs.etc')}/shadow"
     <<: *default_file
-    mode:   640
+    mode:   '640'
 
 #TODO bother with 'os::default'?
 #os::umask:  "%{lookup('os::default.umask', { default_value => 22 })}"
@@ -85,7 +99,7 @@ os::perms:
   o:        1
   all:      111
 
-os::path: [ '/sbin', '/bin', '/usr/sbin', '/usr/bin' ]  
+#DEPRECATED os::path: [ '/sbin', '/bin', '/usr/sbin', '/usr/bin' ]  
 
 os::users:
   root:
@@ -139,3 +153,6 @@ os::gids:
   1:    'bin'
   2:    'daemon'
   3:    'sys'
+  
+os::package:
+  suffix: .tar.gz

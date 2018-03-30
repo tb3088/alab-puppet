@@ -1,0 +1,7 @@
+---
+# XXX capitalization of file?
+
+#os::packages:
+#  java:
+    # Oracle style from https://java.com/en/download/manual.jsp (client)
+    # better: http://www.oracle.com/technetwork/java/javase/downloads/index.html

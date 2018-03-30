@@ -1,2 +1,26 @@
 ---
 os::distro_compat: "%{facts.distro.codename}"
+os::package:
+  suffix: .deb
+
+os::packages:
+  # java6:    # '1.6.0.41'
+    # name: java-1.6.0-openjdk
+  # java7:    # '1.7.0.171'
+    # name: java-1.7.0-openjdk
+  # java8:    # '1.8.0.161'
+    # &java_default
+    # name: java-1.8.0-openjdk
+  # java:
+    # <<: *java_default
+  # jre:      # Oracle's last unencumbered release available in standard repos
+    # name: jre1.8.0_131
+    # #<<: *java_default
+  # jdk6:
+    # name: java-1.6.0-openjdk-devel
+  # jdk7:
+    # name: java-1.7.0-openjdk-devel
+  # jdk8: &jdk_default
+    # name: java-1.8.0-openjdk-devel
+  # jdk:
+    # <<: *jdk_default

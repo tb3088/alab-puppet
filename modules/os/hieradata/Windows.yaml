@@ -2,3 +2,21 @@
 os::separator:
   file: '\'
   path: ';'
+  
+os::package:
+  suffix: .msi
+  # or .zip
+
+os::packages:
+  # Oracle style from https://java.com/en/download/manual.jsp (client)
+  # better: http://www.oracle.com/technetwork/java/javase/downloads/index.html
+  java9:
+    name: serverjre-9.0.4_windows-x64_bin.tar.gz
+    source: http://download.oracle.com/otn-pub/java/jdk/9.0.4+11/c2514751926b4512b076cc82f959763f/
+  jre9:
+    name:
+  jdk9:
+    name:
+    server:
+    jre:
+    jdk:

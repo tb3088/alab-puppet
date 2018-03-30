@@ -64,20 +64,20 @@ gsajboss6::dirs:
     #FIXME this path is just wrong
     path: '/logs/jboss'
 
+
+gsajboss6::install::source: "%{lookup('buckets.software')}/jboss"
 gsajboss6::install::version: 6.4
 gsajboss6::install::package:
-    "gsainstall-%{lookup('gsajboss6::install::version')}-2.%{facts.os.architecture}.rpm"
+    "gsainstall-%{lookup('gsajboss6::install::version')}-2.%{facts.os.architecture}"
 
 gsajboss6::install::file:
     "jboss-eap-%{lookup('gsajboss6::install::version')}_update5.zip"
 
 
-gsajboss6::java::version: 8u131
-gsajboss6::java::package:
-    "jre-%{lookup('gsajboss6::java::version')}-linux-x64.rpm"
-  #source: "%{facts.os.dirst.temp"
-  # Facters capitalized and need match for 'x64' and 'linux'
-
+gsajboss6::java::version: 8
+gsajboss6::java::source: "%{lookup('buckets.software')}/java"
+gsajboss6::java::package: ''
+gsajboss6::java::file: server-jre-8u161-linux-x64.tar.gz
 
 # interesting idea; https://github.com/grasmash/yaml-expander
 # https://stackoverflow.com/questions/2063616/how-to-reference-a-yaml-setting-from-elsewhere-in-the-same-yaml-file

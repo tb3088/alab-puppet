@@ -19,11 +19,13 @@ hierarchy:
     # options:
       # pkcs7_private_key: /etc/puppetlabs/puppet/eyaml/private_key.pkcs7.pem
       # pkcs7_public_key:  /etc/puppetlabs/puppet/eyaml/public_key.pkcs7.pem
-  - name: "name"
+  - name: os.name
     path: "%{facts.os.name}.yaml"
-  - name: "family"
+  - name: os.family
     path: "%{facts.os.family}.yaml"
-  - name: "kernel"
-    paths: [ "%{facts.kernel}.yaml", unix.yaml ]
-  - name: "common"
+  - name: os.platform
+    paths:
+      - "%{facts.kernel}.yaml"
+      - unix.yaml
+  - name: common
     path: common.yaml

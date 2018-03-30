@@ -2,8 +2,49 @@
 os::packages:
   dmidecode:
     name: dmidecode
+    source:
   ntp: 
     name: ntp
     service: ntpd
   ftp:
     name: ftp
+
+  # Oracle naming style from http://www.oracle.com/technetwork/java/javase/overview/index.html
+  # Don't care about desktop JRE, ignoring.
+  #
+  # BUG! on Linux facts['os.architecture'] (x64) == os.hardware == processors.isa (x86_64) which is problematic
+  # while on Windows both processors.isa and os.architecture == x64
+  #
+  # WARNING! download URLs don't work with 'wget' without a Cookie
+  # java6: fallback to openjdk?
+  # java7:
+  java8: &java_default
+    name: server-jre-8u161-linux-x64.tar.gz
+    source: http://download.oracle.com/otn-pub/java/jdk/8u161-b12/2f38c3b165be4555a1fa6e98c45e0808/
+    sha256: eb5776cacfd57fbf0ffb907f68c58a1cc6f823e761f4e75d78a6e3240846534e
+  java9:    # NOTE naming structure change
+    name: serverjre-9.0.4_linux-x64_bin.tar.gz
+    source: http://download.oracle.com/otn-pub/java/jdk/9.0.4+11/c2514751926b4512b076cc82f959763f/
+  java10:
+    name: serverjre-10_linux-x64_bin.tar.gz
+    source: http://download.oracle.com/otn-pub/java/jdk/10+46/76eac37278c24557a3c4199677f19b62/
+  java:
+    <<: *java_default
+  jre:
+    <<: *java_default
+  # jdk6:
+  # jdk7:
+  jdk8: &jdk_default
+    name: jdk-8u161-linux-x64.tar.gz
+    # also .rpm
+    source: http://download.oracle.com/otn-pub/java/jdk/8u161-b12/2f38c3b165be4555a1fa6e98c45e0808/
+  jdk9:
+    name: jdk-9.0.4_linux-x64_bin.tar.gz
+    # also .rpm
+    source: http://download.oracle.com/otn-pub/java/jdk/9.0.4+11/c2514751926b4512b076cc82f959763f/
+  jdk10:
+    name: jdk-10_linux-x64_bin.tar.gz
+    # also .rpm
+    source: http://download.oracle.com/otn-pub/java/jdk/10+46/76eac37278c24557a3c4199677f19b62/
+  jdk:
+    <<: *jdk_default

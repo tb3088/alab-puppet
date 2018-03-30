@@ -10,27 +10,38 @@ defaults:
 # first match wins!, puppet automaticlaly exposes all facters and 'puppet config print' items
 hierarchy:
 # need node, role, instance
-  - name: "instance"
-    path: "instance/%{facts.'tags.puppet.instance'}.yaml"
-  - name: "lab"
+  - name: node
+    path: "node/%{trusted.certname}.yaml"
+    # think of as specific Assist apps
+#  - name: Application
+#    path: app/reports.yaml
+  - name: lab
     path: "environment/%{facts.'tags.lab'}.yaml"
-  - name: "environment"
-    path: "environments/%{facts.environment}.yaml"
-  - name: "role"
+  - name: environment"
+    path: "environment/%{facts.puppet.environment}.yaml"
+    # think of as JBoss/CATALINA_BASE, which can have
+    # unique JAVA_HOME, application(s)
+  - name: instance
+    path: "instance/%{facts.'tags.puppet.instance'}.yaml"
+    # think of as generic JBoss|CATALINA server
+  - name: role
     path: "role/%{facts.'tags.puppet.role'}.yaml"
-  - name: "OS name"
-    path: "%{facts.os.name}.yaml"
-  - name: "OS family"
-    path: "%{facts.os.family}.yaml"
-  - name: "OS kernel"
-    paths: [ "%{facts.kernel}.yaml", unix.yaml ]
+  - name: os.name
+    path: "os/%{facts.os.name}.yaml"
+  - name: os.family
+    path: "os/%{facts.os.family}.yaml"
+  - name: os.platform
+    paths:
+      - "os/%{facts.kernel}.yaml"
+      - os/unix.yaml
     #TODO rename yaml and disperse app stuff to it's module?
     # reorganize and use lookup() and configure lookup_options like 'os'
-  - name: "application"
+    #FIXME these are misnamed and mis-placed
+  - name: version
     path: versions.yaml
-  - name: "datasource"
+  - name: datasource
     path: datasources.yaml
-  - name: "last ditch"
+  - name: common
     path: common.yaml
 
 #  - name: "instances"
