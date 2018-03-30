@@ -1,57 +1,65 @@
 # TODO replace with https://forge.puppet.com/dsestero/java ?
-
+# FIXME move to its own module
 class gsajboss6::java (
     Variant[String, Numeric] $version,
     String $source  = $os::dirs['temp']['path'],
-    Variant[String, Array[String]] $package = '',
-    Variant[String, Array[String]] $file    = '',
+    #TODO default should be lookup(os::packages.java$version)
+    Variant[String, Array[String]] $package = undef,
+    Variant[String, Array[String]] $file    = undef,
   )
 {
   include stdlib
   include os
 
+  # Oracle downloads can't be automated without sending cookie, and URL is unpredictable
+  # http://www.oracle.com/technetwork/java/javase/overview/index.html
+
   #FIXME - total hack
-  #TODO - regex match against $source
+  #TODO - regex match against $source (.*)://
   $method = 's3'
   $fetch = lookup("bucket_command.${method}")
   
-  exec { 'fetch_java-distro' :
-  #FIXME --recursive doesn't work except on DIRs. otherwise need individual filenames.
-  #XXX using s3cmd is far more useful than 'aws s3 cp'
+  exec { 'fetch' :
+  #FIXME --recursive doesn't work except on DIRs. otherwise need individual filename(s).
+  #TODO using s3cmd is far more convenient than 'aws s3 cp'
     command     => "${fetch} --recursive ${source} .",
     provider    => shell,
     cwd         => $os::dirs['temp']['path'],
-#    refreshonly => true
+    # pedant:
+    #TODO require     => File[$os::dirs['temp']['path']]
   }
 
-  #TODO handle array of files
-  # exec { 'unzip_jboss-eap' :
-    # command     => "unzip ${os::dirs['temp']['path']}/${file}",
-    # provider    => shell,
-    # cwd         => $gsajboss6::dirs['root']['path'],
-    # # user        => $gsajboss6::user,
-    # # group       => $gsajboss6::group,
-    # require     => Exec['fetch_jboss-distro'],
-    # creates     => $gsajboss6::dirs['home']['path']
-  # }
 
-  #TODO - OpenJDK or repo-based
-  package { 'java-3rdparty' :
+if ! empty($package) {
+#TODO OpenJDK or repo-based
+#  package { 'distro' :
+#    ensure      => installed, (or specific RPM version string)
+#    name        => if $package.length() !=0 then lookup('os::packages.java.name', and also lookup 'java$version.name'),
+#    #onlyif      => 
+#  }
+  package { '3rdparty' :
     ensure      => installed,
+    #TODO look at last 3 of 'source'
     provider    => rpm,
-    source      => join([ $os::dirs['temp']['path'], $package ], $os::separator['file']),
-    require     => Exec['fetch_java-distro']
-    #FIXME need conditional, ! defined Package[$package] or $package ends in .'rpm|pkg|deb' etc.?
+    source      => join([ getparam(Exec['fetch'], 'cwd'), "${package}${lookup('os::package.suffix')}" ], $os::separator['file']),
+    require     => Exec['fetch']
+    #FIXME need conditional, ! defined Package[$package]?
+    #onlyif      => 
   }
+}
 
+if ! empty($file) {
+  #TODO handle array of items
 
-    # exec { "untar-jre" :
-      # command     => "tar xzf /opt/sw/jboss/java/server-jre-${jdk_version}-linux-x64.tar.gz", 
-      # cwd         => "/opt/sw/jboss/java",
-      # path        => ['/bin','/usr/bin'],
-      # refreshonly => true,
-      # require	  => [ File["/opt/sw/jboss/java"], ],
-      # user        => 'jboss',
-      # group       => 'jboss',
-    # }
+  $filepath = join([ getparam(Exec['fetch'], 'cwd'), $file ], $os::separator['file'])
+  exec { 'install' :
+      command   => "tar xzf ${filepath}", 
+      provider  => shell,
+      cwd       => $os::dirs['3rdparty']['path'],
+#      refreshonly => true,
+#      onlyif 
+      require   => Exec['fetch']  #, File[$os::dirs['3rdparty']['path']] ],
+  }
+}
+
 }
