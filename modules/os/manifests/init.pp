@@ -1,32 +1,31 @@
 class os (
-    Hash $separator = $facts['separator'],
-    Hash $perms = undef,
-    Variant[String, Integer] $umask = empty($facts['umask']) ? {
-        true    => 22,
-        default => $facts['umask']
-    },
-    Array[String] $path,
-    Hash $users,
-    Hash $groups,
-    Hash $uids,
-    Hash $gids,
-    Variant[String, Integer] $distro_compat,
-    Hash $dirs,
-    Hash $files,
+    Hash    $separator = $facts['separator'],
+    Hash    $perms = undef,
+    Variant[String, Integer]
+            $umask = $facts['umask'],
+    Variant[String, Array[String]]
+            $path = $facts['path'],
+    Hash    $users,
+    Hash    $groups,
+    Hash    $uids,
+    Hash    $gids,
+    Variant[String, Integer]
+            $distro_compat,
+    Hash    $dirs,
+    Hash    $files,
   )
 {
   include stdlib
 
-  Exec { path => join(lookup('os::path'), $separator['file']) }
-
+  Exec { path => $path }
   File { * => lookup('os::default.file') }
 
-  #TODO 
+  #TODO
   # get dirs() working
   # handle different data types, especially Array as input
-  define directory ( 
+  define directory (
       Variant[String, Array[String]] $path  = $title,
-      Hash $attributes = lookup('os::default.directory', Hash, { 
+      Hash $attributes = lookup('os::default.directory', Hash, {
             default_value => { user => 0, group => 0, mode => '0755' }
         }),
     )
@@ -50,7 +49,7 @@ class os (
     # File<| title == $title |> {
       # * => $params,
     # }
-  # }    
+  # }
     #TODO
 #   $elements = split path to result in array with successive dirname()
 #    $elements = os::dirs($path)
