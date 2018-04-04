@@ -74,13 +74,13 @@ os::files:
     <<: *default_file
     mode:   '640'
 
-#TODO bother with 'os::default'?
-#os::umask:  "%{lookup('os::default.umask', { default_value => 22 })}"
-os::umask:  22
+# Puppet 4.10 is till broken and demands string
+os::umask:  '022'
 
 os::perms:
   directory: 777
   file:     666
+  none:     0
   suid:     4000
   sgid:     2000
   sticky:   1000
@@ -91,6 +91,9 @@ os::perms:
   w:        2
   read:     4
   r:        4
+  rx:       5
+  rw:       6
+  rwx:      7
   user:     100
   u:        100
   group:    10
@@ -99,7 +102,8 @@ os::perms:
   o:        1
   all:      111
 
-#DEPRECATED os::path: [ '/sbin', '/bin', '/usr/sbin', '/usr/bin' ]  
+#DEPRECATED - just use Fact
+#os::path: [ '/sbin', '/bin', '/usr/sbin', '/usr/bin' ]  
 
 os::users:
   root:

@@ -24,23 +24,28 @@ os::package:
 #  method: rpm|yum - not needed for Package[] but might be helpful for logic conditionals
 
 os::packages:
-  java6:    # '1.6.0.41'
-    name: java-1.6.0-openjdk
-  java7:    # '1.7.0.171'
-    name: java-1.7.0-openjdk
+  java6:
+    package: java-1.6.0-openjdk
+    version: '1.6.0.41'
+    #checksum:
+    #checksum_value:
+  java7:
+    package: java-1.7.0-openjdk
+    version:  '1.7.0.171'
   java8:    # '1.8.0.161'
     &java_default
-    name: java-1.8.0-openjdk
+    package: java-1.8.0-openjdk
+    version: '1.8.0.161'
   java:
     <<: *java_default
   jre:      # Oracle's last unencumbered release available in standard repos
-    name: jre1.8.0_131
+    package: jre1.8.0_131
   jdk6:
-    name: java-1.6.0-openjdk-devel
+    package: java-1.6.0-openjdk-devel
   jdk7:
-    name: java-1.7.0-openjdk-devel
+    package: java-1.7.0-openjdk-devel
   jdk8: &jdk_default
-    name: java-1.8.0-openjdk-devel
+    package: java-1.8.0-openjdk-devel
   jdk:
     <<: *jdk_default
   #alternative - last unemcumbered public release and included in standard YUM repos

@@ -16,15 +16,18 @@ hierarchy:
 #  - name: Application
 #    path: app/reports.yaml
   - name: lab
+    # eg. GLAB#, VLAB#, $userid
     path: "environment/%{facts.'tags.lab'}.yaml"
   - name: environment"
+    # eg. PI#, 
     path: "environment/%{facts.puppet.environment}.yaml"
-    # think of as JBoss/CATALINA_BASE, which can have
-    # unique JAVA_HOME, application(s)
   - name: instance
+    # think of as JBoss|CATALINA_BASE, which can have
+    # multiple JAVA_HOME(s) and application(s)
+    # eg. rbass07, 
     path: "instance/%{facts.'tags.puppet.instance'}.yaml"
-    # think of as generic JBoss|CATALINA server
   - name: role
+    # think of as generic JBoss|CATALINA server
     path: "role/%{facts.'tags.puppet.role'}.yaml"
   - name: os.name
     path: "os/%{facts.os.name}.yaml"

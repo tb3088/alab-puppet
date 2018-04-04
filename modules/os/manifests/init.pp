@@ -1,6 +1,7 @@
 class os (
+    Hash    $default,
     Hash    $separator = $facts['separator'],
-    Hash    $perms = undef,
+    Hash    $perms,
     Variant[String, Integer]
             $umask = $facts['umask'],
     Variant[String, Array[String]]
@@ -17,21 +18,30 @@ class os (
 {
   include stdlib
 
-  Exec { path => $path }
-  File { * => lookup('os::default.file') }
+  Exec { path => $path }    # 'path' handles both String or Array[String]
+  File { * => $os::default['file'] }
 
   #TODO
-  # get dirs() working
+  # get os::dirs() working! returns sorted list of all parent paths and dups removed
+  #
+  #puppet v3 way
+  #create_resources(File, os::dirs(various_dirs), { ensure => directory, some_more_defaults})
+  
+  # puppet v4 way - https://www.devco.net/archives/2015/12/16/iterating-in-puppet.php
+  #each($os::dirs([list of dirs]) |$name| {
+  # file { $name:
+  #     * => $attributes + $default['directory']
+  # }
+  #}
+  
   # handle different data types, especially Array as input
   define directory (
-      Variant[String, Array[String]] $path  = $title,
-      Hash $attributes = lookup('os::default.directory', Hash, {
-            default_value => { user => 0, group => 0, mode => '0755' }
-        }),
+      Variant[String, Array[String]] $path = $title,
+      Hash $attributes = $default['directory']
     )
   {
     # frankly should just make this an Exec of 'install -d -o $owner -g $group -m $mode $path'.
-    # on windows 'mkdir' but doesn't address ownership
+    # on windows use 'mkdir' but doesn't address ownership
 
     # File<| title == $title |>
   #   $params = {
@@ -57,10 +67,9 @@ class os (
 #   file { $element :
     file { $title :
       ensure => 'directory',
-      *       => lookup('os::default.directory')
+      *     => $os::default['directory']
     }
   }
 
-  #$kernel = $facts['kernel'].downcase()
   class { "${name}::${facts['kernel'].downcase()}" : }
 }
