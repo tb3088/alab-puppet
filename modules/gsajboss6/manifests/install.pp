@@ -2,26 +2,28 @@
 # also use https://github.com/dsestero/download_uncompress
 
 class gsajboss6::install (
-    Variant[String, Numeric] $version,
+    Variant[String, Numeric] $version = 6.4,
     String $source  = $os::dirs['temp']['path'],
-    Variant[String, Array[String]] $package = '',
-    Variant[String, Array[String]] $file    = '',
+    Variant[String, Array[String]] $package,
+    Variant[String, Array[Hash]] $file,
+    String $destdir
   )
 {
   #FIXME - this whole file is total hack with multiple dangerous assumptions!
   include stdlib
   include os
-  require gsajboss6
-    #require machine_conf::repo
-    #require machine_conf::hosts
+  include gsajboss6
+  #require machine_conf::repo
+  #require machine_conf::hosts
+  
+  File { owner => $gsajboss6::user['name'], group => $gsajboss6::group['name'] }
 
   #TODO - regex match against $source
   $method = 's3'
   $fetch = lookup("bucket_command.${method}")
-  #
 
   #TODO filtering so as to not copy everything?
-  exec { 'fetch_jboss-distro' :
+  exec { 'fetch_jboss' :
   #FIXME --recursive doesn't work except on DIRs. otherwise need individual filenames.
   #XXX using s3cmd is far more useful than 'aws s3 cp'
     command     => "${fetch} --recursive ${source} .",
@@ -31,37 +33,39 @@ class gsajboss6::install (
   }
 
   #TODO handle array of files
-  exec { 'unzip_jboss-eap' :
+if ! empty($file) {
+  exec { $file :
     command     => "unzip ${os::dirs['temp']['path']}/${file}",
     provider    => shell,
     cwd         => $gsajboss6::dirs['root']['path'],
-    # user        => $gsajboss6::user,
-    # group       => $gsajboss6::group,
-    require     => Exec['fetch_jboss-distro'],
-    creates     => $gsajboss6::dirs['home']['path']
+    umask       => $os::umask,
+    creates     => $gsajboss6::dirs['home']['path'],
+    # 'require' is not sufficient to trigger the Exec['fetch']
+    notify     => Exec['fetch_jboss'],
   }
+}
 
+  #TODO frankly this belongs as a tar-ball or a relocatable RPM with junk removed,
+  # and basepath=/usr/local/gsa since it includes scripts, XML and helper classes for several
+  # JBOSS and Tomcat versions and closely related products.
+if ! empty($package) {
   package { 'gsainstall' :
     ensure      => installed,
-    provider    => rpm,
+    provider    => rpm,     #TODO detect if repo is defined then use yum/apt per os.distro
     #TODO handle all $methods
-    source      => join([ $os::dirs['temp']['path'], $package ], $os::separator['file'])
+    source      => "${getparam(Exec['fetch_jboss'], 'cwd')}/${package}${lookup('os::package.suffix')}",
+    notify      => Exec['fetch_jboss'],
   }
-  # clean up crap in RPM
-  # file {[ '/appconfig' ] :    # TODO '/logs'
-    # ensure      => absent,
-    # subscribe   => Package['gsainstall']
-  # }
 
-
-    # file { '/opt/sw/jboss/gsaconfig/servertab/servertab.props':
-      # ensure  => present,
-      # owner   => 'jboss',
-      # group   => 'jboss',
-      # mode    => '0640',
-      # source  => '/opt/sw/jboss/gsainstall/env/servertab.props',
-      # replace => false,
-    # }
+  #TODO convert to template because it gets edited (by?)
+  file { "${gsajboss6::dirs['conf']['path']}/servertab/servertab.props" :
+    ensure      => present,
+    mode        => '0640',
+    #FIXME hacky! base path of the above RPM/TAR should be used. Define 'dirs['install']?
+    source      => "${gsajboss6::dirs['root']['path']}/gsainstall/env/servertab.props",
+    replace     => false,
+    require     => Package['gsainstall']
+  }
 
     # file_line { 'fix-gsa-script-bug':
       # path    => '/opt/sw/jboss/gsaenv/bashrc.common.sh',
@@ -69,16 +73,24 @@ class gsajboss6::install (
       # match   => '  local THIS_COMMAND="cd \${THIS_GSA_CONFIG_DIR}/server/instanceconfig/deployment" ;',
       # require => Package[$gsainstall],
     # }
+}
+
 
   #FIXME change to ERB
     # This script will make sure we run the restart command with the environment in place.
     # The old solution of using 'su -' does not always work since it may require a tty.
-  file { '/opt/sw/jboss/rc_scripts/restart_instance.sh':
+  file { "${gsajboss6::dirs['root']['path']}/rc_scripts/restart_instance.sh" :
     ensure      => present,
-    content     => "#!/bin/bash\n\nsource /opt/sw/jboss/.bashrc\n/opt/sw/jboss/rc_scripts/restart_jboss_\${1}.sh\n",
-    owner       => 'jboss',
-    group       => 'jboss',
-    mode        => '0755',
-    require     => Package['gsainstall']
+    content     => "#!/bin/bash
+
+source ${$gsajboss6::dirs['root']['path']}/.bashrc
+${$gsajboss6::dirs['root']['path']}/rc_scripts/restart_jboss_\${1:?}.sh
+",
+    mode        => '0750',
+    require     => Package['gsainstall']    # actually depends on .../rc_scripts/
   }
+
+  contain gsajboss6::keystores
+#pending  include gsajboss6::jboss_modules
+  #include applications::jboss_modules
 }

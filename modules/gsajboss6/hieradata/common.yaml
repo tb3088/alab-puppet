@@ -43,23 +43,31 @@ gsajboss6::user:
   name: 'jboss'
   uid:  201
   gid:  "%{lookup('gsajboss6::group.gid')}"
-  home: '/home/jboss'
+  home: "%{lookup('os::dirs.home.path')}/jboss"
+  shell: "%{lookup('os::default.shell')}"
+  comment:
 
-# FIXME lookup '/opt' from os::dirs.opt
+# This is a HIERA self-referential workaround, do NOT use in manifests!
+#FIXME should be %{lookup('os::dirs.opt.path')}
+gsajboss6::root_dir: &root_dir
+  '/opt/sw/jboss'
+  
 gsajboss6::dirs:
   root:
-    path: &root_dir
-      '/opt/sw/jboss'
+    path: *root_dir
   home:
     # analogous to CATALINA_HOME for common binary distribution
-    path: "/opt/sw/jboss/jboss-eap-%{lookup('gsajboss6::install::version')}"
+    # Can't use lookup(dirs['root']) since that is part of self.
+    #WARN this is brittle
+    path: "%{lookup('gsajboss6::root_dir')}/%{lookup('gsajboss6::install::destdir')}"
   # alternately and then detect array and glue
   # - *root_dir
   # - "jboss-eap-%{lookup('gsajboss6::install::version')}"
   base:
     #FIXME should be /var/lib/jboss/<instance> but GSA's scripts will blow up
+  conf:
     # actually 'conf' like TOMCAT uses?
-    path: '/opt/sw/jboss/gsaconfig'
+    path: "%{lookup('gsajboss6::root_dir')}/gsaconfig"
   log:
     #FIXME this path is just wrong
     path: '/logs/jboss'
@@ -67,17 +75,35 @@ gsajboss6::dirs:
 
 gsajboss6::install::source: "%{lookup('buckets.software')}/jboss"
 gsajboss6::install::version: 6.4
+#TODO an array of strings
 gsajboss6::install::package:
     "gsainstall-%{lookup('gsajboss6::install::version')}-2.%{facts.os.architecture}"
-
+#TODO an array of hashes {name: filename, destdir: blah}
 gsajboss6::install::file:
     "jboss-eap-%{lookup('gsajboss6::install::version')}_update5.zip"
+gsajboss6::install::destdir:
+    "jboss-eap-%{lookup('gsajboss6::install::version')}"
+  
 
-
+#TODO
+#gsajboss6::keystores::source: "%{lookup('buckets.conf')}/jboss"
+#gsajboss6::keystores::dest: 
+# gsajboss6::keystores::keystore:
+  # source:
+  # path:
+  # mode:
+# gsajboss6::keystores::truststore:
+  # source:
+  # path:
+  # mode:
+  
+#FIXME this is a major hack
 gsajboss6::java::version: 8
 gsajboss6::java::source: "%{lookup('buckets.software')}/java"
 gsajboss6::java::package: ''
 gsajboss6::java::file: server-jre-8u161-linux-x64.tar.gz
+# should be lookup('os::packages.java$version.destdir')
+gsajboss6::java::destdir: jdk1.8.0_161
 
 # interesting idea; https://github.com/grasmash/yaml-expander
 # https://stackoverflow.com/questions/2063616/how-to-reference-a-yaml-setting-from-elsewhere-in-the-same-yaml-file

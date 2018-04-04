@@ -1,11 +1,11 @@
 # TODO replace with https://forge.puppet.com/dsestero/java ?
 # FIXME move to its own module
 class gsajboss6::java (
-    Variant[String, Numeric] $version,
+    Variant[String, Numeric] $version = 8,
     String $source  = $os::dirs['temp']['path'],
-    #TODO default should be lookup(os::packages.java$version)
-    Variant[String, Array[String]] $package = undef,
-    Variant[String, Array[String]] $file    = undef,
+    Variant[String, Array[String]] $package = lookup("os::packages.java${version}.package"),
+    Variant[String, Array[String]] $file,   #lookup("os::packages.java${version}.file")
+    String $destdir = lookup("os::packages.java${version}.destdir")
   )
 {
   include stdlib
@@ -19,14 +19,13 @@ class gsajboss6::java (
   $method = 's3'
   $fetch = lookup("bucket_command.${method}")
   
-  exec { 'fetch' :
+  exec { 'fetch_java' :
   #FIXME --recursive doesn't work except on DIRs. otherwise need individual filename(s).
   #TODO using s3cmd is far more convenient than 'aws s3 cp'
     command     => "${fetch} --recursive ${source} .",
     provider    => shell,
     cwd         => $os::dirs['temp']['path'],
-    # pedant:
-    #TODO require     => File[$os::dirs['temp']['path']]
+    refreshonly => true
   }
 
 
@@ -37,28 +36,26 @@ if ! empty($package) {
 #    name        => if $package.length() !=0 then lookup('os::packages.java.name', and also lookup 'java$version.name'),
 #    #onlyif      => 
 #  }
-  package { '3rdparty' :
+  package { $package :
     ensure      => installed,
-    #TODO look at last 3 of 'source'
+#TODO look at .3 of 'source' and if missing, don't set 'provider', otherwise rpm vs apt vs?
     provider    => rpm,
-    source      => join([ getparam(Exec['fetch'], 'cwd'), "${package}${lookup('os::package.suffix')}" ], $os::separator['file']),
-    require     => Exec['fetch']
-    #FIXME need conditional, ! defined Package[$package]?
-    #onlyif      => 
+    source      => "${getparam(Exec['fetch_java'], 'cwd')}/${package}${lookup('os::package.suffix')}",
+    notify      => Exec['fetch_java']
   }
 }
 
 if ! empty($file) {
   #TODO handle array of items
 
-  $filepath = join([ getparam(Exec['fetch'], 'cwd'), $file ], $os::separator['file'])
-  exec { 'install' :
-      command   => "tar xzf ${filepath}", 
-      provider  => shell,
-      cwd       => $os::dirs['3rdparty']['path'],
-#      refreshonly => true,
-#      onlyif 
-      require   => Exec['fetch']  #, File[$os::dirs['3rdparty']['path']] ],
+#  $filepath = join([ getparam(Exec['fetch_java'], 'cwd'), $file ], $os::separator['file'])
+  exec { "install_${file}" :
+    command     => "tar xz --no-same-owner -f ${getparam(Exec['fetch_java'], 'cwd')}/${file}", 
+    provider    => shell,
+    cwd         => $os::dirs['3rdparty']['path'],
+    umask       => $os::umask,
+    creates     => "${os::dirs['3rdparty']['path']}/${destdir}",
+    notify      => Exec['fetch_java']
   }
 }
 
