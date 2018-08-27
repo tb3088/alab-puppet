@@ -20,7 +20,6 @@ class gsajboss6 (
 {
   include stdlib
   include os
-  contain gsajboss6::java
 
   #FIXME get os::dirs() working
   # os::directory { [ 
@@ -30,27 +29,23 @@ class gsajboss6 (
 
   group { 'jboss' : * => $group }
   user { 'jboss'  : * => $user, managehome => true }
+
   File { owner => $user['name'], group => $group['name'] }
+  Exec { user  => $user['name'], group => $group['name'] }
 
-  file {[
-        '/opt',
-        '/opt/sw',  #FIXME deprecate and fix GSA scripts
-        $dirs['root']['path'],
-    ] :
-    *   => $os::default['directory'],
-  }
-
-  #TODO create array pragmatically with each([suffixes]) |$item] { list + "$prefix/$item" }
-  file {[
-        '/logs',    #FIXME garbage
-        $dirs['log']['path'], # FIXME garbage
-        "${dirs['root']['path']}/logs",
-        "${dirs['root']['path']}/logs/config",
-        "${dirs['root']['path']}/appconfig",
-        "${dirs['root']['path']}/appconfig/jboss",
-    ] :
-    ensure  => directory,
-  }
+  # #TODO create array pragmatically with each([suffixes]) |$item] { list + "$prefix/$item" }
+  # file {[
+        # '/logs',    #FIXME garbage
+        # $dirs['log']['path'], # FIXME garbage
+        # "${dirs['root']['path']}/logs",
+        # "${dirs['root']['path']}/logs/config",
+    # ] :
+    # ensure  => directory,
+  # }
 
   contain gsajboss6::install
+
+  #FIXME use PuppetForge module instead
+  contain gsajboss6::java
+
 }

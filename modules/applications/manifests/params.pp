@@ -5,7 +5,6 @@
 # will default to the value of 'baseline'.
 
 class applications::params {
-  $jboss_modules_version = hiera('versions::jboss_modules', 'prototype')
 
   $accrual_version = hiera('versions::accrual', 'baseline')
   $agreement_version = hiera('versions::agreement', 'baseline')

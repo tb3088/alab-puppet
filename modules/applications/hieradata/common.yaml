@@ -1,0 +1,8 @@
+---
+lookup_options:
+  '^applications::(user|group|dirs)$':
+    merge: 'hash'
+  '^applications::install::(.*)$':
+    merge: 'hash'
+
+assist::source: "%{lookup('buckets.software')}/assist"

@@ -21,6 +21,11 @@ os::groups:
 
 os::package:
   suffix: .rpm
+  provider: rpm
+    #s3: rpm
+    #url: rpm
+    #local: rpm
+    #repo: yum
 #  method: rpm|yum - not needed for Package[] but might be helpful for logic conditionals
 
 os::packages:

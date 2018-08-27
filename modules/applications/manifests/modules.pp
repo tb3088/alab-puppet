@@ -1,19 +1,23 @@
 # JBoss Modules application
 
-class applications::jboss_modules (
-  $version=$applications::params::jboss_modules_version
-) inherits applications::params
+class assist::modules (
+    $version = lookup('versions::jboss_modules', 'prototype')
+    # 48?
+  )
 {
-  file {'/opt/sw/jboss/appconfig/jboss/modules':
-    ensure => directory,
-    owner  => 'jboss',
-    group  => 'jboss',
+  File { owner => $gsajboss6::user['name'], group => $gsajboss6::group['name'] }
+
+  XXX 'appconfig' should be from modules/applications
+  
+  file { 'appconfig/jboss/modules' :
+    ensure  => directory,
+    path    => XXX
+    depends on ?
   }
-  file { '/opt/sw/jboss/appconfig/jboss/module_zip':
+
+  file { 'module_zip':
     ensure             => directory,
     sourceselect       => all,
-    owner              => 'jboss',
-    group              => 'jboss',
     source             => "/srv/filebucket/JBoss6Modules/${version}",
     recurse            => true,
     ignore             => '.svn',

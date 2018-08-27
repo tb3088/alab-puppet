@@ -1,4 +1,9 @@
 ---
+# umask values *must* be converted to String since Puppet library function symbolic_mode_to_int() et. al.
+# throw errors if int.to_i(8) is not successful. use function os::mode() to convert.
+# Once my patches are in this nonsense goes away, and can use '0o####' format. 
+# NOTE '0####' is *long* deprecated (2000) out of YAML, Python, Perl and should not be used.
+
 os::separator:
   file: '/'
   path: ':'
@@ -34,7 +39,7 @@ os::dirs:   # https://en.wikipedia.org/wiki/Filesystem_Hierarchy_Standard
     path:   '/tmp'
     <<: *default_directory
     # Puppet 4.10 is till broken and demands string
-    mode:   '1777'
+    mode:   '01777'
   var:
     path:   '/var'
     <<: *default_directory
@@ -50,7 +55,7 @@ os::dirs:   # https://en.wikipedia.org/wiki/Filesystem_Hierarchy_Standard
   opt: &opt
     path:   '/opt'
     <<: *default_directory
-  3rdparty: 
+  3rdparty:
     <<: *opt
   local:
     path:   '/usr/local'
@@ -64,46 +69,49 @@ os::dirs:   # https://en.wikipedia.org/wiki/Filesystem_Hierarchy_Standard
 
 
 os::files:
-  password: 
+  password:
     path:   "%{lookup('os::dirs.etc')}/passwd"
     <<: *default_file
     # Puppet 4.10 is till broken and demands string
-    mode:   '644'
-  shadow:   
+    mode:   '0644'
+  shadow:
     path:   "%{lookup('os::dirs.etc')}/shadow"
     <<: *default_file
-    mode:   '640'
+    mode:   '0640'
 
 # Puppet 4.10 is till broken and demands string
-os::umask:  '022'
+os::umask:  '0022'
+
 
 os::perms:
-  directory: 777
-  file:     666
+  directory: 0777
+  file:     0666
   none:     0
-  suid:     4000
-  sgid:     2000
-  sticky:   1000
-  t:        1000
-  exec:     1
-  e:        1
-  write:    2
-  w:        2
-  read:     4
-  r:        4
-  rx:       5
-  rw:       6
-  rwx:      7
-  user:     100
-  u:        100
-  group:    10
-  g:        10
-  other:    1
-  o:        1
-  all:      111
+  suid:     04000
+  sgid:     02000
+  sticky:   01000
+  t:        01000
+  exec:     01
+  e:        01
+  write:    02
+  w:        02
+  read:     04
+  r:        04
+  rx:       05
+  rw:       06
+  rwx:      07
+  # shift << 6
+  user:     0100
+  u:        0100
+  # shift << 3
+  group:    010
+  g:        010
+  other:    01
+  o:        01
+  all:      0111
 
 #DEPRECATED - just use Fact
-#os::path: [ '/sbin', '/bin', '/usr/sbin', '/usr/bin' ]  
+#os::path: [ '/sbin', '/bin', '/usr/sbin', '/usr/bin' ]
 
 os::users:
   root:
@@ -126,7 +134,7 @@ os::users:
     # 'mail'  => 8,
     # 'uucp'  => 10,
     # 'nobody' => 99
-    
+
 os::uids:
   0:    'root'
   1:    'bin'
@@ -157,6 +165,6 @@ os::gids:
   1:    'bin'
   2:    'daemon'
   3:    'sys'
-  
+
 os::package:
   suffix: .tar.gz

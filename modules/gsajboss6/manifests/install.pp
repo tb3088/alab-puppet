@@ -6,33 +6,44 @@ class gsajboss6::install (
     String $source  = $os::dirs['temp']['path'],
     Variant[String, Array[String]] $package,
     Variant[String, Array[Hash]] $file,
-    String $destdir
+    Variant[String, Array[String] $destdir
   )
 {
-  #FIXME - this whole file is total hack with multiple dangerous assumptions!
+  #FIXME - riddled with multiple dangerous assumptions!
+  
   include stdlib
   include os
   include gsajboss6
+  
+  #TODO support "any" version
+  if version != 6.4 { fail("Unrecognized JBoss version: '${version}'") }
+  
   #require machine_conf::repo
   #require machine_conf::hosts
   
-  File { owner => $gsajboss6::user['name'], group => $gsajboss6::group['name'] }
+  file {[
+        '/opt',
+        '/opt/sw',  #FIXME deprecate and fix GSA scripts
+        $dirs['root']['path'],
+    ] :
+    *   => $os::default['directory'],
+  }
 
   #TODO - regex match against $source
   $method = 's3'
-  $fetch = lookup("bucket_command.${method}")
+  $fetch_cmd = lookup("cloud::bucket_command.${method}.get")
 
   #TODO filtering so as to not copy everything?
   exec { 'fetch_jboss' :
   #FIXME --recursive doesn't work except on DIRs. otherwise need individual filenames.
-  #XXX using s3cmd is far more useful than 'aws s3 cp'
-    command     => "${fetch} --recursive ${source} .",
+    command     => "${fetch_cmd} --recursive ${source} .",
     provider    => shell,
     cwd         => $os::dirs['temp']['path'],
     refreshonly => true
   }
 
   #TODO handle array of files
+  #FIXME should depend on File[home.path]
 if ! empty($file) {
   exec { $file :
     command     => "unzip ${os::dirs['temp']['path']}/${file}",
@@ -41,7 +52,7 @@ if ! empty($file) {
     umask       => $os::umask,
     creates     => $gsajboss6::dirs['home']['path'],
     # 'require' is not sufficient to trigger the Exec['fetch']
-    notify     => Exec['fetch_jboss'],
+    notify      => Exec['fetch_jboss'],
   }
 }
 
@@ -67,6 +78,7 @@ if ! empty($package) {
     require     => Package['gsainstall']
   }
 
+  #TODO supply re-written scripts or perhaps patches
     # file_line { 'fix-gsa-script-bug':
       # path    => '/opt/sw/jboss/gsaenv/bashrc.common.sh',
       # line    => '  local THIS_COMMAND="cd ${THIS_GSA_CONFIG_DIR}/server/instanceconfig/deployments" ;',
@@ -76,7 +88,8 @@ if ! empty($package) {
 }
 
 
-  #FIXME change to ERB
+  #FIXME change to ERB? Also uid=jboss' .bashrc should NOT be the place to manage
+  # instances. call it 'env.sh' and put it in JBOSS_BASE/bin like is done with CATALINA.
     # This script will make sure we run the restart command with the environment in place.
     # The old solution of using 'su -' does not always work since it may require a tty.
   file { "${gsajboss6::dirs['root']['path']}/rc_scripts/restart_instance.sh" :
@@ -87,7 +100,7 @@ source ${$gsajboss6::dirs['root']['path']}/.bashrc
 ${$gsajboss6::dirs['root']['path']}/rc_scripts/restart_jboss_\${1:?}.sh
 ",
     mode        => '0750',
-    require     => Package['gsainstall']    # actually depends on .../rc_scripts/
+    require     => Package['gsainstall']    # depends on .../rc_scripts/ which comes from the Package
   }
 
   contain gsajboss6::keystores

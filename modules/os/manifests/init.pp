@@ -26,14 +26,14 @@ class os (
   #
   #puppet v3 way
   #create_resources(File, os::dirs(various_dirs), { ensure => directory, some_more_defaults})
-  
+
   # puppet v4 way - https://www.devco.net/archives/2015/12/16/iterating-in-puppet.php
   #each($os::dirs([list of dirs]) |$name| {
   # file { $name:
   #     * => $attributes + $default['directory']
   # }
   #}
-  
+
   # handle different data types, especially Array as input
   define directory (
       Variant[String, Array[String]] $path = $title,

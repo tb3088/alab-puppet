@@ -1,9 +1,10 @@
 cloud::bucket_command:
-  get: "aws s3 cp"
-  put: "aws s3 cp"
-  delete: "aws s3 rm"
-  move: "aws s3 mv"
-  stat: "aws s3 ls"
-  list: "aws s3 ls"
+  s3:
+    get: "aws s3 cp"
+    put: "aws s3 cp"
+    delete: "aws s3 rm"
+    move: "aws s3 mv"
+    stat: "aws s3 ls"
+    list: "aws s3 ls"
 
 cloud::metadata_url: 'http://169.254.169.254/latest'

@@ -3,7 +3,6 @@ class gsajboss6::keystores (
     Variant[String, Hash]
         $dest = {
             path    => "${gsajboss6::dirs['conf']['path']}/host",
-            mode    => '0750',
         },
     Variant[String, Array[String]] 
         #FIXME does not belong in repo!
@@ -13,24 +12,23 @@ class gsajboss6::keystores (
             source  => "${source}/dev-20160524-01.truststore",
             # TODO fix GSA/JBOSS scripts to use a generic filename
             path    => "${dest['path']}/gsa-jboss.truststore",
-            mode    => '0640'
         },
     Variant[String, Hash]
         $keystore = {
             source  => "${source}/gsarba-dev.keystore",
             # TODO fix GSA/JBOSS scripts to use a generic filename?
             path    => "${dest['path']}/${facts['fqdn']}.keystore",
-            mode    => '0640'
         },
   )
 {
   include stdlib
   include os
 
-  File { owner => $gsajboss6::user['name'], group => $gsajboss6::group['name'] }
+  File { owner => $gsajboss6::user['name'], group => $gsajboss6::group['name'], mode => '0640' }
   
   file { 'gsaconfig/host':
     ensure  => directory,
+    mode    => '0750',
     *       => $dest
   }
 
