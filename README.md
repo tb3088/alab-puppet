@@ -10,6 +10,14 @@ This module installs JBoss and JBoss instances in the ALAB1 AWS Environment. Thi
 
 ## Pre-Installation Instructions
 
+### install helper modules/etc/puppetlabs/code/modules
+* ec2tagfacts (probably not)
+* puppetlabs-stdlib (v4.11.0) install in main puppet location: /opt/puppetlabs/puppet/modules
+* puppetlabs-concat (v1.2.5) ditto
+* saz-timezone (v3.3.0) used by? are they referenced in respective module? otherwise make it part of Bootstrap.
+* stahnma-epel (v1.2.2) used by? ditto
+
+
 As root, ensure that the following folder is created on the box:
 FIXME
 run 'aws s3 rsync the "software" bucket to `puppet config print bucketdir`

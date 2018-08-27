@@ -15,7 +15,7 @@ Facter.add(:getinstallerpath) do
      Facter::Util::Resolution.exec(puppet config print)
 
 and convert it into a Hash by iterating over the results.
-https://puppet.com/docs/facter/3.9/fact_overview.html
+https://puppet.com/docs/facter/4.10/fact_overview.html
 
 But there really should be a way to look at teh Module datastructure directly from Ruby and dump that into a hash if
 it isn't one already. https://github.com/puppetlabs/puppet/blob/master/lib/puppet/settings.rb
@@ -34,4 +34,10 @@ ntopng is from http://packages.ntop.org/
 create 'modules/monitoring/nagios.pp' and add various packages
 nrpe, nagios-plugins-all
 
-Fix File resource inability to handle Ints intead of just strings. (puppet version too old?)
+Fix File resource inability to handle Ints intead of just strings or 'mode'. is it possible to
+  File[ mode => os::mode(getparam(?self?, mode))
+
+use standard Java puppet module to deploy J7 and and 8. Also check against
+  https://confluence.itgfirm.com/display/GE/Java+Install+-+Linux
+
+
